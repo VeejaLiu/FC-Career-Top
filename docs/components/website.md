@@ -22,9 +22,10 @@ The root GitHub README's screenshots are stored separately in
 [docs/assets/screenshots](../assets/screenshots).
 
 From the workspace root, run `pnpm dev:website`, `pnpm build:website`, or
-`pnpm start:website`. Development uses port 3002; production serving defaults to 3000.
+`pnpm start:website`. Development and static preview use port 3002. The build exports static files to
+`apps/website/out`; Cloudflare serves them without a Next.js server.
 
 Public statistics use `NEXT_PUBLIC_BACKEND_URL`. For the sitemap postbuild, set
 `SITE_URL` in the build process environment; it defaults to `https://www.fccareer.top`.
 The current Go to App target is in [layout.tsx](../../apps/website/src/app/layout.tsx).
-See [deployment URL settings](../DEPLOYMENT.md#public-urls-and-email) before hosting it.
+See [deployment URL settings](../DEPLOYMENT.md#domain-and-url-configuration) before hosting it.

@@ -8,14 +8,24 @@
     "pnpm": ">=10.5.0 <11"
   },
   "scripts": {
-    "start": "ts-node src/app.ts",
-    "dev": "nodemon --watch src --ext ts --exec ts-node src/app.ts",
-    "build": "tsc",
-    "typecheck": "tsc --noEmit",
-    "start:prod": "node dist/src/app.js",
-    "db:migrate": "node scripts/flyway.cjs migrate",
-    "db:validate": "node scripts/flyway.cjs validate",
-    "db:info": "node scripts/flyway.cjs info"
+    "start": "wrangler dev --port 8888",
+    "dev": "wrangler dev --port 8888",
+    "build": "wrangler deploy --dry-run --outdir dist-worker",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.worker.json",
+    "start:prod": "wrangler dev --port 8888",
+    "db:migrate": "wrangler d1 migrations apply fc-career-top --local",
+    "db:validate": "wrangler d1 migrations list fc-career-top --local",
+    "db:info": "wrangler d1 migrations list fc-career-top --local",
+    "dev:node": "nodemon --watch src --ext ts --exec ts-node src/app.ts",
+    "build:node": "tsc",
+    "start:node": "ts-node src/app.ts",
+    "start:node:prod": "node dist/src/app.js",
+    "db:migrate:mysql": "node scripts/flyway.cjs migrate",
+    "db:validate:mysql": "node scripts/flyway.cjs validate",
+    "db:info:mysql": "node scripts/flyway.cjs info",
+    "db:migrate:remote": "wrangler d1 migrations apply fc-career-top --remote",
+    "deploy": "wrangler deploy",
+    "test:integration": "node tests/worker.integration.mjs"
   },
   "repository": {
     "type": "git",
@@ -53,6 +63,7 @@
     "ws": "^8.18.1"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "5.20261009.1",
     "@types/bcryptjs": "^2.4.6",
     "@types/express": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.9",
@@ -70,7 +81,8 @@
     "eslint-plugin-promise": "7.2.1",
     "prettier": "^3.5.2",
     "ts-node": "^10.9.2",
-    "typescript": "~5.7.3"
+    "typescript": "~5.7.3",
+    "wrangler": "4.149.0"
   },
   "private": true
 }

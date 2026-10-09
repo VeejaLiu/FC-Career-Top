@@ -193,6 +193,8 @@ export default function App() {
     fetchPlayerCount().then();
     fetchUsername().then();
     fetchUnreadNotificationCount().then();
+    const refreshNotifications = () => { fetchUnreadNotificationCount().then(); fetchPlayerCount().then(); };
+    window.addEventListener('fct-notifications-updated', refreshNotifications);
     const language = localStorage.getItem(LANGUAGE_LOCAL_STORAGE_KEY);
     if (language) {
       setCurrentLanguage(language);
@@ -206,6 +208,7 @@ export default function App() {
         localStorage.setItem(LANGUAGE_LOCAL_STORAGE_KEY, matchedLanguage.key);
       }
     }
+    return () => window.removeEventListener('fct-notifications-updated', refreshNotifications);
   }, []);
 
   return (

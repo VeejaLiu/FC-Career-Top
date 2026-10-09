@@ -14,3 +14,9 @@ logs/
 .env.*.local
 apps/backend/.env*
 !apps/backend/.env.example
+
+.wrangler/
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+dist-worker/

@@ -13,23 +13,15 @@ import logo from '../../assets/image/logo.svg';
 import { IconHelpCircleStroked } from '@douyinfe/semi-icons';
 
 export const RegisterComponent = ({ setIsLogin }: { setIsLogin: any }) => {
-  const [registerUsername, setRegisterUsername] = useState('');
   const [registerEmail, setRegisterEmail] = useState('');
   const [registerPassword, setRegisterPassword] = useState('');
   const [registerPasswordConfirm, setRegisterPasswordConfirm] = useState('');
   const [errorMessage, setErrorMessage] = useState(' ');
 
   async function doRegister(localeData: any) {
-    // Check if username is valid
-    const validPattern = /^[a-zA-Z][a-zA-Z0-9_.]{5,19}$/;
-    if (!validPattern.test(registerUsername)) {
-      setErrorMessage(localeData.invalidUsername);
-      return;
-    }
-
     // Check if email is valid
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(registerEmail)) {
+    if (!emailPattern.test(registerEmail.trim())) {
       setErrorMessage(localeData.invalidEmail);
       return;
     }
@@ -55,8 +47,7 @@ export const RegisterComponent = ({ setIsLogin }: { setIsLogin: any }) => {
     }
 
     const response = await UserApis.registerUser({
-      username: registerUsername,
-      email: registerEmail,
+      email: registerEmail.trim(),
       password: registerPassword,
       confirmPassword: registerPasswordConfirm,
     });
@@ -96,21 +87,6 @@ export const RegisterComponent = ({ setIsLogin }: { setIsLogin: any }) => {
           <div className={styles.form}>
             <Form className={styles.inputs}>
               <Form.Input
-                label={{ text: localeData.username }}
-                field="username"
-                placeholder={localeData.usernamePlaceholder}
-                fieldStyle={{ alignSelf: 'stretch', padding: 0 }}
-                onChange={(e) => setRegisterUsername(e)}
-                onBlur={() => {
-                  const validPattern = /^[a-zA-Z][a-zA-Z0-9_.]{5,19}$/;
-                  if (!validPattern.test(registerUsername)) {
-                    setErrorMessage(localeData.invalidUsername);
-                  } else {
-                    setErrorMessage(' ');
-                  }
-                }}
-              />
-              <Form.Input
                 label={
                   <div className={'flex items-center'}>
                     <span className={'mr-1'}>{localeData.email}</span>
@@ -125,7 +101,7 @@ export const RegisterComponent = ({ setIsLogin }: { setIsLogin: any }) => {
                 onChange={(e) => setRegisterEmail(e)}
                 onBlur={() => {
                   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                  if (!emailPattern.test(registerEmail)) {
+                  if (!emailPattern.test(registerEmail.trim())) {
                     setErrorMessage(localeData.invalidEmail);
                   } else {
                     setErrorMessage(' ');

@@ -3,7 +3,7 @@ export class DateUtils {
     month: number;
     day: number;
 
-    constructor(year, month, day) {
+    constructor(year: number, month: number, day: number) {
         this.year = year;
         this.month = month;
         this.day = day;
@@ -58,7 +58,7 @@ export class DateUtils {
      * Convert days to date
      * 将天数转换为日期
      */
-    fromGregorianDays(days) {
+    fromGregorianDays(days: number) {
         let a, b, c, d, e, m;
         a = days + 2331205;
         b = Math.floor((4 * a + 3) / 146097);

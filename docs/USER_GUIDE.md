@@ -4,8 +4,8 @@
 
 FC Career Top records the squad in your EA FC 24/25 Manager Career Mode and
 lets you follow each player's overall rating and potential across seasons.
-There is currently no public hosted instance; run your own instance first or
-use an instance provided by its operator.
+Use the [hosted dashboard](https://app.fccareer.top), or run your own instance.
+Registration requires email and password; your username is generated automatically.
 
 ## Requirements
 
@@ -21,14 +21,12 @@ Follow the Live Editor project's own installation and compatibility instructions
 ## Connect your career
 
 1. Open the dashboard. A local installation uses `http://localhost:3000`.
-2. Register an account and sign in.
-3. In **Settings**, request a verification email and open its verification link.
-   Refresh the dashboard after verification; the script panel requires a verified email.
-4. Select **FC 24** or **FC 25** using the game-version selector.
-5. Start the matching game through Live Editor and load your Manager Career Mode save.
-6. Open **Get Started** in the dashboard and copy the generated Lua script.
-7. Open Live Editor's **Lua engine**, paste the script, and execute it.
-8. Check the **Players** page for the initial snapshot. Further snapshots are
+2. Register with an email and password. Sign in with email and password; verification is disabled.
+3. Select **FC 24** or **FC 25** using the game-version selector.
+4. Start the matching game through Live Editor and load your Manager Career Mode save.
+5. Open **Get Started** in the dashboard and copy the generated Lua script.
+6. Open Live Editor's **Lua engine**, paste the script, and execute it.
+7. Check the **Players** page for the initial snapshot. Further snapshots are
    uploaded after in-game weeks pass while the script's event handler is registered.
 
 The generated script contains your personal API secret key and the upload URL.
@@ -46,7 +44,7 @@ reachable from the Windows game PC. See [network configuration](DEVELOPMENT.md#g
 | Players Trends | Overall and potential curves grouped by playing position |
 | Player Detail | Current attributes, available PlayStyles, and an individual growth chart |
 | Notifications | Rating, potential, skill-move, and weak-foot changes |
-| Settings | Account details, email verification, API key, and notification preferences |
+| Settings | Username, email, password, API key, and notification preferences |
 
 Choose the notification types you want in Settings. FC 24 and FC 25 data are
 selected separately through the game-version setting.
@@ -57,7 +55,7 @@ selected separately through the game-version setting.
 | --- | --- |
 | A black command window appears | The Lua script writes a JSON file and runs Windows `curl` to upload it. The window can briefly take focus; let the upload finish. |
 | File creation reports `Permission denied` | Give the script write permission in its working directory, typically the game directory. |
-| Get Started is covered or unavailable | Verify the account email in Settings, then refresh the dashboard. |
+| Get Started is unavailable | Sign in again and check API connectivity. Email verification is not required. |
 | Players do not appear | Check the selected game version, load Manager Career Mode, check Live Editor's logs, and confirm the upload URL is reachable. |
 | A refreshed API key no longer works in-game | Copy the current script from Get Started and replace the older script. |
 | Tracking different saves | There is no multi-save selector. Use one career per account/game version to avoid mixing snapshots. |

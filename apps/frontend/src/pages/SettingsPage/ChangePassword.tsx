@@ -14,9 +14,6 @@ function ChangePasswordComponent({
   const [confirmNewPassword, setCofirmNewPassword] = React.useState<string>('');
 
   const changePassword = async (localeData: any) => {
-    console.log(`Old Password: ${oldPassword}`);
-    console.log(`New Password: ${newPassword}`);
-    console.log(`Confirm New Password: ${confirmNewPassword}`);
 
     if (!oldPassword || !newPassword || !confirmNewPassword) {
       Notification.error({
@@ -45,8 +42,9 @@ function ChangePasswordComponent({
       newPassword,
       confirmNewPassword,
     });
-    console.log(`[changePassword] res: ${JSON.stringify(res)}`);
     if (res.success) {
+      localStorage.removeItem('fcd-token');
+      window.location.assign('/');
       Notification.success({
         title: localeData.ChangePasswordNotification.SUCCESS,
         content: localeData.ChangePasswordNotification.SUCCESS_MESSAGE,

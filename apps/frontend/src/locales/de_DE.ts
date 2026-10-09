@@ -2,8 +2,8 @@ export default {
   LoginComponent: {
     VideoTutorial: 'Wie nutzt man diese App? Erfahre mehr durch das Video!',
     welcome: 'Willkommen zurück',
-    usernameEmail: 'Benutzername / E-Mail',
-    usernameEmailPlaceholder: 'dein Benutzername oder E-Mail',
+    usernameEmail: 'E-Mail',
+    usernameEmailPlaceholder: 'Deine E-Mail',
     password: 'Passwort',
     passwordPlaceholder: 'dein Passwort',
     login: 'Anmelden',
@@ -16,7 +16,7 @@ export default {
     usernamePlaceholder: 'dein Benutzername',
     email: 'E-Mail',
     emailTooltip:
-      'Bitte gib eine gültige E-Mail-Adresse ein. Du musst deine E-Mail-Adresse nach der Registrierung bestätigen.',
+      'Gib eine gültige E-Mail-Adresse ein. Eine Bestätigung ist derzeit nicht erforderlich.',
     emailPlaceholder: 'deine E-Mail',
     password: 'Passwort',
     passwordTooltip:

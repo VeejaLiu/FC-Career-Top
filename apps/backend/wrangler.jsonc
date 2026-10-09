@@ -1,0 +1,47 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "fc-career-top-api",
+  "account_id": "65a3a715f74dc19748c243e413065b8e",
+  "main": "src/worker/index.ts",
+  "compatibility_date": "2026-10-09",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "workers_dev": true,
+  "routes": [
+    {
+      "pattern": "api.fccareer.top/*",
+      "zone_name": "fccareer.top"
+    }
+  ],
+  "vars": {
+    "ALLOWED_ORIGINS": "https://app.fccareer.top,https://www.fccareer.top"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "fc-career-top",
+      "database_id": "b56c4b55-296c-4cf1-a5eb-6632b1559ca4",
+      "migrations_dir": "db/d1-migrations"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "BACKEND",
+        "class_name": "Backend"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": [
+        "Backend"
+      ]
+    }
+  ],
+  "observability": {
+    "enabled": true
+  }
+}

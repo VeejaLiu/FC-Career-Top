@@ -2,48 +2,50 @@
 
 [Documentation](README.md) · [Development](DEVELOPMENT.md) · [Backend](components/backend.md)
 
-Use MySQL 8.4 and the Flyway Open Source CLI, pinned to
-`flyway/flyway:13.10.0-alpine`. Flyway runs in a temporary Docker container and
-reuses the `MYSQL_*` settings in `apps/backend/.env`. Docker must be running.
+The Cloudflare backend uses **D1 (SQLite)** and Wrangler's versioned migrations.
+There is no deployment-time `init.sql` and no database server to maintain.
 
-## First setup
+## Initialize
 
-Create an empty database once, using your MySQL client:
-
-```sql
-CREATE DATABASE fcd CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-```
-
-Set `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_DATABASE`, `MYSQL_USERNAME`, and
-`MYSQL_PASSWORD` in the backend environment file. The database user must have
-permission to create and alter tables. From the repository root:
+From the repository root:
 
 ```sh
-pnpm db:info      # Show applied and pending migrations
-pnpm db:migrate   # Apply pending migrations
-pnpm db:validate  # Verify applied versions and checksums
-pnpm dev:backend
+pnpm db:migrate          # Apply pending migrations to local D1
+pnpm db:info             # List pending local migrations
+pnpm db:migrate:remote   # Apply pending migrations to deployed D1
 ```
 
-[V1__initial_schema.sql](../apps/backend/db/migrations/V1__initial_schema.sql) creates the complete current schema, including all
-changes from the former `sql/init.sql`. Flyway creates `flyway_schema_history`
-to track successful versions. Subsequent migrate runs apply only pending versions.
+Remote commands require Wrangler login and the real database ID in
+`apps/backend/wrangler.jsonc`; see [deployment](DEPLOYMENT.md).
+Local commands do not require a Cloudflare account.
 
-The container translates a local `MYSQL_HOST` (`localhost` or `127.0.0.1`) to
-`host.docker.internal`. MySQL must be reachable from Docker. For a different
-network or JDBC connection configuration, set `FLYWAY_URL` in the same environment
-file; the username and password still come from the `MYSQL_*` settings.
+[0001_initial_schema.sql](../apps/backend/db/d1-migrations/0001_initial_schema.sql)
+creates accounts, keys, settings, player snapshots, history, and notifications.
+Wrangler records applied filenames in `d1_migrations` and skips them on subsequent runs.
 
-## Making schema changes
+## Schema changes
 
-1. Add the next file, such as `apps/backend/db/migrations/V2__add_player_index.sql`.
-2. Update the Sequelize model if its fields change.
-3. Run `pnpm db:migrate`, then `pnpm db:validate`, before starting the application.
+1. Add the next SQL file, for example `0002_add_player_index.sql`, in `apps/backend/db/d1-migrations`.
+2. Update the Worker queries and field mapping if necessary.
+3. Apply locally, test, then apply remotely before deploying code that needs the schema.
 
-Once a migration has been applied, keep its name and contents unchanged. Correct
-an applied migration with a new version. Migrate validates earlier migrations
-before applying new ones, and invalid filenames fail instead of being ignored.
-Sequelize describes the models; versioned SQL owns the database structure.
+Keep applied migration names and contents unchanged; corrections go in a new file.
+D1 migrations do not provide Flyway checksum validation. `pnpm db:validate` is a
+compatibility alias for listing pending D1 migrations, not checksum validation.
+Uploads use a transactional D1 batch and unique history keys so repeated snapshots
+for the same player/date update that entry.
 
-Reference: [Flyway migrate](https://documentation.red-gate.com/flyway/reference/commands/migrate)
-and [Flyway validate](https://documentation.red-gate.com/flyway/reference/commands/validate).
+## Legacy MySQL/Flyway
+
+The original Node backend remains available for reference. Its `.env.example`,
+Sequelize models, `db/migrations/V1__initial_schema.sql`, and Flyway configuration
+are preserved. It is not the Cloudflare runtime.
+
+For that backend only, configure MySQL 8.4 and Docker, create an empty `fcd` database,
+then use `pnpm --filter @fc-career-top/backend db:migrate:mysql` and
+`db:validate:mysql`. Flyway is pinned to `flyway/flyway:13.10.0-alpine`; its wrapper
+uses the `MYSQL_*` values in `apps/backend/.env` and translates local hosts to
+`host.docker.internal`. Add subsequent `V2__...sql` files for that database.
+
+References: [D1 migrations](https://developers.cloudflare.com/d1/reference/migrations/)
+and [Flyway validation](https://documentation.red-gate.com/flyway/reference/commands/validate).

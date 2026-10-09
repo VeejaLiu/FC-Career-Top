@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
-import { getToken } from '../common/common.ts';
+import {
+  getToken,
+  getDefaultGameVersionFromLocalStorage,
+  removeToken,
+} from '../common/common.ts';
 import { getAvatarUrl, getColorByDiff } from '../common/player-helper.ts';
 import { Notification } from '@douyinfe/semi-ui';
 import { StarIcon } from '../common/icons.tsx';
-
-let reconnectInterval = 1000; // Initial reconnect interval, 1 second
-const maxReconnectInterval = 10 * 1000; // Maximum reconnect interval, 10 seconds
 
 /**
  * Send notification when player overall rating updated
@@ -175,129 +176,72 @@ function weakFootChangeNotification(payload: any) {
 }
 
 export const WebsocketNotification = () => {
-  async function createWebSocketConnection() {
-    const token = getToken();
-    if (!token) {
-      console.log(
-        'Cannot create WebSocket connection: token not found. And will retry in 5 seconds',
-      );
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-      return createWebSocketConnection();
-    }
-
-    // Create a new WebSocket connection
-    const socket = new WebSocket(import.meta.env.VITE_WS_URL, token);
-
-    // WebSocket connection established
-    socket.onopen = () => {
-      console.log('[WebSocket][onopen] connection established');
-      // Send ping message every 10 seconds
-      setInterval(() => {
-        socket.send('ping');
-      }, 30 * 1000);
-    };
-
-    // Handle incoming messages
-    socket.onmessage = (event) => {
-      const newNotification = event.data;
-      console.log(
-        '[WebSocket][onmessage] event.data=',
-        JSON.stringify(newNotification),
-      );
-
-      if (!newNotification || newNotification === '') {
-        console.log('Received empty message, ignore it');
-        return;
-      }
-
-      if (newNotification === 'pong') {
-        console.log('Received pong message, ignore it');
-        return;
-      }
-
-      if (newNotification === 'Protocol accepted') {
-        console.log('Received protocol accepted message, ignore it');
-        return;
-      }
-
-      let type = '';
-      let payload: any = {};
-      try {
-        const parsed = JSON.parse(newNotification);
-        type = parsed.type;
-        payload = parsed.payload;
-      } catch (e) {
-        console.error(
-          '[WebSocket][onmessage] Failed to parse incoming message:',
-          e,
-        );
-        return;
-      }
-      console.log('[WebSocket][onmessage] type:', type, 'payload:', payload);
-      switch (type) {
-        case 'PlayerUpdate.Overall': {
-          overratingChangeNotification(payload);
-          break;
-        }
-        case 'PlayerUpdate.SkillMove': {
-          skillMoveChangeNotification(payload);
-          break;
-        }
-        case 'PlayerUpdate.WeakFoot': {
-          weakFootChangeNotification(payload);
-          break;
-        }
-        default:
-          console.log('Unknown message type:', type);
-      }
-    };
-
-    // 连接关闭时的处理
-    socket.onclose = () => {
-      console.log(
-        `[WebSocket][onclose] connection closed, will reconnect in ${reconnectInterval} ms`,
-      );
-      setTimeout(createWebSocketConnection, reconnectInterval);
-      reconnectInterval = Math.min(2 * reconnectInterval, maxReconnectInterval);
-    };
-  }
-
   useEffect(() => {
-    createWebSocketConnection().then(
-      () => {
-        console.log('WebSocket connection established');
+    let stopped = false;
+    let socket: WebSocket | undefined;
+    let heartbeat: ReturnType<typeof setInterval> | undefined;
+    let retry: ReturnType<typeof setTimeout> | undefined;
+    let delay = 1000;
 
-        /*
-         * Test code
-         */
-        // overratingChangeNotification({
-        //   playerID: 276839,
-        //   playerName: 'Sebastiano Desplanches',
-        //   oldOverallrating: 89,
-        //   overallrating: 90,
-        //   oldPotential: 91,
-        //   potential: 91,
-        // });
-        //
-        // skillMoveChangeNotification({
-        //   playerID: 276839,
-        //   playerName: 'Sebastiano Desplanches',
-        //   oldSkillMoves: 3,
-        //   skillMoves: 4,
-        // });
-        //
-        // weakFootChangeNotification({
-        //   playerID: 276839,
-        //   playerName: 'Sebastiano Desplanches',
-        //   oldWeakFootAbilityTypeCode: 4,
-        //   weakFootAbilityTypeCode: 5,
-        // });
-      },
-      (err) => {
-        console.error('Failed to establish WebSocket connection', err);
-      },
-    );
+    const connect = () => {
+      const token = getToken();
+      const address = import.meta.env.VITE_WS_URL;
+      if (stopped || !token || !address) return;
+      socket = new WebSocket(address, token);
+      socket.onopen = () => {
+        delay = 1000;
+        heartbeat = setInterval(() => {
+          if (socket?.readyState === WebSocket.OPEN) socket.send('ping');
+        }, 30000);
+      };
+      socket.onmessage = (event) => {
+        if (event.data === 'Session changed') {
+          stopped = true;
+          socket?.close(1000, 'Session changed');
+          removeToken();
+          window.location.assign('/');
+          return;
+        }
+        if (event.data === 'pong' || event.data === 'Protocol accepted') return;
+        try {
+          const { type, payload } = JSON.parse(event.data);
+          const version = getDefaultGameVersionFromLocalStorage();
+          if (
+            version &&
+            payload.gameVersion &&
+            Number(payload.gameVersion) !== version
+          )
+            return;
+          if (type === 'PlayerUpdate.Overall')
+            overratingChangeNotification(payload);
+          else if (type === 'PlayerUpdate.SkillMove')
+            skillMoveChangeNotification(payload);
+          else if (type === 'PlayerUpdate.WeakFoot')
+            weakFootChangeNotification(payload);
+          window.dispatchEvent(new Event('fct-notifications-updated'));
+        } catch {
+          /* Ignore malformed or unrelated messages. */
+        }
+      };
+      socket.onclose = (event) => {
+        if (heartbeat) clearInterval(heartbeat);
+        if (stopped) return;
+        if (event.code === 1000 && event.reason === 'Session changed') {
+          removeToken();
+          window.location.assign('/');
+          return;
+        }
+        retry = setTimeout(connect, delay);
+        delay = Math.min(delay * 2, 10000);
+      };
+    };
+    connect();
+    return () => {
+      stopped = true;
+      if (retry) clearTimeout(retry);
+      if (heartbeat) clearInterval(heartbeat);
+      socket?.close(1000, 'Page closed');
+    };
   }, []);
-
-  return <></>;
+  return null;
 };

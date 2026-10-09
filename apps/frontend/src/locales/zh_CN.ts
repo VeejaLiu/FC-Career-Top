@@ -2,8 +2,8 @@ export default {
   LoginComponent: {
     VideoTutorial: '如何使用这个应用?通过视频了解更多！',
     welcome: '欢迎回来',
-    usernameEmail: '用户名 / 邮箱',
-    usernameEmailPlaceholder: '您的用户名或邮箱',
+    usernameEmail: '邮箱',
+    usernameEmailPlaceholder: '您的邮箱',
     password: '密码',
     passwordPlaceholder: '您的密码',
     login: '登录',
@@ -15,7 +15,7 @@ export default {
     username: '用户名',
     usernamePlaceholder: '您的用户名',
     email: '电子邮件',
-    emailTooltip: '请输入有效的电子邮件地址。注册后需要验证您的电子邮件地址。',
+    emailTooltip: '请输入有效的邮箱地址，暂时无需邮箱验证。',
     emailPlaceholder: '您的电子邮件',
     password: '密码',
     passwordTooltip:

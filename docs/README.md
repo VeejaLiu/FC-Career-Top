@@ -11,8 +11,8 @@
 | Creating or changing the database | [Database migrations](DATABASE.md) |
 | Preparing a first deployment | [Deployment](DEPLOYMENT.md) |
 
-There is currently no public hosted instance. Start with local development to
-run the service yourself, then follow the player guide to connect the game.
+Use the [hosted dashboard](https://app.fccareer.top), or start with local development
+to run your own instance. Follow the player guide to connect the game.
 
 ## Application guides
 
@@ -30,5 +30,5 @@ application guides describe each application's role, source layout, and specific
 - [Screenshots](assets/screenshots): application captures used by the root README.
 - [Historical records](archive/README.md): the repository consolidation and original media scripts.
 
-Runtime SQL migrations and Flyway configuration remain in
+D1 migrations and the legacy MySQL/Flyway configuration remain in
 [apps/backend/db](../apps/backend/db), next to the backend code.

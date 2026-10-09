@@ -1,60 +1,77 @@
-# First deployment
+# Cloudflare deployment
 
 [Documentation](README.md) · [Development](DEVELOPMENT.md) · [Database](DATABASE.md)
 
-There is currently no live deployment. These are the build and configuration steps
-for hosting the three applications from this repository.
+The project targets **Cloudflare Workers Free** with D1 and SQLite-backed Durable
+Objects. The dashboard and website use static assets; the API keeps realtime WebSocket
+notifications. Email verification and delivery are disabled.
 
-## Prepare
+| Application | Domain | Build output |
+| --- | --- | --- |
+| Website | `www.fccareer.top` | `apps/website/out` |
+| Dashboard | `app.fccareer.top` | `apps/frontend/dist` |
+| API / WebSocket | `api.fccareer.top` | Worker bundle, WebSocket at `/ws` |
 
-1. Install the pinned Node.js and pnpm versions from the [development guide](DEVELOPMENT.md).
-2. Run `pnpm install --frozen-lockfile` from the repository root.
-3. Configure the backend environment, database connection, JWT secret, and email sender.
-4. Configure the public browser URLs for your actual hosts before building.
-5. Run `pnpm db:migrate`, then `pnpm build` and `pnpm typecheck`.
+## First deployment
 
-| Application | Working directory | Build command from root | Output / serving |
-| --- | --- | --- | --- |
-| Dashboard | `apps/frontend` | `pnpm build:frontend` | Serve `apps/frontend/dist` as static files |
-| Website | `apps/website` | `pnpm build:website` | `pnpm start:website` serves `apps/website/.next` |
-| Backend | `apps/backend` | `pnpm build:backend` | `pnpm start:backend` runs `apps/backend/dist/src/app.js` |
-
-## Host configuration
-
-- The dashboard uses browser routes; configure its static host to fall back to `index.html`.
-- Next.js production serving defaults to port 3000. Set `PORT` in its environment if needed.
-- The backend uses `APP_PORT`, with 8888 in the example environment. REST routes
-  start at `/api`; WebSocket connections share the same HTTP server.
-- A reverse proxy serving WebSocket traffic must forward connection-upgrade headers.
-- Keep the backend environment file at `apps/backend/.env`. Root start commands
-  select the application's working directory automatically.
-
-## Public URLs and email
-
-The committed production environment files contain the project's planned
-`fccareer.top` domain URLs. Set your actual URLs in the apps' `.env.production.local`
-files before building:
-
-- Dashboard: `VITE_APP_BACKEND_URL`, `VITE_POST_PLAYER_URL`, and `VITE_WS_URL`.
-- Website: `NEXT_PUBLIC_BACKEND_URL`.
-
-For sitemap generation, set `SITE_URL` in the build process environment, read by
-`apps/website/next-sitemap.config.js`. For example:
+Install the pinned Node/pnpm versions and locked dependencies. From the repository root:
 
 ```sh
-SITE_URL=https://www.example.com pnpm build:website
+pnpm --filter @fc-career-top/backend exec wrangler login
+pnpm --filter @fc-career-top/backend exec wrangler d1 create fc-career-top
 ```
 
-The website's **Go to App** link is currently written in
-[layout.tsx](../apps/website/src/app/layout.tsx). Update it if your dashboard uses
-another address. Configure `APP_BACKEND_URL` and the backend email sender for the
-deployment, following [email setup](DEVELOPMENT.md#backend).
+Set the returned `database_id` in `apps/backend/wrangler.jsonc`. Keep the target
+account on Workers Free. The backend's `new_sqlite_classes` migration uses the
+Durable Object storage type supported on Free.
 
-Before starting updated backend code, apply pending Flyway migrations. Add new
-versioned SQL files for later schema changes; see the [database guide](DATABASE.md).
+Set a random JWT signing secret of at least 32 characters using the interactive prompt:
 
-## Build helper
+```sh
+pnpm --filter @fc-career-top/backend exec wrangler secret put SECRET_JWT
+pnpm db:migrate:remote
+pnpm build
+pnpm deploy:backend
+pnpm deploy:frontend
+pnpm deploy:website
+```
 
-[scripts/build.sh](../scripts/build.sh) installs the locked dependencies and builds
-all applications from the repository root. Run it with `bash scripts/build.sh`.
-Process setup and database migration use the steps above.
+For an existing deployment, reuse its database and secret. Apply only pending
+migrations and deploy the affected apps. Do not create a new database every time.
+Never commit `.dev.vars`, OAuth credentials, or production secrets.
+
+## Domain and URL configuration
+
+The Wrangler files define a Worker route for each host (`hostname/*`). The three
+existing DNS records are proxied through Cloudflare; requests are served by the
+Workers without contacting the old origin. Keep those records proxied. A fresh
+installation must add proxied DNS records for its hosts, or use Workers custom
+domains instead. The zone must belong to the selected account.
+For another domain, update the three Wrangler route lists, backend `ALLOWED_ORIGINS`,
+frontend public URLs, website `NEXT_PUBLIC_BACKEND_URL`, and Go to App link.
+
+Production URLs are already in the app `.env.production` files. For sitemap generation,
+`SITE_URL` defaults to `https://www.fccareer.top`; sitemap and robots files are written
+into `out`. Both sites require a rebuild after changing public environment variables.
+No reverse proxy or permanently running Node server is needed.
+
+## Verify
+
+Check the website, dashboard, and `https://api.fccareer.top/api/health_check` (`ok`).
+Register with an email and password; sign in with email/password, select FC 24/25, and copy the Lua script
+from Get Started. Upload a snapshot from Live Editor and confirm the list, growth
+chart, and realtime notification when a rating changes.
+
+## Free-plan limits
+
+Free hosting has quotas: ordinary Worker requests have a short CPU limit; password
+hashing and data processing run in the Durable Object. Hibernation heartbeat replies
+reduce active connection duration. Bulk uploads are capped at 200 players / 1 MB and
+use a few batched D1 queries rather than one call per player.
+
+D1 Free permits 500 MB per database, 5 million rows read/day and 100,000 rows written/day.
+Worker and Durable Object quotas also apply. On Free, exceeding limits can stop service
+until quotas reset; do not upgrade to a paid plan to bypass them if the budget is zero.
+See [Workers pricing](https://developers.cloudflare.com/workers/platform/pricing/),
+[D1 pricing](https://developers.cloudflare.com/d1/platform/pricing/), and
+[Durable Objects pricing](https://developers.cloudflare.com/durable-objects/platform/pricing/).

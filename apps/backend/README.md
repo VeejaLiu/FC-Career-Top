@@ -1,6 +1,6 @@
 # FC Career Top Backend
 
-Express / MySQL API and notifications in the [FC Career Top workspace](../../README.md).
+Cloudflare Worker / D1 API and notifications in the [FC Career Top workspace](../../README.md).
 
 - [Development and environment configuration](../../docs/DEVELOPMENT.md)
 - [Database migrations](../../docs/DATABASE.md)

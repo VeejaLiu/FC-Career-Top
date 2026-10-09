@@ -3,8 +3,8 @@ export default {
     VideoTutorial:
       'Comment utiliser cette application ? Apprenez-en plus grâce à la vidéo !',
     welcome: 'Bon retour',
-    usernameEmail: "Nom d'utilisateur / Email",
-    usernameEmailPlaceholder: "votre nom d'utilisateur ou email",
+    usernameEmail: 'Email',
+    usernameEmailPlaceholder: 'Votre email',
     password: 'Mot de passe',
     passwordPlaceholder: 'votre mot de passe',
     login: 'Connexion',

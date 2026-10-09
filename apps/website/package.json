@@ -6,7 +6,7 @@
     "dev": "next dev --turbopack --port 3002",
     "build": "next build",
     "postbuild": "next-sitemap --config next-sitemap.config.js",
-    "start": "next start",
+    "start": "pnpm --filter @fc-career-top/backend exec wrangler dev --config ../website/wrangler.jsonc --port 3002",
     "lint": "next lint",
     "buildAndStart": "pnpm build && pnpm start",
     "typecheck": "tsc --noEmit"

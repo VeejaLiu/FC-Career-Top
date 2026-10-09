@@ -6,7 +6,8 @@
 通过 Live Editor 的 Lua 脚本采集球队数据，在网页中查看球员列表、成长曲线、
 详细属性，以及能力值、潜力、花式动作和逆足变化通知。
 
-**当前状态：没有公开运行的线上实例。** 可以按照下方说明在本地运行，或自行部署。
+**在线体验：** [球员管理界面](https://app.fccareer.top) · [项目官网](https://www.fccareer.top)。
+也可以在本地运行，或使用 Cloudflare 免费套餐自行部署。
 
 ## 主要功能
 
@@ -40,22 +41,15 @@
 
 ## 本地运行
 
-需要 Node.js 24.21.0、pnpm 10.5.0、MySQL 8.4，以及用于 Flyway 迁移的 Docker。
-详细配置说明见[开发指南](docs/DEVELOPMENT.md)。
+需要 Node.js 24.21.0 和 pnpm 10.5.0。Wrangler 在本地运行 D1 和 Durable Objects，
+无需 MySQL、Docker 或邮件服务。详细说明见[开发指南](docs/DEVELOPMENT.md)。
 
 ```sh
 git clone https://github.com/VeejaLiu/FC-Career-Top.git
 cd FC-Career-Top
 corepack enable
 pnpm install --frozen-lockfile
-cp apps/backend/.env.example apps/backend/.env
-```
-
-编辑后端 `.env`，填写数据库连接、JWT 密钥和 Resend 邮件配置。
-使用 MySQL 客户端创建一个空数据库：
-
-```sql
-CREATE DATABASE fcd CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+cp apps/backend/.dev.vars.example apps/backend/.dev.vars
 ```
 
 ```sh
@@ -67,7 +61,7 @@ pnpm dev
 - 项目官网：http://localhost:3002
 - 后端健康检查：http://localhost:8888/api/health_check
 
-打开球员管理界面，注册账号并在 **Settings（设置）** 中验证邮箱。
+打开球员管理界面，注册填写邮箱和密码，登录使用邮箱和密码；暂不进行邮箱验证。
 选择游戏版本，在 **Get Started（快速上手）** 中复制生成的 Lua 脚本，
 进入游戏的经理生涯模式后，在 Live Editor 的 Lua engine 中执行。
 
@@ -80,7 +74,7 @@ pnpm dev
 | --- | --- |
 | [使用指南](docs/USER_GUIDE.md) | Live Editor、数据采集、通知与常见问题 |
 | [开发指南](docs/DEVELOPMENT.md) | 环境配置、统一命令、架构与开发检查 |
-| [数据库迁移](docs/DATABASE.md) | Flyway 初始化、校验与后续版本 SQL |
+| [数据库迁移](docs/DATABASE.md) | D1 初始化与后续版本 SQL |
 | [部署说明](docs/DEPLOYMENT.md) | 首次部署的构建产物和配置 |
 | [全部文档](docs/README.md) | 三个应用的说明和历史资料 |
 

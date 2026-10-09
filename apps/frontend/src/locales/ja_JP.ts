@@ -2,8 +2,8 @@ export default {
   LoginComponent: {
     VideoTutorial: 'このアプリの使い方は？ビデオでもっと学びましょう！',
     welcome: 'おかえりなさい',
-    usernameEmail: 'ユーザー名 / メール',
-    usernameEmailPlaceholder: 'ユーザー名またはメール',
+    usernameEmail: 'メール',
+    usernameEmailPlaceholder: 'メールアドレス',
     password: 'パスワード',
     passwordPlaceholder: 'あなたのパスワード',
     login: 'ログイン',
@@ -16,7 +16,7 @@ export default {
     usernamePlaceholder: 'あなたのユーザー名',
     email: 'メール',
     emailTooltip:
-      '有効なメールアドレスを入力してください。登録後、メールアドレスの確認が必要です。',
+      '有効なメールアドレスを入力してください。現在メール認証は不要です。',
     emailPlaceholder: 'あなたのメール',
     password: 'パスワード',
     passwordTooltip:

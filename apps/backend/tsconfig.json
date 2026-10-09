@@ -12,8 +12,14 @@
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true
-    
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.spec.ts", "dist/**/*"]
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts",
+    "dist/**/*",
+    "src/worker/**/*"
+  ]
 }

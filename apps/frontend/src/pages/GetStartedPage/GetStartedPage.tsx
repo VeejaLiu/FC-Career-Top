@@ -7,7 +7,6 @@ import {
   LocaleConsumer,
   Notification,
   Space,
-  Spin,
   Steps,
 } from '@douyinfe/semi-ui';
 import { UserApis } from '../../service/UserApis.ts';
@@ -15,7 +14,6 @@ import { luaScript_FC24 } from '../../constant/user-script.ts';
 import { luaScript_FC25 } from '../../constant/user-script.ts';
 import { getDefaultGameVersion } from '../../common/common.ts';
 import { IconCopy } from '@douyinfe/semi-icons';
-import { useNavigate } from 'react-router-dom';
 
 const PostPlayerURL =
   import.meta.env.VITE_POST_PLAYER_URL || 'http://localhost:8888';
@@ -23,33 +21,9 @@ const PostPlayerURL =
 function SettingsPage(): React.ReactElement {
   const [codeStr, setCodeStr] = React.useState(luaScript_FC24);
   const [isSecretLoading, setIsSecretLoading] = React.useState(true);
-  const [isAccountInfoLoading, setIsAccountInfoLoading] =
-    React.useState<boolean>(true);
-  const [accountInfo, setAccountInfo] = React.useState<{
-    userID?: string;
-    username?: string;
-    email?: string;
-    isEmailVerified?: boolean;
-    lastSendEmailTime?: number;
-  }>({});
-
-  const navigate = useNavigate();
-
-  async function fetchAccountInfo() {
-    const res = await UserApis.getUserInfo();
-    console.log(`[fetchAccountInfo] res: ${JSON.stringify(res)}`);
-    if (!res) {
-      return;
-    }
-    setAccountInfo(res);
-    setIsAccountInfoLoading(false);
-  }
-
   async function getLuaCode() {
     const key = await UserApis.getSecretKey();
     const gameVersion = await getDefaultGameVersion();
-    console.log(`[fetchSecretKey] key: ${key}`);
-    console.log(`[fetchSecretKey] gameVersion: ${gameVersion}`);
 
     switch (gameVersion) {
       case 24:
@@ -84,48 +58,13 @@ function SettingsPage(): React.ReactElement {
         });
       },
     );
-    fetchAccountInfo().then();
   }, []);
 
   return (
     <LocaleConsumer componentName={'GetStartedPage'}>
       {(localeData: any, localeCode: string, dateFnsLocale: any) => (
         <Space className={'w-full'} vertical align={'start'}>
-          {isAccountInfoLoading ? (
-            <div className={'w-full flex items-center justify-center p-2'}>
-              <Spin size="large" />
-            </div>
-          ) : (
-            !accountInfo.isEmailVerified && (
-              <Banner
-                className="w-full"
-                type="danger"
-                closeIcon={null}
-                description={
-                  <div>
-                    {localeData.EMAIL_UNVERIFIED.Prefix}{' '}
-                    <a
-                      className={'hover:underline'}
-                      onClick={() => {
-                        navigate(`/settings`);
-                      }}
-                    >
-                      {localeData.EMAIL_UNVERIFIED.SettingsPage}
-                    </a>{' '}
-                    {localeData.EMAIL_UNVERIFIED.Suffix}
-                  </div>
-                }
-              />
-            )
-          )}
-
-          <div
-            className={`p-6 w-full relative ${!accountInfo.isEmailVerified ? 'pointer-events-none' : ''}`}
-          >
-            {!accountInfo.isEmailVerified && (
-              <div className="w-full absolute inset-0 bg-gradient-to-t from-gray-200 from-10% to-transparent backdrop-filter backdrop-blur-sm z-10"></div>
-            )}
-
+          <div className={'p-6 w-full relative'}>
             <h1 className={'text-3xl font-bold mb-4'}>{localeData?.Title}</h1>
 
             <Steps direction="vertical" type="basic" current={3}>

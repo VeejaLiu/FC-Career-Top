@@ -13,7 +13,7 @@ TypeScript, Vite, Semi UI, and Recharts. It provides the player-facing interface
 | `/players-trends` | Overall/potential growth charts |
 | `/players-detail?id=...` | Individual attributes, PlayStyles, and history |
 | `/get-started` | Account-specific FC 24/25 Lua script and setup instructions |
-| `/settings` | Account, email verification, API key, and notifications |
+| `/settings` | Username, email, password, API key, and notifications |
 
 Authentication controls whether the dashboard or login/registration interface is
 shown. The interface supports English, Simplified Chinese, French, German, and Japanese.

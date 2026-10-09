@@ -7,8 +7,8 @@ FC Career Top uses Live Editor Lua scripts to collect player data automatically,
 then turns those snapshots into player lists, growth charts, detailed attributes,
 and change notifications.
 
-**Current availability:** there is no public hosted instance. Run the project
-locally or host your own instance using the guides below.
+**Try it:** [Player dashboard](https://app.fccareer.top) · [Website](https://www.fccareer.top).
+You can also run locally or deploy your own instance on Cloudflare Free.
 
 ## Features
 
@@ -53,23 +53,16 @@ These application captures were taken on March 26, 2025.
 
 ## Quick start: run locally
 
-You need **Node.js 24.21.0**, **pnpm 10.5.0**, **MySQL 8.4**, and running **Docker**
-for Flyway migrations. Use the [development guide](docs/DEVELOPMENT.md) for complete
-environment and email setup.
+You need **Node.js 24.21.0** and **pnpm 10.5.0**. Cloudflare Wrangler runs
+D1 and Durable Objects locally; no MySQL, Docker, or email service is required.
+See the [development guide](docs/DEVELOPMENT.md) for configuration.
 
 ```sh
 git clone https://github.com/VeejaLiu/FC-Career-Top.git
 cd FC-Career-Top
 corepack enable
 pnpm install --frozen-lockfile
-cp apps/backend/.env.example apps/backend/.env
-```
-
-Edit the backend environment file with your MySQL connection, JWT secret, and
-Resend settings. Create an empty database with your MySQL client:
-
-```sql
-CREATE DATABASE fcd CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+cp apps/backend/.dev.vars.example apps/backend/.dev.vars
 ```
 
 ```sh
@@ -83,7 +76,8 @@ pnpm dev
 | Public website | http://localhost:3002 |
 | Backend health check | http://localhost:8888/api/health_check |
 
-Open the dashboard, register an account, and verify your email in **Settings**.
+Open the dashboard and register with an email and password. Sign in with email and
+password; email verification is disabled.
 Select your game version, then copy the account-specific Lua script from
 **Get Started** and run it in Live Editor. The [player guide](docs/USER_GUIDE.md)
 walks through these steps.
@@ -94,7 +88,7 @@ walks through these steps.
 | --- | --- |
 | [Player guide](docs/USER_GUIDE.md) | Live Editor setup, tracking, notifications, and troubleshooting |
 | [Development](docs/DEVELOPMENT.md) | Install, environment variables, commands, and project architecture |
-| [Database migrations](docs/DATABASE.md) | Flyway setup and adding versioned SQL migrations |
+| [Database migrations](docs/DATABASE.md) | D1 setup and adding versioned SQL migrations |
 | [Deployment](docs/DEPLOYMENT.md) | Build outputs and configuration for a first deployment |
 | [Application guides](docs/README.md#application-guides) | Frontend, website, and backend responsibilities |
 
@@ -104,7 +98,7 @@ walks through these steps.
 apps/
   frontend/     React 18 player dashboard
   website/      Next.js 15 / React 19 public website
-  backend/      Express API, MySQL models, and Flyway migrations
+  backend/      Cloudflare Worker API, D1 migrations, and Durable Objects
 docs/           Shared guides, screenshots, and historical material
 scripts/        Workspace helpers
 ```

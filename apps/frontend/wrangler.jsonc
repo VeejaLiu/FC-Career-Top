@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "fc-career-top-frontend",
+  "compatibility_date": "2026-10-09",
+  "workers_dev": true,
+  "routes": [
+    {
+      "pattern": "app.fccareer.top/*",
+      "zone_name": "fccareer.top"
+    }
+  ],
+  "assets": {
+    "directory": "dist",
+    "not_found_handling": "single-page-application"
+  },
+  "account_id": "65a3a715f74dc19748c243e413065b8e"
+}

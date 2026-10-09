@@ -12,12 +12,12 @@ import { useState } from 'react';
 import logo from '../../assets/image/logo.svg';
 
 export const LoginComponent = ({ setIsLogin }: { setIsLogin: any }) => {
-  const [loginUsername, setLoginUsername] = useState('');
+  const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
 
   async function doLogin() {
     const response = await UserApis.loginUser({
-      username: loginUsername,
+      email: loginEmail.trim(),
       password: loginPassword,
     });
     const { success, message, data } = response;
@@ -33,7 +33,6 @@ export const LoginComponent = ({ setIsLogin }: { setIsLogin: any }) => {
       //   }
       // }
       const { username, token } = data;
-      console.log(`[doLogin] data: ${JSON.stringify(data)}`);
       setToken(token);
       Notification.success({
         position: 'top',
@@ -78,7 +77,7 @@ export const LoginComponent = ({ setIsLogin }: { setIsLogin: any }) => {
                 field="email"
                 placeholder={localeData.usernameEmailPlaceholder}
                 fieldStyle={{ alignSelf: 'stretch', padding: 0 }}
-                onChange={(e) => setLoginUsername(e)}
+                onChange={(e) => setLoginEmail(e)}
               />
               <Form.Input
                 mode={'password'}

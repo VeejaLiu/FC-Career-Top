@@ -2,8 +2,8 @@ export default {
   LoginComponent: {
     VideoTutorial: 'How to use this app? Learn more through the video!',
     welcome: 'Welcome to back',
-    usernameEmail: 'Username / Email',
-    usernameEmailPlaceholder: 'your username or email',
+    usernameEmail: 'Email',
+    usernameEmailPlaceholder: 'Your email',
     password: 'Password',
     passwordPlaceholder: 'your password',
     login: 'Login',
@@ -16,7 +16,7 @@ export default {
     usernamePlaceholder: 'your username',
     email: 'Email',
     emailTooltip:
-      'Please enter a valid email address. You need to verify your email address after registration.',
+      'Enter a valid email address. Email verification is currently disabled.',
     emailPlaceholder: 'your email',
     password: 'Password',
     passwordTooltip:
