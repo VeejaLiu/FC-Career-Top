@@ -1,0 +1,14 @@
+.navLink {
+  margin-left: 10px;
+  color: #FFF;
+  font-size: 0.9rem;
+  padding: 10px 5px;
+  font-weight: bold;
+}
+
+.navLink:hover,
+.navLink:focus {
+  color: #FFF;
+  background-color: #252626;
+  border-bottom: 2px solid #94f17a;
+}

@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #f0f0f0;
+  --foreground: #171717;
+  font-family: 'Poppins', sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  /* font-family: Arial, Helvetica, sans-serif; */
+}
+
+nav {
+  background-color: #151616;
+  color: #fff;
+  padding: 10px;
+}
+
+nav a {
+  margin: 0 15px;
+  color: #fff;
+  text-decoration: none;
+}
+
+nav a:hover {
+  text-decoration: none;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  background-color: #151616;
+  color: #fff;
+}
+
+.go-to-app-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 30px;
+  height: 32px;
+  width: 140px;
+  margin: 0 auto;
+  color: #000;
+  background-color: #94f17a;
+  cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  /*font-weight: bold;*/
+  font-size: 0.9rem;
+}
+
+.go-to-app-button:hover {
+  background-color: #7bcd64;
+}
+
+.go-to-app-button:active {
+  background-color: #94f17a;
+}
+
+@keyframes bounce {
+
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+
+  40% {
+    transform: translateY(-10px);
+  }
+
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+.bounce-animation {
+  animation: bounce 2s infinite;
+}
+
+.col-content {
+  margin: 20px;
+  padding: 40px;
+  border-radius: 20px;
+  background-color: #323232;
+}
+
+.col-content p {
+  margin-top: 30px;
+  color: #ddd;
+  font-size: 1.5rem;
+}
