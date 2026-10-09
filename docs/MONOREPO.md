@@ -24,7 +24,11 @@ applications do not import each other's source code. All app commands run with
 the corresponding application as their working directory, preserving environment
 file loading and relative paths.
 
-## Deployment roots
+## Planned deployment roots
+
+There is no live deployment yet. The following paths are suggested for the first
+deployment. Apply the [database migrations](../apps/backend/db/README.md) before
+starting the backend.
 
 | Service | Working directory | Build from repository root | Output / start |
 | --- | --- | --- | --- |
@@ -34,14 +38,14 @@ file loading and relative paths.
 
 Install from the repository root with `pnpm install --frozen-lockfile` before any
 build. For hosting providers, configure the repository and application root to
-match this table, and retain existing environment variables and domains. The
+match this table, and configure the application environment and domains. The
 backend compiled entry point is `apps/backend/dist/src/app.js`; TypeScript also
 copies its imported package manifest to `apps/backend/dist/package.json`.
 
-The legacy backend deployment script now builds this checkout and makes no Git
-resets or process restarts. Production process management must target the specific
-FC Career Top services after their deployment configuration has been migrated.
-No production deployment or database migration is performed by this consolidation.
+The backend build helper prepares this checkout and makes no Git resets or process
+restarts. Configure process management and application working directories for the
+first deployment. The repository consolidation itself did not deploy services or
+change a database.
 
 ## Removed workflow
 

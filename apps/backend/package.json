@@ -12,7 +12,10 @@
     "dev": "nodemon --watch src --ext ts --exec ts-node src/app.ts",
     "build": "tsc",
     "typecheck": "tsc --noEmit",
-    "start:prod": "node dist/src/app.js"
+    "start:prod": "node dist/src/app.js",
+    "db:migrate": "node scripts/flyway.cjs migrate",
+    "db:validate": "node scripts/flyway.cjs validate",
+    "db:info": "node scripts/flyway.cjs info"
   },
   "repository": {
     "type": "git",

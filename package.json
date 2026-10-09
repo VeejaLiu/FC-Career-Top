@@ -19,7 +19,10 @@
     "build:backend": "pnpm --filter @fc-career-top/backend build",
     "typecheck": "pnpm -r typecheck",
     "start:backend": "pnpm --filter @fc-career-top/backend start:prod",
-    "start:website": "pnpm --filter @fc-career-top/website start"
+    "start:website": "pnpm --filter @fc-career-top/website start",
+    "db:migrate": "pnpm --filter @fc-career-top/backend db:migrate",
+    "db:validate": "pnpm --filter @fc-career-top/backend db:validate",
+    "db:info": "pnpm --filter @fc-career-top/backend db:info"
   },
   "repository": {
     "type": "git",

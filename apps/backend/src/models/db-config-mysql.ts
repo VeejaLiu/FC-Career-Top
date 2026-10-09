@@ -17,6 +17,7 @@ export const sequelize = new Sequelize(
     env.mysql.password, // password
     {
         host: env.mysql.host,
+        port: env.mysql.port,
         dialect: 'mysql',
         pool: {
             max: 100,

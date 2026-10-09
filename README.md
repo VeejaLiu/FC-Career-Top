@@ -26,8 +26,9 @@ cp apps/backend/.env.example apps/backend/.env
 ```
 
 Edit `apps/backend/.env` with your local database credentials, a random JWT secret,
-and a Resend API key. Initialize a **local** MySQL database with
-[apps/backend/sql/init.sql](apps/backend/sql/init.sql). The backend expects its
+and a Resend API key. Create an empty MySQL 8.4 database, start Docker, and run
+`pnpm db:migrate`. See the [database guide](apps/backend/db/README.md) for setup
+and future versioned SQL changes. The backend expects its
 configuration in `apps/backend/.env`; root commands run each app in its own directory.
 
 The frontend and website include public development and production URLs. Override
@@ -44,6 +45,10 @@ pnpm dev:frontend
 pnpm dev:website
 pnpm dev:backend
 ```
+
+Database schema changes are applied explicitly with `pnpm db:migrate` before
+starting the backend. Use `pnpm db:info` to inspect versions and `pnpm db:validate`
+to check applied migrations.
 
 The website uses port 3002 during development so it can run alongside the dashboard.
 Production URLs and API routes remain the same. See the
