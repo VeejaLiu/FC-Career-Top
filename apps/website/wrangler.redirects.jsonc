@@ -1,0 +1,22 @@
+{
+  "$schema": "../backend/node_modules/wrangler/config-schema.json",
+  "name": "fc-career-top-website-redirects",
+  "main": "workers/redirect.ts",
+  "compatibility_date": "2026-10-09",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "routes": [
+    {
+      "pattern": "fccareer.top/*",
+      "zone_name": "fccareer.top"
+    }
+  ],
+  "vars": {
+    "CANONICAL_ORIGIN": "https://www.fccareer.top"
+  },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 0.1
+  },
+  "account_id": "65a3a715f74dc19748c243e413065b8e"
+}

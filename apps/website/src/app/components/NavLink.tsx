@@ -1,6 +1,3 @@
-// src/components/NavLink.tsx
-"use client";
-
 import React from 'react';
 import Link from 'next/link';
 import styles from './NavLink.module.css';
@@ -12,10 +9,8 @@ interface NavLinkProps {
 
 const NavLink: React.FC<NavLinkProps> = ({ href, children }) => {
   return (
-    <Link href={href} legacyBehavior>
-      <a className={styles.navLink}>
-        {children}
-      </a>
+    <Link href={href} className={styles.navLink}>
+      {children}
     </Link>
   );
 };

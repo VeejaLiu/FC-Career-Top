@@ -7,25 +7,40 @@ import Footer from './components/Footer';
 import Image from 'next/image';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { MenuIcon } from '@/constant/icons';
+import type { Metadata } from 'next';
+import { APP_URL, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '@/lib/seo';
 
-export const metadata = {
-  title: 'FC Career Top',
-  description: 'Automatically track player development in EA FC Career Mode.',
+export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  title: { default: SITE_NAME, template: `%s | ${SITE_NAME}` },
+  description: SITE_DESCRIPTION,
+  icons: { icon: '/logo.svg' },
 };
+
+const navigation = [
+  { href: '/', label: 'Home' },
+  { href: '/get-started', label: 'Get Started' },
+  { href: '/change-logs', label: 'Changes' },
+  { href: '/posts', label: 'Articles' },
+  { href: '/contact-us', label: 'Contact' },
+];
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <html>
-      <head>
-        <link rel="icon" href="/logo.svg" />
-      </head>
+    <html lang="en">
       <body>
+        <a href="#main-content" className="skip-link">
+          Skip to content
+        </a>
         <div className="flex flex-col min-h-screen">
-          <nav className="h-16 bg-[#151616] flex items-center fixed top-0 w-full z-10">
-            <ul className="flex h-full items-center space-x-4 w-full">
-              <li>
+          <nav
+            aria-label="Main navigation"
+            className="h-16 bg-[#151616] flex items-center fixed top-0 w-full z-10"
+          >
+            <div className="flex h-full items-center gap-2 w-full">
+              <div>
                 <Link href="/">
-                  <div className="text-white mr-1 text-xl font-bold cursor-pointer flex items-center">
+                  <div className="brand text-white mr-1 text-xl font-bold cursor-pointer flex items-center">
                     <Image
                       src="/logo.svg"
                       alt="Logo"
@@ -38,72 +53,50 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                     <span className="italic">.top</span>
                   </div>
                 </Link>
-              </li>
+              </div>
 
               {/* Dropdown */}
-              <div className="dropdown flex-grow md:hidden">
-                <div
-                  tabIndex={0}
+              <details className="mobile-navigation dropdown flex-grow lg:hidden">
+                <summary
                   className="btn bg-transparent border-0 p-0 m-0 text-inherit cursor-pointer focus:outline-none hover:bg-transparent"
-                  role="button"
+                  aria-label="Open navigation menu"
                 >
                   <MenuIcon className="w-6 h-6" />
-                </div>
-                <ul
-                  tabIndex={0}
-                  className="dropdown-content bg-[#151616] menu rounded-box z-[100] w-52 p-2 shadow"
-                >
-                  <li>
-                    <NavLink href="/">Home</NavLink>
-                  </li>
-                  <li>
-                    <NavLink href="/change-logs">Changes</NavLink>
-                  </li>
-                  <li>
-                    <NavLink href="/posts">Posts</NavLink>
-                  </li>
-                  <li>
-                    <NavLink href="/contact-us">Contact</NavLink>
-                  </li>
-                  <li>
-                    <NavLink href="/user-statistics">User Statistics</NavLink>
-                  </li>
+                </summary>
+                <ul className="dropdown-content bg-[#151616] menu rounded-box z-[100] w-52 p-2 shadow">
+                  {navigation.map(({ href, label }) => (
+                    <li key={href}>
+                      <NavLink href={href}>{label}</NavLink>
+                    </li>
+                  ))}
                 </ul>
-              </div>
+              </details>
 
-              <div className="hidden items-center space-x-1 flex-grow md:flex">
-                <li>
-                  <NavLink href="/">Home</NavLink>
-                </li>
-                <li>
-                  <NavLink href="/change-logs">Changes</NavLink>
-                </li>
-                <li>
-                  <NavLink href="/posts">Posts</NavLink>
-                </li>
-                <li>
-                  <NavLink href="/contact-us">Contact</NavLink>
-                </li>
-                <li>
-                  <NavLink href="/user-statistics">User Statistics</NavLink>
-                </li>
-              </div>
+              <ul className="hidden items-center flex-grow lg:flex">
+                {navigation.map(({ href, label }) => (
+                  <li key={href}>
+                    <NavLink href={href}>{label}</NavLink>
+                  </li>
+                ))}
+              </ul>
               <div className="mr-1 ml-auto">
-                <a href={'https://app.fccareer.top'} target={'_blank'}>
-                  <div className="go-to-app-button flex items-center bounce-animation">
+                <a href={APP_URL} target="_blank" rel="noopener noreferrer">
+                  <div className="go-to-app-button flex items-center">
                     Go to App
                   </div>
                 </a>
               </div>
-            </ul>
+            </div>
           </nav>
-          <main className="flex-grow p-4 mt-16">{children}</main>
+          <main id="main-content" className="flex-grow p-4 mt-16">
+            {children}
+          </main>
           <footer className="bg-gray-800 text-white p-4 text-center">
             <Footer />
           </footer>
         </div>
+        <GoogleAnalytics gaId="G-2SNN4F98MN" />
       </body>
-      <GoogleAnalytics gaId="G-2SNN4F98MN" />
     </html>
   );
 };

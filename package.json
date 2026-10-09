@@ -26,6 +26,7 @@
     "deploy:backend": "pnpm --filter @fc-career-top/backend run deploy",
     "deploy:frontend": "pnpm --filter @fc-career-top/backend exec wrangler deploy --config ../frontend/wrangler.jsonc",
     "deploy:website": "pnpm --filter @fc-career-top/backend exec wrangler deploy --config ../website/wrangler.jsonc",
+    "deploy:website:redirects": "pnpm --filter @fc-career-top/backend exec wrangler deploy --config ../website/wrangler.redirects.jsonc",
     "db:migrate:remote": "pnpm --filter @fc-career-top/backend db:migrate:remote"
   },
   "repository": {

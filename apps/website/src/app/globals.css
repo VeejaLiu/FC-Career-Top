@@ -37,6 +37,39 @@ nav a:hover {
   text-decoration: none;
 }
 
+.breadcrumb {
+  position: static;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.breadcrumb a {
+  margin: 0;
+  color: inherit;
+}
+
+.mobile-navigation .dropdown-content {
+  position: fixed;
+  top: 64px;
+  right: 12px;
+  left: auto;
+}
+
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 16px;
+  z-index: 100;
+  padding: 12px 20px;
+  background: white;
+  color: black;
+}
+
+.skip-link:focus {
+  top: 8px;
+}
+
 footer {
   text-align: center;
   padding: 20px;
@@ -55,7 +88,9 @@ footer {
   color: #000;
   background-color: #94f17a;
   cursor: pointer;
-  transition: transform 0.3s ease, background-color 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    background-color 0.3s ease;
   /*font-weight: bold;*/
   font-size: 0.9rem;
 }
@@ -68,8 +103,23 @@ footer {
   background-color: #94f17a;
 }
 
-@keyframes bounce {
+@media (max-width: 400px) {
+  .brand {
+    font-size: 1rem;
+  }
+  .brand img {
+    width: 24px;
+    height: 24px;
+  }
+  .go-to-app-button {
+    width: 96px;
+  }
+  nav a {
+    margin: 0;
+  }
+}
 
+@keyframes bounce {
   0%,
   20%,
   50%,

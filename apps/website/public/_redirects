@@ -1,0 +1,2 @@
+# Keep the previous sitemap URL usable after moving to Next.js metadata routes.
+/sitemap-0.xml /sitemap.xml 301

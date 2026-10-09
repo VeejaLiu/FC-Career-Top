@@ -51,9 +51,20 @@ For another domain, update the three Wrangler route lists, backend `ALLOWED_ORIG
 frontend public URLs, website `NEXT_PUBLIC_BACKEND_URL`, and Go to App link.
 
 Production URLs are already in the app `.env.production` files. For sitemap generation,
-`SITE_URL` defaults to `https://www.fccareer.top`; sitemap and robots files are written
-into `out`. Both sites require a rebuild after changing public environment variables.
+canonical URLs, structured data, sitemap and robots files use `SITE_URL`, then
+`NEXT_PUBLIC_SITE_URL`, then `https://www.fccareer.top`. Next.js writes the sitemap
+and robots files into `out` during the build. Both sites require a rebuild after
+changing public environment variables.
 No reverse proxy or permanently running Node server is needed.
+
+The apex host is handled separately by `apps/website/wrangler.redirects.jsonc`.
+It redirects `fccareer.top/*` to `https://www.fccareer.top` with HTTP 301, preserving
+paths and query strings. Keep the apex DNS record proxied, then deploy this
+separate redirect Worker with `pnpm deploy:website:redirects`. It does not put
+the static website's ordinary traffic through Worker code. If changing domains,
+also update that route and `CANONICAL_ORIGIN` to match the website's canonical URL.
+Website-only SEO changes require `pnpm build:website`, `pnpm deploy:website`, and
+the redirect deployment when adding or changing the apex redirect.
 
 ## Verify
 

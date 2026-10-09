@@ -2,15 +2,17 @@ import Image from 'next/image';
 
 export function Change20241203() {
   return (
-    <div className="w-11/12 mb-8">
-      <h1 className="text-2xl font-bold">
+    <article className="mb-10">
+      <h2 className="text-2xl font-bold">
         New Feature:{' '}
         <span role="img" aria-label="gold medal">
           🏅
         </span>{' '}
-        Golden player.
-      </h1>
-      <h2 className="text-xl font-semibold mt-4">2024-12-03</h2>
+        Position-ranking medals
+      </h2>
+      <p className="mt-3">
+        <time dateTime="2024-12-03">2024-12-03</time>
+      </p>
       <p className="mt-2">
         I often wonder who the most promising players are in my team for a
         specific position, and who currently has the highest ability rating.
@@ -25,13 +27,13 @@ export function Change20241203() {
         which are gold, silver, and bronze medals.
       </p>
       <Image
-        width={800}
-        height={400}
+        width={987}
+        height={428}
         src={'/changelogs/20241203/golden_player.webp'}
-        alt={'golden player'}
-        className="mt-4"
+        alt="Gold, silver and bronze badges for the top three players at each position"
+        className="mt-4 rounded-lg w-full h-auto"
       />
-    </div>
+    </article>
   );
 }
 

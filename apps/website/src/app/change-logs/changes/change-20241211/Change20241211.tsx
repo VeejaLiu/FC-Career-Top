@@ -2,9 +2,11 @@ import Image from 'next/image';
 
 export function Change20241211() {
   return (
-    <div className="w-11/12 mb-8">
-      <h1 className="text-2xl font-bold">🎉 New Feature Alert! 🎉</h1>
-      <h2 className="text-xl font-semibold mt-4">2024-12-11</h2>
+    <article className="mb-10">
+      <h2 className="text-2xl font-bold">Player development notifications</h2>
+      <p className="mt-3">
+        <time dateTime="2024-12-11">2024-12-11</time>
+      </p>
       <p className="mt-2">
         {`We’ve just added an exciting new feature that tracks all changes for your players in FC24 Manager career mode! Stay updated on their progress anytime and discover how they're improving in real time.`}
       </p>
@@ -30,13 +32,13 @@ export function Change20241211() {
       </p>
       <p className="mt-2">{`Don't miss out on this powerful feature! Support FC24 and FC25 versions.`}</p>
       <Image
-        width={800}
-        height={400}
+        width={1280}
+        height={718}
         src="/changelogs/20241211/notifications.webp"
         alt="Track Changes for FC24/FC25 Player Progress"
-        className="mt-4"
+        className="mt-4 rounded-lg w-full h-auto"
       />
-    </div>
+    </article>
   );
 }
 

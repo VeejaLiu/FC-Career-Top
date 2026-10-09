@@ -1,4 +1,4 @@
-// src/app/components/Footer.tsx
+import Link from 'next/link';
 
 const Footer = () => {
   return (
@@ -8,8 +8,14 @@ const Footer = () => {
         <span className="mx-2">Automatic</span>
         <span className="mx-2">Open-source</span>
       </div>
-      <div className="text-sm text-gray-500">
-        Copyright FCT 2024. All rights reserved
+      <div className="flex flex-wrap justify-center gap-4 text-sm my-3">
+        <Link href="/get-started">Setup guide</Link>
+        <Link href="/posts">Articles</Link>
+        <Link href="/contact-us">Contact</Link>
+        <Link href="/user-statistics">User statistics</Link>
+      </div>
+      <div className="text-sm text-gray-400">
+        © {new Date().getUTCFullYear()} FC Career Top. All rights reserved.
       </div>
     </div>
   );
