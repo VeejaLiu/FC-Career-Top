@@ -1,0 +1,67 @@
+.settings-page {
+  max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+}
+.settings-row {
+  display: grid;
+  grid-template-columns: minmax(140px, 220px) minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.settings-field-label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.settings-row > span {
+  overflow-wrap: anywhere;
+}
+.settings-switch-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 48px;
+  padding: 6px 0;
+}
+.settings-switch-row .settings-field-label {
+  flex: 1;
+}
+.settings-switch-row .semi-switch {
+  flex: none;
+}
+.settings-key-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.settings-key-row .settings-field-label {
+  width: 100%;
+}
+.settings-key-row .semi-input-wrapper {
+  flex: 1;
+  min-width: 160px;
+}
+.settings-key-row button {
+  margin-left: 0;
+}
+.settings-page button {
+  min-height: 44px;
+  white-space: normal;
+}
+@media (max-width: 767px) {
+  .settings-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+  .settings-page .semi-input-wrapper {
+    height: 44px;
+  }
+  .settings-key-row .semi-input-wrapper {
+    flex-basis: 100%;
+  }
+}

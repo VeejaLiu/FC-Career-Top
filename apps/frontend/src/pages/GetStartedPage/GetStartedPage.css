@@ -1,0 +1,218 @@
+.get-started-page {
+  width: 100%;
+  padding: 24px 28px 40px;
+  color: var(--semi-color-text-0);
+}
+.get-started-page h1 {
+  margin-bottom: 22px;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.get-started-page .semi-steps-vertical .semi-steps-item {
+  padding-bottom: 20px;
+}
+.get-started-page
+  .get-started-instructions
+  .semi-steps-vertical
+  .semi-steps-item
+  .semi-steps-item-content {
+  min-width: 0;
+  width: calc(100% - 44px);
+  min-height: 0;
+  padding-bottom: 0;
+}
+.get-started-page
+  .get-started-instructions
+  .semi-steps-basic
+  .semi-steps-item-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--semi-color-text-0);
+}
+.get-started-page
+  .get-started-instructions
+  .semi-steps-basic
+  .semi-steps-item-description {
+  max-width: none;
+  color: var(--semi-color-text-1);
+  font-size: 14px;
+  line-height: 1.7;
+}
+.get-started-downloads {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+}
+.get-started-downloads a {
+  color: var(--semi-color-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.get-started-script > p {
+  margin-bottom: 10px;
+}
+.get-started-script .semi-banner {
+  border-radius: 5px;
+}
+.get-started-code-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 8px 12px;
+  border: 1px solid var(--semi-color-border);
+  border-bottom: 0;
+  border-radius: 5px 5px 0 0;
+  background: var(--semi-color-fill-0);
+}
+.get-started-code-toolbar > span {
+  font-size: 12px;
+  color: var(--semi-color-text-2);
+}
+.get-started-code-toolbar .semi-button-content {
+  white-space: normal;
+}
+.get-started-code {
+  max-height: 280px;
+  overflow: auto;
+  border: 1px solid var(--semi-color-border);
+  border-radius: 0 0 5px 5px;
+  background: var(--semi-color-bg-0);
+}
+.get-started-code .semi-codeHighlight {
+  margin: 0;
+}
+.get-started-code pre {
+  margin: 0;
+  padding: 16px;
+  font-size: 12px;
+  line-height: 1.65;
+}
+.get-started-code-state {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  min-height: 120px;
+  padding: 20px;
+}
+.get-started-tutorial h2 {
+  margin-bottom: 16px;
+  font-size: 22px;
+  font-weight: 600;
+}
+.get-started-video {
+  width: 100%;
+  max-width: 640px;
+  aspect-ratio: 16 / 9;
+}
+.get-started-video iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.get-started-page a:focus-visible {
+  outline: 2px solid var(--semi-color-primary);
+  outline-offset: 3px;
+}
+@media (max-width: 600px) {
+  .get-started-page {
+    padding: 20px 16px 32px;
+  }
+  .get-started-page h1 {
+    font-size: 24px;
+  }
+  .get-started-page
+    .get-started-instructions
+    .semi-steps-basic
+    .semi-steps-item-title {
+    font-size: 15px;
+  }
+  .get-started-page
+    .get-started-instructions
+    .semi-steps-basic
+    .semi-steps-item-description {
+    font-size: 13px;
+  }
+  .get-started-code-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .get-started-code-toolbar .semi-button {
+    width: 100%;
+    height: auto;
+    min-height: 32px;
+  }
+  .get-started-code {
+    max-height: 240px;
+  }
+}
+.get-started-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  align-items: start;
+  gap: 36px;
+}
+.get-started-instructions {
+  min-width: 0;
+}
+.get-started-sidebar {
+  min-width: 0;
+}
+.get-started-sidebar .get-started-tutorial h2 {
+  font-size: 18px;
+  margin-bottom: 14px;
+}
+.get-started-help {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--semi-color-border);
+  font-size: 13px;
+  color: var(--semi-color-text-2);
+}
+.get-started-help a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--semi-color-primary);
+}
+@media (max-width: 1024px) {
+  .get-started-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+  .get-started-sidebar {
+    border-top: 1px solid var(--semi-color-border);
+    padding-top: 24px;
+  }
+}
+
+.get-started-page .semi-steps-item-title {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+.get-started-code {
+  max-width: 100%;
+}
+
+@supports not (aspect-ratio: 16 / 9) {
+  .get-started-video {
+    position: relative;
+    height: 0;
+    padding-top: 56.25%;
+  }
+  .get-started-video iframe {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+}

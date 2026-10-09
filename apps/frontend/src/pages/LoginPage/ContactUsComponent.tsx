@@ -32,10 +32,8 @@ export function ContactUsComponent() {
   return (
     <div className="mt-12 flex flex-col gap-3">
       {contactLinks.map((link, index) => (
-        <div key={index} className="flex items-center gap-2">
-          <span className="font-bold min-w-20 inline-block mr-2.5">
-            {link.label}
-          </span>
+        <div key={index} className="auth-contact-row">
+          <span className="font-bold">{link.label}</span>
           <div className="flex items-center gap-2">
             {link.icon && (
               <span className="w-6 h-6 flex items-center justify-center">

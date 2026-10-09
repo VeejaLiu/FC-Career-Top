@@ -58,10 +58,21 @@ export default {
     Hello: 'Hallo, ',
     Logout: 'Abmelden',
   },
+  AsyncState: {
+    error:
+      'Daten konnten nicht geladen werden. Prüfe deine Verbindung und versuche es erneut.',
+    retry: 'Erneut versuchen',
+  },
   NoDataComponent: {
     prefix: 'Noch nichts anzuzeigen. Besuche unsere',
     getStartedPage: 'Loslegen',
     suffix: 'Seite, um deine Reise zu beginnen.',
+  },
+  PlayerTrendsPage: {
+    FOR: 'Stürmer',
+    MID: 'Mittelfeldspieler',
+    DEF: 'Verteidiger',
+    GK: 'Torhüter',
   },
   PlayerListTable: {
     name: 'Name',
@@ -232,6 +243,12 @@ export default {
   },
 
   GetStartedPage: {
+    NEED_HELP: 'Brauchst du Hilfe?',
+    JOIN_DISCORD: 'Der Discord-Community beitreten',
+    SCRIPT_LOADING: 'Dein Skript wird vorbereitet…',
+    SCRIPT_ERROR_HELP:
+      'Prüfe deine Spielversion in den Einstellungen und deinen Anmeldestatus. Versuche es dann erneut.',
+    RETRY: 'Erneut versuchen',
     EMAIL_UNVERIFIED: {
       Prefix: 'Du hast deine E-Mail-Adresse nicht bestätigt. Bitte gehe zu',
       SettingsPage: 'Einstellungen',

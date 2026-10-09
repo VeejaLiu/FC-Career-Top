@@ -1,7 +1,7 @@
 import { getDefaultGameVersion, getToken } from '../common/common.ts';
 import axios from 'axios';
 import { BACKEND_URL } from '../constant';
-import { Toast } from '@douyinfe/semi-ui';
+import { reportApiError } from './api-error';
 
 export interface NotificationBody {
   id?: number;
@@ -53,14 +53,8 @@ export class NotificationApis {
         return response.data.count;
       }
       return 0;
-    } catch (e: any) {
-      console.log(
-        `[getUnreadNotificationsCount] error code: ${e.response.status}`,
-      );
-      console.log(`[getUnreadNotificationsCount] error message: ${e.message}`);
-      if (e.response.status === 401) {
-        Toast.error('Please login first');
-      }
+    } catch (error: unknown) {
+      reportApiError(error);
       return 0;
     }
   }
@@ -111,16 +105,9 @@ export class NotificationApis {
         total: 0,
         items: [],
       };
-    } catch (e: any) {
-      console.log(`[getPlayerList] error code: ${e.response.status}`);
-      console.log(`[getPlayerList] error message: ${e.message}`);
-      if (e.response.status === 401) {
-        Toast.error('Please login first');
-      }
-      return {
-        total: 0,
-        items: [],
-      };
+    } catch (error: unknown) {
+      reportApiError(error);
+      return { total: 0, items: [] };
     }
   }
 
@@ -142,9 +129,8 @@ export class NotificationApis {
         return response.data;
       }
       return [];
-    } catch (e: any) {
-      console.log(`[markAsRead] error code: ${e.response.status}`);
-      console.log(`[markAsRead] error message: ${e.message}`);
+    } catch (error: unknown) {
+      reportApiError(error);
     }
   }
 
@@ -165,9 +151,8 @@ export class NotificationApis {
         return response.data;
       }
       return [];
-    } catch (e: any) {
-      console.log(`[markAllAsRead] error code: ${e.response.status}`);
-      console.log(`[markAllAsRead] error message: ${e.message}`);
+    } catch (error: unknown) {
+      reportApiError(error);
     }
   }
 }

@@ -2,8 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+body,
 #root {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, PingFang SC, Hiragino Sans GB, Microsoft YaHei, "\5FAE\8F6F\96C5\9ED1", helvetica neue, helvetica, ubuntu, roboto, noto, segoe ui, Arial, sans-serif;
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+body {
+  overflow-wrap: break-word;
+}
+img {
+  max-width: 100%;
+}
+
+#root {
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    PingFang SC,
+    Hiragino Sans GB,
+    Microsoft YaHei,
+    '\5FAE\8F6F\96C5\9ED1',
+    helvetica neue,
+    helvetica,
+    ubuntu,
+    roboto,
+    noto,
+    segoe ui,
+    Arial,
+    sans-serif;
   font-size: 1rem;
   line-height: 1.5;
   font-weight: 400;
@@ -15,13 +49,37 @@
   -webkit-text-size-adjust: 100%;
 }
 
-
-body, h1, h2, h3, h4, h5, h6, hr, p, blockquote, dl, dt, dd, ul, ol, li, pre, form, fieldset, legend, button, input, textarea, th, td {
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+p,
+blockquote,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+pre,
+form,
+fieldset,
+legend,
+button,
+input,
+textarea,
+th,
+td {
   margin: 0;
   padding: 0;
 }
 
-ul, ol {
+ul,
+ol {
   list-style: none;
 }
 
@@ -45,7 +103,8 @@ legend {
   color: #000;
 }
 
-fieldset, img {
+fieldset,
+img {
   border: 0;
 }
 

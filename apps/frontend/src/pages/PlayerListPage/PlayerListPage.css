@@ -1,0 +1,107 @@
+.player-list-toolbar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.player-list-toolbar > .semi-input-wrapper {
+  max-width: 360px;
+}
+.player-mobile-list {
+  display: grid;
+  gap: 12px;
+}
+.player-mobile-card {
+  display: block;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--semi-color-border);
+  border-radius: var(--app-radius);
+  color: var(--semi-color-text-0);
+  background: var(--semi-color-bg-0);
+}
+.player-mobile-card:hover {
+  text-decoration: none;
+  border-color: var(--app-accent);
+}
+.player-mobile-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.player-mobile-name {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.player-mobile-name small {
+  display: block;
+  font-size: 11px;
+  color: var(--semi-color-text-2);
+}
+.player-mobile-position {
+  font-weight: 700;
+  flex: none;
+}
+.player-mobile-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) 1.5fr;
+  gap: 8px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--semi-color-border);
+}
+.player-mobile-stats dt {
+  font-size: 11px;
+  color: var(--semi-color-text-2);
+}
+.player-mobile-stats dd {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  font-size: 22px;
+  font-weight: 700;
+}
+.player-mobile-stats .player-mobile-skills {
+  font-size: 14px;
+  color: #9d7515;
+}
+.player-mobile-positions {
+  font-size: 11px;
+  margin-top: 6px;
+  color: var(--semi-color-text-2);
+}
+.ranking-badge {
+  padding: 1px 4px;
+  border-radius: 4px;
+  font-size: 10px;
+  color: #5f4810;
+  background: #f7e5a5;
+}
+.rank-2 {
+  background: #e4e8ed;
+  color: #56606d;
+}
+.rank-3 {
+  background: #f0d9c1;
+  color: #8c5627;
+}
+.player-search-empty {
+  text-align: center;
+  padding: 32px;
+  color: var(--semi-color-text-2);
+}
+@media (max-width: 767px) {
+  .player-list-toolbar > .semi-input-wrapper {
+    flex: 1;
+    min-width: 0;
+  }
+  .player-list-toolbar > .semi-select {
+    width: 110px;
+    flex: none;
+    min-height: 44px;
+  }
+  .player-list-toolbar > .semi-input-wrapper {
+    height: 44px;
+  }
+}

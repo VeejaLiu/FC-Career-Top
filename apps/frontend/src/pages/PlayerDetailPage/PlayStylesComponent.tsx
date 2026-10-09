@@ -66,7 +66,7 @@ import ICON_Trivela from '../../assets/image/player-styles/25/Trivela.png';
 import ICON_Trivela_ from '../../assets/image/player-styles/25/Trivela_.png';
 import ICON_Whipped_Pass from '../../assets/image/player-styles/25/Whipped_Pass.png';
 import ICON_Whipped_Pass_ from '../../assets/image/player-styles/25/Whipped_Pass_.png';
-import { Popover } from '@douyinfe/semi-ui';
+import { ResponsivePopover } from '../../components/ResponsivePopover';
 
 const PLAY_STYLES_LIST: {
   [key: string]: {
@@ -628,9 +628,9 @@ const PLAY_STYLES_LIST: {
 export const PlayStylesComponent = ({ playStyle }: { playStyle: string }) => {
   return (
     <div className="inline-block h-14 w-14 m-1 rounded-full bg-gray-600 p-2">
-      <Popover
-        className="w-80 rounded"
-        position={'topLeft'}
+      <ResponsivePopover
+        desktopPosition="topLeft"
+        title={PLAY_STYLES_LIST[playStyle]?.title || playStyle}
         content={
           <div className="bg-gray-100 p-2">
             <div className={`text-lg font-bold mb-1 text-green-700`}>
@@ -648,14 +648,22 @@ export const PlayStylesComponent = ({ playStyle }: { playStyle: string }) => {
           </div>
         }
       >
-        {/*<div>{PlayStylesList[playStyle].title}</div>*/}
-        {!PLAY_STYLES_LIST[playStyle] && <div>{playStyle}</div>}
-        <img
+        <button
+          type="button"
           className="h-10 w-10"
-          src={PLAY_STYLES_LIST[playStyle]?.icon}
-          alt=""
-        />
-      </Popover>
+          aria-label={PLAY_STYLES_LIST[playStyle]?.title || playStyle}
+        >
+          {PLAY_STYLES_LIST[playStyle] ? (
+            <img
+              className="h-10 w-10"
+              src={PLAY_STYLES_LIST[playStyle].icon}
+              alt=""
+            />
+          ) : (
+            <span className="text-xs">{playStyle}</span>
+          )}
+        </button>
+      </ResponsivePopover>
     </div>
   );
 };

@@ -12,8 +12,6 @@ function ChangeEmailComponent({
   const [newEmail, setNewEmail] = React.useState<string>('');
 
   const changeEmail = async (localeData: any) => {
-    console.log(`New Email: ${newEmail}`);
-
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!newEmail || newEmail === '' || !emailPattern.test(newEmail)) {
       Notification.warning({
@@ -27,7 +25,6 @@ function ChangeEmailComponent({
 
     // Call API to change password
     const res = await UserApis.changeEmail({ newEmail: newEmail });
-    console.log(`[changeEmail] res: ${JSON.stringify(res)}`);
     if (res.success) {
       Notification.success({
         title: localeData.ChangeEmailNotification.SUCCESS,
@@ -71,7 +68,7 @@ function ChangeEmailComponent({
     <div className="mt-2 p-4 border border-gray-900 rounded-md">
       <Banner type="warning" description={localeData?.NeedVerifyEmail} />
 
-      <div className="flex items-center mt-4 mb-4">
+      <div className="settings-row mt-4 mb-4">
         <Input
           autoComplete={'off'}
           placeholder={localeData.NewEmailInputPlaceholder}

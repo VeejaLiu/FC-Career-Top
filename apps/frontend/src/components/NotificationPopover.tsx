@@ -1,4 +1,5 @@
 import {
+  Button,
   LocaleConsumer,
   Pagination,
   Select,
@@ -6,7 +7,7 @@ import {
   Tooltip,
 } from '@douyinfe/semi-ui';
 import { IconCheckChoiceStroked } from '@douyinfe/semi-icons';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   NotificationApis,
   NotificationBody,
@@ -141,8 +142,8 @@ export const NotificationItem = ({ notification }: NotificationItemProps) => {
   return (
     <LocaleConsumer componentName={'NotificationItem'}>
       {(localeData: any, localeCode: string, dateFnsLocale: any) => (
-        <div style={{ display: 'flex' }}>
-          <div className="h-16 w-16 mr-2.5 border-white border-2 rounded-full  overflow-hidden">
+        <div className="notification-item-layout">
+          <div className="notification-avatar">
             <img
               className="h-16 w-16 rounded-full"
               src={getAvatarUrl(notification.player_id)}
@@ -152,7 +153,7 @@ export const NotificationItem = ({ notification }: NotificationItemProps) => {
               }}
             />
           </div>
-          <div>
+          <div className="notification-item-body">
             {/* Position and name */}
             <div className="font-bold">
               <span
@@ -173,7 +174,7 @@ export const NotificationItem = ({ notification }: NotificationItemProps) => {
             </div>
             {getNotificationContent(notification, localeData)}
           </div>
-          <div className="ml-auto">
+          <div className="notification-item-actions">
             <a className="cursor-pointer underline">
               {notification.is_read ? '' : localeData?.MarkAsRead}
             </a>
@@ -209,81 +210,60 @@ export const NotificationPopover = ({
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [filterValue, setFilterValue] = useState<string>('all');
 
-  const fetchNotificationList = async () => {
+  const requestSequence = useRef(0);
+  const fetchNotificationList = useCallback(async () => {
+    const sequence = ++requestSequence.current;
     const notificationList = await NotificationApis.getAllNotifications({
       page: currentPage,
       limit: PAGE_SIZE,
       filter: filterValue,
       onlyUnread: onlyShowUnread,
     });
-    console.log('[fetchNotificationList] notificationList:', notificationList);
+    if (sequence !== requestSequence.current) return;
     setNotificationList(notificationList);
     if (notificationList?.items?.length === 0) {
       setCurrentPage(1);
     }
     updateUnreadCount();
-  };
+  }, [currentPage, onlyShowUnread, filterValue, updateUnreadCount]);
 
   useEffect(() => {
+    const sequenceRef = requestSequence;
     fetchNotificationList().then();
-  }, [currentPage, onlyShowUnread, filterValue]);
+    return () => {
+      sequenceRef.current++;
+    };
+  }, [fetchNotificationList]);
 
   return (
     <LocaleConsumer componentName={'NotificationPopover'}>
       {(localeData: any, localeCode: string, dateFnsLocale: any) => (
-        <div
-          style={{
-            width: '100%',
-            height: '90vh',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
+        <div className="notification-panel">
           {/* Header ---- Start */}
-          <div
-            style={{
-              padding: '20px',
-              display: 'flex',
-              borderBottom: '2px solid #f0f0f0',
-            }}
-          >
-            <span
-              style={{
-                fontWeight: 'bold',
-                fontSize: '1.7rem',
-              }}
-            >
-              {localeData.Title}
-            </span>
-            <div
-              style={{
-                marginLeft: 'auto',
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
+          <div className="notification-panel-header">
+            <span className="notification-panel-title">{localeData.Title}</span>
+            <div className="notification-panel-actions">
               <span>{localeData.OnlyShowUnread}</span>
               <Switch
                 style={{ marginLeft: '5px' }}
                 checked={onlyShowUnread}
-                onChange={(checked) => setOnlyShowUnread(checked)}
+                onChange={(checked) => {
+                  setCurrentPage(1);
+                  setOnlyShowUnread(checked);
+                }}
                 checkedText={localeData.SwitchOn}
                 uncheckedText={localeData.SwitchOff}
               />
               <Tooltip content={localeData.MarkAllAsRead} position={'top'}>
-                <IconCheckChoiceStroked
+                <Button
+                  theme="borderless"
+                  aria-label={localeData.MarkAllAsRead}
+                  icon={<IconCheckChoiceStroked size="large" />}
                   onClick={() => {
-                    console.log('click');
-                    NotificationApis.markAllAsRead().then(() => {
-                      fetchNotificationList();
-                    });
+                    NotificationApis.markAllAsRead().then(
+                      fetchNotificationList,
+                    );
                   }}
-                  style={{
-                    marginLeft: '20px',
-                    cursor: 'pointer',
-                    color: '#333',
-                  }}
-                  size={'large'}
                 />
               </Tooltip>
             </div>
@@ -291,11 +271,12 @@ export const NotificationPopover = ({
           {/* Header ---- End */}
 
           {/* Content ---- Start */}
-          <div style={{ flexGrow: 1, overflowY: 'auto' }}>
+          <div className="notification-panel-content">
             <Select
               className="m-1 ml-2 w-[200px]"
               value={filterValue}
               onChange={(value) => {
+                setCurrentPage(1);
                 setFilterValue(String(value));
               }}
             >
@@ -343,6 +324,7 @@ export const NotificationPopover = ({
           {/* Pagination */}
           <Pagination
             className={'notification-pagination'}
+            size="small"
             total={notificationList.total}
             currentPage={currentPage}
             pageSize={PAGE_SIZE}

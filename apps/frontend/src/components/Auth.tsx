@@ -15,23 +15,11 @@ import custom_en_GB from '../locales/en_GB.ts';
 import custom_fr_FR from '../locales/fr_FR.ts';
 import custom_de_DE from '../locales/de_DE.ts';
 import custom_ja_JP from '../locales/ja_JP.ts';
+import {
+  LANGUAGE_LOCAL_STORAGE_KEY,
+  normalizeLanguage,
+} from '../common/language.ts';
 
-export const LANGUAGE_LOCAL_STORAGE_KEY = 'fcd-ui-default-language';
-
-// [
-//     "zh-CN",
-//     "en",
-//     "en-GB",
-//     "en-US",
-//     "zh",
-//     "fr",
-//     "fr-FR",
-//     "de",
-//     "de-DE",
-//     "ja",
-//     "ja-JP",
-//     "ja-JP",
-// ]
 const SUPPORTED_LANGUAGES: any = {
   // English
   en: { ...en_GB, ...custom_en_GB },
@@ -65,8 +53,7 @@ export const Auth = () => {
     // Get from local storage first
     defaultLanguage = localStorage.getItem(LANGUAGE_LOCAL_STORAGE_KEY);
     if (defaultLanguage) {
-      console.log(`Get from local storage`, defaultLanguage);
-      return defaultLanguage;
+      return normalizeLanguage(defaultLanguage);
     }
 
     // Get the browser language
@@ -74,8 +61,6 @@ export const Auth = () => {
       ? navigator.languages
       : [navigator.language];
 
-    console.log('languages', languages);
-    console.log(`SUPPORTED_LANGUAGES`, SUPPORTED_LANGUAGES);
     for (let i = 0; i < languages.length; i++) {
       const language = languages[i].replace('-', '_');
       if (language in SUPPORTED_LANGUAGES) {
@@ -86,7 +71,7 @@ export const Auth = () => {
       }
     }
 
-    return defaultLanguage;
+    return normalizeLanguage(defaultLanguage);
   };
 
   const getLoginStatus = async () => {
@@ -97,9 +82,7 @@ export const Auth = () => {
 
   useEffect(() => {
     const browserLanguage = getDefaultLanguage();
-    console.log('browserLanguage', browserLanguage);
     if (browserLanguage in SUPPORTED_LANGUAGES) {
-      // console.log('setLocale', SUPPORTED_LANGUAGES[browserLanguage]);
       setLocale(SUPPORTED_LANGUAGES[browserLanguage]);
     }
 
@@ -114,8 +97,8 @@ export const Auth = () => {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            width: '100vw',
-            height: '100vh',
+            width: '100%',
+            minHeight: '100dvh',
           }}
         >
           <Spin size="large" />

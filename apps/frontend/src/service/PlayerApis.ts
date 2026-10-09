@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { BACKEND_URL } from '../constant';
-import { Toast } from '@douyinfe/semi-ui';
+import { reportApiError } from './api-error';
 import { getDefaultGameVersion, getToken } from '../common/common.ts';
 
 export interface PlayerOverall {
@@ -127,13 +127,9 @@ export class PlayerApis {
         return response.data;
       }
       return [];
-    } catch (e: any) {
-      console.log(`[getPlayerList] error code: ${e.response.status}`);
-      console.log(`[getPlayerList] error message: ${e.message}`);
-      if (e.response.status === 401) {
-        Toast.error('Please login first');
-      }
-      return [];
+    } catch (error: unknown) {
+      reportApiError(error);
+      throw error;
     }
   }
 
@@ -161,13 +157,9 @@ export class PlayerApis {
         return response.data;
       }
       return null;
-    } catch (e: any) {
-      console.log(`[getPlayerDetail] error code: ${e.response.status}`);
-      console.log(`[getPlayerDetail] error message: ${e.message}`);
-      if (e.response.status === 401) {
-        Toast.error('Please login first');
-      }
-      return null;
+    } catch (error: unknown) {
+      reportApiError(error);
+      throw error;
     }
   }
 
@@ -188,12 +180,8 @@ export class PlayerApis {
         return response.data;
       }
       return 0;
-    } catch (e: any) {
-      console.log(`[getPlayerCount] error code: ${e.response.status}`);
-      console.log(`[getPlayerCount] error message: ${e.message}`);
-      if (e.response.status === 401) {
-        Toast.error('Please login first');
-      }
+    } catch (error: unknown) {
+      reportApiError(error);
       return 0;
     }
   }
@@ -213,13 +201,9 @@ export class PlayerApis {
         return response.data;
       }
       return [];
-    } catch (e: any) {
-      console.log(`[getPlayerCount] error code: ${e.response.status}`);
-      console.log(`[getPlayerCount] error message: ${e.message}`);
-      if (e.response.status === 401) {
-        Toast.error('Please login first');
-      }
-      return [];
+    } catch (error: unknown) {
+      reportApiError(error);
+      throw error;
     }
   }
 }

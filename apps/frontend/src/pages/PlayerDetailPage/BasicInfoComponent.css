@@ -1,25 +1,19 @@
 .basic-info-container {
-    width: 25%;
-    padding: 20px;
-    margin: 0 10px;
-    border-radius: 8px;
-    background: var(--semi-color-bg-0);
+  width: 100%;
+  min-width: 0;
+  padding: 20px;
+  border-radius: var(--app-radius);
+  background: var(--semi-color-bg-0);
 }
-
 .basic-info-container .image-and-name {
-    text-align: center;
+  text-align: center;
+  margin-bottom: 16px;
 }
-
-
-.stat {
-    display: flex;
-    justify-content: space-between;
+.basic-info-container .stat-info-value {
+  text-align: right;
 }
-
-.stat-label {
-    /*font-weight: lighter;*/
-}
-
-.stat-info-value {
-    text-align: right;
+@media (max-width: 767px) {
+  .basic-info-container {
+    padding: 16px;
+  }
 }

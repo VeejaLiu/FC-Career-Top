@@ -1,0 +1,40 @@
+.auth-page {
+  width: 100%;
+  min-height: 100vh;
+  padding: 16px var(--app-page-padding) 40px;
+}
+.auth-page > .semi-space-item {
+  width: 100%;
+  max-width: 550px;
+}
+.auth-page > .semi-space-item:first-child {
+  text-align: center;
+}
+.auth-tutorial {
+  width: 100%;
+  margin-top: 32px;
+}
+.auth-tutorial iframe {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+}
+.auth-tutorial h1 {
+  overflow-wrap: anywhere;
+}
+.auth-contact-row {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  align-items: start;
+  gap: 8px;
+}
+.auth-contact-row > div {
+  min-width: 0;
+}
+.auth-contact-row a {
+  overflow-wrap: anywhere;
+}
+.auth-contact-row > div > span {
+  flex-shrink: 0;
+}

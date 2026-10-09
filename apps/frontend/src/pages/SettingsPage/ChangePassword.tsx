@@ -14,7 +14,6 @@ function ChangePasswordComponent({
   const [confirmNewPassword, setCofirmNewPassword] = React.useState<string>('');
 
   const changePassword = async (localeData: any) => {
-
     if (!oldPassword || !newPassword || !confirmNewPassword) {
       Notification.error({
         title: localeData.ChangePasswordNotification.ErrorTitle,
@@ -102,44 +101,37 @@ function ChangePasswordComponent({
 
   return (
     <div className="mt-2 p-4 border border-gray-900 rounded-md">
-      <div
-        style={{
-          display: 'flex',
-          marginTop: '8px',
-          alignItems: 'center',
-        }}
-      >
-        <span style={{ width: '300px', fontWeight: 'bold' }}>
+      <div className="settings-row">
+        <span className="settings-field-label font-bold">
           {localeData.OldPassword}
         </span>
         <Input
+          aria-label={localeData.OldPassword}
           mode="password"
-          autoComplete={'current-password'}
-          onChange={(e: string) => setOldPassword(e)}
+          autoComplete="current-password"
+          onChange={setOldPassword}
         />
       </div>
-      <div
-        style={{
-          display: 'flex',
-          marginTop: '8px',
-          alignItems: 'center',
-        }}
-      >
-        <span className="font-bold w-[300px]">{localeData.NewPassword}</span>
+      <div className="settings-row mt-2">
+        <span className="settings-field-label font-bold">
+          {localeData.NewPassword}
+        </span>
         <Input
+          aria-label={localeData.NewPassword}
           mode="password"
-          autoComplete={'new-password'}
-          onChange={(e: string) => setNewPassword(e)}
+          autoComplete="new-password"
+          onChange={setNewPassword}
         />
       </div>
-      <div className="flex items-center mt-2">
-        <span className="font-bold w-[300px]">
+      <div className="settings-row mt-2">
+        <span className="settings-field-label font-bold">
           {localeData.ConfirmNewPassword}
         </span>
         <Input
+          aria-label={localeData.ConfirmNewPassword}
           mode="password"
-          autoComplete={'new-password'}
-          onChange={(e: string) => setCofirmNewPassword(e)}
+          autoComplete="new-password"
+          onChange={setCofirmNewPassword}
         />
       </div>
       <div className="flex justify-end">

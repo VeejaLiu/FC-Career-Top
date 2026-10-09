@@ -1,6 +1,6 @@
 .loginOrRegister {
-  width: 90%;
-  min-width: 300px;
+  width: 100%;
+  min-width: 0;
   max-width: 550px;
 
   .header {
@@ -49,8 +49,36 @@
     }
 
     .button {
-      height: 40px;
+      min-height: 44px;
+      height: auto;
+      padding: 10px 12px;
+      white-space: normal;
       width: 100%;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .loginOrRegister {
+    .header {
+      margin-top: 12px;
+    }
+    .header .logo img {
+      width: 72px;
+      height: 72px;
+    }
+    .header .titles {
+      margin-left: 12px;
+    }
+    .form {
+      width: 100%;
+      row-gap: 18px;
+    }
+    .form .inputs {
+      width: 100%;
+    }
+    .button :global(.semi-button-content) {
+      white-space: normal;
     }
   }
 }

@@ -1,79 +1,100 @@
-import * as React from 'react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Banner,
   Button,
   CodeHighlight,
   LocaleConsumer,
   Notification,
-  Space,
+  Spin,
   Steps,
 } from '@douyinfe/semi-ui';
+import { IconCopy, IconRefresh, IconExternalOpen } from '@douyinfe/semi-icons';
 import { UserApis } from '../../service/UserApis.ts';
-import { luaScript_FC24 } from '../../constant/user-script.ts';
-import { luaScript_FC25 } from '../../constant/user-script.ts';
+import { luaScript_FC24, luaScript_FC25 } from '../../constant/user-script.ts';
 import { getDefaultGameVersion } from '../../common/common.ts';
-import { IconCopy } from '@douyinfe/semi-icons';
+import './GetStartedPage.css';
 
-const PostPlayerURL =
+const postPlayerURL =
   import.meta.env.VITE_POST_PLAYER_URL || 'http://localhost:8888';
 
-function SettingsPage(): React.ReactElement {
-  const [codeStr, setCodeStr] = React.useState(luaScript_FC24);
-  const [isSecretLoading, setIsSecretLoading] = React.useState(true);
-  async function getLuaCode() {
-    const key = await UserApis.getSecretKey();
-    const gameVersion = await getDefaultGameVersion();
+export default function GetStartedPage() {
+  const [code, setCode] = useState('');
+  const [gameVersion, setGameVersion] = useState<number | null>(null);
+  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>(
+    'loading',
+  );
+  const [retryCount, setRetryCount] = useState(0);
+  const [copied, setCopied] = useState(false);
 
-    switch (gameVersion) {
-      case 24:
-        setCodeStr(
-          luaScript_FC24
+  useEffect(() => {
+    let cancelled = false;
+    setStatus('loading');
+    setCode('');
+    setCopied(false);
+
+    async function loadScript() {
+      try {
+        const [key, version] = await Promise.all([
+          UserApis.getSecretKey(),
+          getDefaultGameVersion(),
+        ]);
+        if (!key || (version !== 24 && version !== 25)) {
+          throw new Error('Script configuration unavailable');
+        }
+        if (cancelled) return;
+        const template = version === 25 ? luaScript_FC25 : luaScript_FC24;
+        setCode(
+          template
             .replace('{{user-secret-key}}', key)
-            .replace('{{post-player-url}}', PostPlayerURL),
+            .replace('{{post-player-url}}', postPlayerURL),
         );
-        break;
-      case 25:
-        setCodeStr(
-          luaScript_FC25
-            .replace('{{user-secret-key}}', key)
-            .replace('{{post-player-url}}', PostPlayerURL),
-        );
-        break;
-      default:
-        break;
+        setGameVersion(version);
+        setStatus('ready');
+      } catch {
+        if (!cancelled) setStatus('error');
+      }
+    }
+
+    void loadScript();
+    return () => {
+      cancelled = true;
+    };
+  }, [retryCount]);
+
+  async function copyScript(locale: any) {
+    if (status !== 'ready') return;
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      Notification.success({
+        position: 'topRight',
+        title: locale.SUCCESS,
+        content: locale.SUCCESS_MESSAGE,
+        duration: 3,
+      });
+    } catch {
+      Notification.error({
+        position: 'topRight',
+        title: locale.ERROR,
+        content: locale.ERROR_MESSAGE,
+        duration: 3,
+      });
     }
   }
 
-  useEffect(() => {
-    getLuaCode().then(
-      () => {
-        setIsSecretLoading(false);
-      },
-      (e) => {
-        Notification.error({
-          title: 'Error',
-          content: 'Failed to fetch secret key. Please try again later.',
-          duration: 3,
-        });
-      },
-    );
-  }, []);
-
   return (
-    <LocaleConsumer componentName={'GetStartedPage'}>
-      {(localeData: any, localeCode: string, dateFnsLocale: any) => (
-        <Space className={'w-full'} vertical align={'start'}>
-          <div className={'p-6 w-full relative'}>
-            <h1 className={'text-3xl font-bold mb-4'}>{localeData?.Title}</h1>
-
-            <Steps direction="vertical" type="basic" current={3}>
-              <Steps.Step
-                title={localeData.STEP_1.Title}
-                description={
-                  <div>
-                    <p>{localeData.STEP_1.DownloadLink}</p>
-                    <p className={'ml-2 underline'}>
+    <LocaleConsumer componentName="GetStartedPage">
+      {(locale: any) => (
+        <div className="get-started-page">
+          <h1>{locale.Title}</h1>
+          <div className="get-started-layout">
+            <section className="get-started-instructions">
+              <Steps direction="vertical" type="basic" current={-1}>
+                <Steps.Step
+                  title={locale.STEP_1.Title.replace(/^\d+\.\s*/, '')}
+                  description={
+                    <div className="get-started-downloads">
+                      <span>{locale.STEP_1.DownloadLink}</span>
                       <a
                         href="https://www.patreon.com/collection/779838?view=expanded"
                         target="_blank"
@@ -81,8 +102,6 @@ function SettingsPage(): React.ReactElement {
                       >
                         FC 25 Live Editor
                       </a>
-                    </p>
-                    <p className={'ml-2 underline'}>
                       <a
                         href="https://www.patreon.com/collection/96422?view=expanded"
                         target="_blank"
@@ -90,99 +109,120 @@ function SettingsPage(): React.ReactElement {
                       >
                         FC 24 Live Editor
                       </a>
-                    </p>
-                  </div>
-                }
-              />
-              <Steps.Step
-                title={localeData.STEP_2.Title}
-                description={localeData.STEP_2.Description}
-              />
-              <Steps.Step
-                title={localeData.STEP_3.Title}
-                description={localeData.STEP_3.Description}
-              />
-              <Steps.Step
-                title={localeData.STEP_4.Title}
-                description={
-                  <div>
-                    <p>{localeData?.STEP_4.Description}</p>
-                    <Banner
-                      type="warning"
-                      closeIcon={null}
-                      description={localeData?.CODE_NOT_SHARE_WARNING}
-                    />
-                    <div
-                      style={{
-                        maxHeight: '200px',
-                        overflow: 'scroll',
-                        border: '1px solid #AAA',
-                      }}
-                    >
-                      <CodeHighlight
-                        code={codeStr}
-                        language="JavaScript"
-                        className={'code-highlight'}
-                        defaultTheme={true}
-                        lineNumber={false}
-                        style={{}}
-                      ></CodeHighlight>
                     </div>
-                    <Button
-                      icon={<IconCopy />}
-                      className={'items-center mt-2'}
-                      type="tertiary"
-                      disabled={isSecretLoading}
-                      onClick={() => {
-                        navigator.clipboard
-                          .writeText(codeStr)
-                          .then((r) => {
-                            console.log('Copied');
-                            Notification.success({
-                              position: 'topRight',
-                              title: localeData.SUCCESS,
-                              content: localeData.SUCCESS_MESSAGE,
-                              duration: 3,
-                            });
-                          })
-                          .catch((e) => {
-                            Notification.error({
-                              position: 'topRight',
-                              title: localeData.ERROR,
-                              content: localeData.ERROR_MESSAGE,
-                              duration: 3,
-                            });
-                          });
-                      }}
-                    >
-                      {localeData.COPY_TO_CLIPBOARD}
-                    </Button>
-                  </div>
-                }
-              />
-            </Steps>
+                  }
+                />
+                <Steps.Step
+                  title={locale.STEP_2.Title.replace(/^\d+\.\s*/, '')}
+                  description={locale.STEP_2.Description}
+                />
+                <Steps.Step
+                  title={locale.STEP_3.Title.replace(/^\d+\.\s*/, '')}
+                  description={locale.STEP_3.Description}
+                />
+                <Steps.Step
+                  title={locale.STEP_4.Title.replace(/^\d+\.\s*/, '')}
+                  description={
+                    <div className="get-started-script">
+                      <p>{locale.STEP_4.Description}</p>
+                      <Banner
+                        type="warning"
+                        closeIcon={null}
+                        description={locale.CODE_NOT_SHARE_WARNING}
+                      />
+                      <div className="get-started-code-toolbar">
+                        <span>
+                          {status === 'ready'
+                            ? `FC ${gameVersion} · Lua`
+                            : 'Lua'}
+                        </span>
+                        <Button
+                          icon={<IconCopy />}
+                          theme="solid"
+                          disabled={status !== 'ready'}
+                          onClick={() => {
+                            void copyScript(locale);
+                          }}
+                        >
+                          {copied
+                            ? locale.SUCCESS_MESSAGE
+                            : locale.COPY_TO_CLIPBOARD}
+                        </Button>
+                      </div>
+                      <div
+                        className="get-started-code"
+                        aria-busy={status === 'loading'}
+                      >
+                        {status === 'ready' ? (
+                          <CodeHighlight
+                            code={code}
+                            language="lua"
+                            defaultTheme
+                            lineNumber={false}
+                          />
+                        ) : (
+                          <div className="get-started-code-state" role="status">
+                            {status === 'loading' ? (
+                              <>
+                                <Spin size="small" />
+                                {locale.SCRIPT_LOADING}
+                              </>
+                            ) : (
+                              <>
+                                <span>{locale.SCRIPT_ERROR_HELP}</span>
+                                <Button
+                                  theme="borderless"
+                                  icon={<IconRefresh />}
+                                  onClick={() =>
+                                    setRetryCount((count) => count + 1)
+                                  }
+                                >
+                                  {locale.RETRY}
+                                </Button>
+                              </>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  }
+                />
+              </Steps>
+            </section>
+            <aside className="get-started-sidebar">
+              <section
+                className="get-started-tutorial"
+                aria-labelledby="get-started-video-title"
+              >
+                <h2 id="get-started-video-title">
+                  {locale.VIDEO_TUTORIAL_TITLE}
+                </h2>
+                <div className="get-started-video">
+                  <iframe
+                    src="https://www.youtube.com/embed/MELZu08Gzfw?start=402"
+                    title={locale.VIDEO_TUTORIAL_TITLE}
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                    allowFullScreen
+                  />
+                </div>
+              </section>
+              <div className="get-started-help">
+                <span>{locale.NEED_HELP}</span>
+                <a
+                  href="https://discord.gg/aKfWAtbJ8F"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {locale.JOIN_DISCORD}
+                  <IconExternalOpen size="small" />
+                </a>
+              </div>
+            </aside>
           </div>
-
-          <div className={'mt-20 p-6'}>
-            <h1 className={'text-3xl font-bold mb-3'}>
-              {localeData?.VIDEO_TUTORIAL_TITLE}
-            </h1>
-            <h1 className={'mb-3'}>{localeData?.VIDEO_TUTORIAL_DESCRIPTION}</h1>
-            <iframe
-              width="560"
-              height="315"
-              src="https://www.youtube.com/embed/MELZu08Gzfw?si=46TTH44UdnOceDqj&amp;start=402"
-              title="YouTube video player"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerPolicy="strict-origin-when-cross-origin"
-              allowFullScreen
-            ></iframe>
-          </div>
-        </Space>
+        </div>
       )}
     </LocaleConsumer>
   );
 }
-
-export default SettingsPage;

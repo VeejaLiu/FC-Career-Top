@@ -59,10 +59,21 @@ export default {
     Hello: 'Bonjour, ',
     Logout: 'Déconnexion',
   },
+  AsyncState: {
+    error:
+      'Impossible de charger les données. Vérifiez votre connexion et réessayez.',
+    retry: 'Réessayer',
+  },
   NoDataComponent: {
     prefix: 'Rien à afficher pour le moment. Visitez notre page',
     getStartedPage: 'Commencer',
     suffix: 'pour débuter votre aventure.',
+  },
+  PlayerTrendsPage: {
+    FOR: 'Attaquants',
+    MID: 'Milieux',
+    DEF: 'Défenseurs',
+    GK: 'Gardiens',
   },
   PlayerListTable: {
     name: 'Nom',
@@ -235,6 +246,12 @@ export default {
   },
 
   GetStartedPage: {
+    NEED_HELP: 'Besoin d’aide ?',
+    JOIN_DISCORD: 'Rejoindre la communauté Discord',
+    SCRIPT_LOADING: 'Préparation de votre script…',
+    SCRIPT_ERROR_HELP:
+      'Vérifiez la version du jeu dans les paramètres et votre connexion, puis réessayez.',
+    RETRY: 'Réessayer',
     EMAIL_UNVERIFIED: {
       Prefix:
         "Vous n'avez pas vérifié votre adresse email. Veuillez vous rendre sur la",

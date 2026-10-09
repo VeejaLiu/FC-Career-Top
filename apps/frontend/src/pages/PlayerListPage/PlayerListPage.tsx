@@ -1,62 +1,45 @@
 import * as React from 'react';
-import { useEffect } from 'react';
 import {
   Input,
   LocaleConsumer,
   Popover,
+  Select,
   Space,
   Table,
 } from '@douyinfe/semi-ui';
 import { useNavigate } from 'react-router-dom';
 import { PlayerApis, PlayerOverall } from '../../service/PlayerApis.ts';
 import {
-  getAvatarUrl,
   getColorByOverallRating,
   getColorByPositionType,
   getRankingColor,
 } from '../../common/player-helper.ts';
-import { LoadingComponent, NoDataComponent } from '../../components/Other.tsx';
+import {
+  LoadErrorComponent,
+  LoadingComponent,
+  NoDataComponent,
+} from '../../components/Other.tsx';
 import { IconActivity, IconSearch } from '@douyinfe/semi-icons';
-import player_avatar_placeholder from '../../assets/image/player_avatar_placeholder.svg';
+import { PlayerAvatar } from '../../components/PlayerAvatar';
+import { MobilePlayerCard } from './MobilePlayerCard';
+import { MOBILE_QUERY, useMediaQuery } from '../../hooks/useMediaQuery';
+import { comparePlayerPosition } from '../../common/player-sort';
+import './PlayerListPage.css';
+import { useAsyncResource } from '../../hooks/useAsyncResource';
 import { StarIcon } from '../../common/icons.tsx';
 
 const PlayerListColumn = (
   localeData: any,
-  navigate: any,
-  searchValue: string,
-  setSearchValue: React.Dispatch<React.SetStateAction<string>>,
+  navigate: ReturnType<typeof useNavigate>,
 ) => [
   {
-    title: (
-      <Space>
-        {localeData.name}
-        <Input
-          prefix={<IconSearch />}
-          placeholder=""
-          style={{ width: 150 }}
-          onChange={(e: any) => {
-            setSearchValue(e);
-          }}
-          showClear
-        />
-      </Space>
-    ),
+    title: localeData.name,
     dataIndex: 'playerName',
     render: (text: string, record: PlayerOverall, index: number) => {
       return (
         <div className="flex items-center">
-          <div className={'w-12 h-12 mr-2 flex-shrink-0'}>
-            <img
-              className={'w-12 h-12'}
-              src={record.imageUrl}
-              alt="player"
-              onError={(e) => {
-                e.currentTarget.src = player_avatar_placeholder;
-              }}
-              onLoad={(e) => {
-                e.currentTarget.style.display = 'block';
-              }}
-            />
+          <div className="mr-2">
+            <PlayerAvatar playerID={record.playerID} name={record.playerName} />
           </div>
           <div
             className="cursor-pointer hover:underline min-w-0"
@@ -86,20 +69,7 @@ const PlayerListColumn = (
     title: localeData.position,
     dataIndex: 'position1',
     defaultSortOrder: 'ascend',
-    // Sort by positionType first, GK > DEF > MID > FOR
-    // then by position1, in dictionary order
-    sorter: (a: PlayerOverall, b: PlayerOverall) => {
-      const positionTypeMap = {
-        GK: 1,
-        DEF: 2,
-        MID: 3,
-        FOR: 4,
-      };
-      return (
-        positionTypeMap[a.positionType] - positionTypeMap[b.positionType] ||
-        a.position1.localeCompare(b.position1)
-      );
-    },
+    sorter: comparePlayerPosition,
     width: '128px',
     render: (text: string, record: PlayerOverall) => {
       const color = getColorByPositionType(record.positionType);
@@ -224,7 +194,7 @@ const PlayerListColumn = (
       return (
         <div
           style={{
-            width: '200px',
+            minWidth: '120px',
             display: 'flex',
             alignItems: 'center',
           }}
@@ -287,63 +257,107 @@ const PlayerListColumn = (
   },
 ];
 
+type SortField =
+  | 'position'
+  | 'playerName'
+  | 'age'
+  | 'overallRating'
+  | 'potential';
+
 function PlayerListPage(): React.ReactElement {
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [data, setData] = React.useState<PlayerOverall[]>([]);
-  const [filteredData, setFilteredData] = React.useState<PlayerOverall[]>([]);
+  const {
+    data: players,
+    loading: isLoading,
+    error,
+    reload,
+  } = useAsyncResource(PlayerApis.getPlayerList);
+  const data = React.useMemo(() => players || [], [players]);
   const [searchValue, setSearchValue] = React.useState('');
+  const [sortField, setSortField] = React.useState<SortField>('position');
+  const isMobile = useMediaQuery(MOBILE_QUERY);
   const navigate = useNavigate();
 
-  const getPlayerList = async () => {
-    const players: PlayerOverall[] = await PlayerApis.getPlayerList();
-    players.forEach((player) => {
-      player.imageUrl = getAvatarUrl(player.playerID);
-    });
-    setFilteredData(players);
-    setData(players);
-    setIsLoading(false);
-  };
+  const filteredData = React.useMemo(
+    () =>
+      data
+        .filter((player) =>
+          player.playerName
+            .toLowerCase()
+            .includes(searchValue.toLowerCase().trim()),
+        )
+        .sort((a, b) => {
+          if (sortField === 'position') return comparePlayerPosition(a, b);
+          if (sortField === 'playerName')
+            return a.playerName.localeCompare(b.playerName);
+          if (sortField === 'age') return a.age - b.age;
+          return b[sortField] - a[sortField] || comparePlayerPosition(a, b);
+        }),
+    [data, searchValue, sortField],
+  );
 
-  useEffect(() => {
-    getPlayerList().then();
-  }, []);
-
-  useEffect(() => {
-    const filtered = data.filter((player) =>
-      player.playerName.toLowerCase().includes(searchValue.toLowerCase()),
-    );
-    setFilteredData(filtered);
-  }, [searchValue, data]);
-
-  return (
-    <div style={{ width: '100%', height: '100%' }}>
-      {isLoading ? (
-        <LoadingComponent />
-      ) : data.length === 0 ? (
-        <NoDataComponent />
-      ) : (
-        <LocaleConsumer componentName={'PlayerListTable'}>
-          {(localeData: any, localeCode: string, dateFnsLocale: any) => (
+  return error ? (
+    <LoadErrorComponent onRetry={reload} />
+  ) : isLoading ? (
+    <LoadingComponent />
+  ) : data.length === 0 ? (
+    <NoDataComponent />
+  ) : (
+    <LocaleConsumer componentName="PlayerListTable">
+      {(locale: any) => (
+        <section className="page-container player-list-page">
+          <div className="player-list-toolbar">
+            <Input
+              aria-label={locale.name}
+              prefix={<IconSearch />}
+              placeholder={locale.name}
+              value={searchValue}
+              onChange={setSearchValue}
+              showClear
+            />
+            {isMobile && (
+              <Select
+                aria-label={locale.position}
+                value={sortField}
+                onChange={(value) => setSortField(value as SortField)}
+                optionList={[
+                  { value: 'position', label: locale.position },
+                  { value: 'playerName', label: locale.name },
+                  { value: 'age', label: locale.age },
+                  { value: 'overallRating', label: locale.overall },
+                  { value: 'potential', label: locale.potential },
+                ]}
+              />
+            )}
+          </div>
+          {isMobile ? (
+            <div className="player-mobile-list">
+              {filteredData.map((player) => (
+                <MobilePlayerCard
+                  key={player.playerID}
+                  player={player}
+                  locale={locale}
+                />
+              ))}
+              {filteredData.length === 0 && (
+                <p className="player-search-empty" role="status">
+                  0 / {data.length}
+                </p>
+              )}
+            </div>
+          ) : (
             <Table
               sticky={{ top: 0 }}
-              style={{
-                minWidth: '800px',
-                scroll: null,
-              }}
-              columns={PlayerListColumn(
-                localeData,
-                navigate,
-                searchValue,
-                setSearchValue,
-              )}
+              columns={PlayerListColumn(locale, navigate)}
               dataSource={filteredData}
+              rowKey="playerID"
               pagination={false}
               size="small"
+              scroll={{ x: 980 }}
             />
           )}
-        </LocaleConsumer>
+        </section>
       )}
-    </div>
+    </LocaleConsumer>
   );
 }
 

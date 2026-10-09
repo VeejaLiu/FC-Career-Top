@@ -1,18 +1,19 @@
 import * as React from 'react';
 import { useEffect } from 'react';
-import { LocaleConsumer, Notification, Space, Switch } from '@douyinfe/semi-ui';
+import { LocaleConsumer, Notification, Switch } from '@douyinfe/semi-ui';
 import { UserApis } from '../../service/UserApis.ts';
 import ApiSecretKeyComponent from './ApiSecretKeyComponent.tsx';
 import AccountSettingComponent from './AccountSettingComponent.tsx';
+import './SettingsPage.css';
 
 function SettingsPage(): React.ReactElement {
-  const [userSetting, setUserSetting] = React.useState<any>(null);
+  const [userSetting, setUserSetting] =
+    React.useState<Awaited<ReturnType<typeof UserApis.getUserSetting>>>(null);
   const [isUserSettingLoading, setIsUserSettingLoading] =
     React.useState<boolean>(true);
 
   async function fetchUserSetting() {
     const userSetting = await UserApis.getUserSetting();
-    console.log(`[getUserSetting] userSetting: ${JSON.stringify(userSetting)}`);
     setUserSetting(userSetting);
     setIsUserSettingLoading(false);
   }
@@ -31,8 +32,7 @@ function SettingsPage(): React.ReactElement {
       subItem: subItem,
       value,
     });
-    fetchUserSetting().then();
-    setIsUserSettingLoading(false);
+    await fetchUserSetting();
   }
 
   useEffect(() => {
@@ -42,15 +42,7 @@ function SettingsPage(): React.ReactElement {
   return (
     <LocaleConsumer componentName={'SettingsPage'}>
       {(localeData: any, localeCode: string, dateFnsLocale: any) => (
-        <Space
-          vertical
-          style={{
-            width: '60vw',
-            minWidth: '700px',
-            padding: '20px',
-          }}
-          align={'start'}
-        >
+        <div className="page-container settings-page">
           {/* Title */}
           <div className="font-bold text-xl">{localeData?.Settings}</div>
 
@@ -60,13 +52,14 @@ function SettingsPage(): React.ReactElement {
             <div className="font-bold mb-2">{localeData?.Notifications}</div>
 
             {/* Enable Notifications */}
-            <div className="flex items-center mt-3 p-1 hover:bg-[#f0f2f5]">
-              <div className="w-[300px]">{localeData?.EnableNotifications}</div>
+            <div className="settings-switch-row">
+              <div className="settings-field-label">
+                {localeData?.EnableNotifications}
+              </div>
               <Switch
                 checked={userSetting?.enableNotification}
                 loading={isUserSettingLoading}
                 onChange={(v, e) => {
-                  console.log('[onChange] enableNotification:', v);
                   updateUserSetting({
                     category: 'enable_notification',
                     value: v,
@@ -79,8 +72,8 @@ function SettingsPage(): React.ReactElement {
             {/* Notification Itemss */}
 
             {/* Overall Rating and Potential */}
-            <div className="flex items-center p-1 hover:bg-[#f0f2f5]">
-              <div className="w-[300px]">
+            <div className="settings-switch-row">
+              <div className="settings-field-label">
                 {localeData?.PlayerOverallPotentialUpdate}
               </div>
               <Switch
@@ -90,7 +83,6 @@ function SettingsPage(): React.ReactElement {
                 }
                 loading={isUserSettingLoading}
                 onChange={(v, e) => {
-                  console.log('[onChange] PlayerUpdate_Overall:', v);
                   updateUserSetting({
                     category: 'notification_items',
                     subItem: 'PlayerUpdate.Overall',
@@ -102,8 +94,8 @@ function SettingsPage(): React.ReactElement {
             </div>
 
             {/* Skill Move */}
-            <div className="flex items-center p-1 hover:bg-[#f0f2f5]">
-              <div className="w-[300px]">
+            <div className="settings-switch-row">
+              <div className="settings-field-label">
                 {localeData?.PlayerSkillMoveUpdate}
               </div>
               <Switch
@@ -113,7 +105,6 @@ function SettingsPage(): React.ReactElement {
                 }
                 loading={isUserSettingLoading}
                 onChange={(v, e) => {
-                  console.log('[onChange] PlayerUpdate_SkillMove:', v);
                   updateUserSetting({
                     category: 'notification_items',
                     subItem: 'PlayerUpdate.SkillMove',
@@ -125,8 +116,8 @@ function SettingsPage(): React.ReactElement {
             </div>
 
             {/* Weak Foot */}
-            <div className="flex items-center p-1 hover:bg-[#f0f2f5]">
-              <div className="w-[300px]">
+            <div className="settings-switch-row">
+              <div className="settings-field-label">
                 {localeData?.PlayerWeakFootUpdate}
               </div>
               <Switch
@@ -136,7 +127,6 @@ function SettingsPage(): React.ReactElement {
                 }
                 loading={isUserSettingLoading}
                 onChange={(v, e) => {
-                  console.log('[onChange] PlayerUpdate_WeakFoot:', v);
                   updateUserSetting({
                     category: 'notification_items',
                     subItem: 'PlayerUpdate.WeakFoot',
@@ -181,7 +171,7 @@ function SettingsPage(): React.ReactElement {
             {localeData?.ClickToLogout}
           </button>
           {/* Do logout ---- END */}
-        </Space>
+        </div>
       )}
     </LocaleConsumer>
   );

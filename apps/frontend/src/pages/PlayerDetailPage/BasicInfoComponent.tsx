@@ -1,10 +1,9 @@
 import {
-  getAvatarUrl,
   getColorByOverallRating,
   getColorByPositionType,
   getWorkRateText,
 } from '../../common/player-helper.ts';
-import player_avatar_placeholder from '../../assets/image/player_avatar_placeholder.svg';
+import { PlayerAvatar } from '../../components/PlayerAvatar';
 import {
   PLAYER_PRIMARY_POS_NAME,
   PLAYER_PRIMARY_POS_TYPE,
@@ -29,6 +28,7 @@ const BasicInfoComponent: React.FC<BasicInfoComponentProps> = ({
   localeData,
 }) => {
   const [gameVersion, setGameVersion] = useState<number>(0);
+  const heightInInches = Math.round(playerInfo.height / 2.54);
 
   useEffect(() => {
     getDefaultGameVersion().then((version) => {
@@ -41,12 +41,10 @@ const BasicInfoComponent: React.FC<BasicInfoComponentProps> = ({
       <div className={'image-and-name'}>
         {/* Image */}
         <div className="w-32 h-32 m-auto">
-          <img
-            src={getAvatarUrl(playerInfo?.player_id)}
-            alt="player_avatar"
-            onError={(e) => {
-              e.currentTarget.src = player_avatar_placeholder;
-            }}
+          <PlayerAvatar
+            playerID={playerInfo.player_id}
+            name={playerInfo.player_name}
+            size={128}
           />
         </div>
         {/* Name */}
@@ -81,18 +79,18 @@ const BasicInfoComponent: React.FC<BasicInfoComponentProps> = ({
         </Space>
       </div>
       {/*Player ID*/}
-      <div className="stat">
+      <div className="player-stat">
         <span className="stat-label">{localeData.BasicInfo.PlayerID}</span>
         <span className="stat-info-value">{playerInfo?.player_id}</span>
       </div>
       {/*Age*/}
-      <div className="stat">
+      <div className="player-stat">
         <span className="stat-label">{localeData.BasicInfo.Age}</span>
         <span className="stat-info-value">{playerInfo?.age}</span>
       </div>
       {/*AcceleRATE	Controlled Explosive*/}
       {/*Skills*/}
-      <div className="stat">
+      <div className="player-stat">
         <span className="stat-label">{localeData.BasicInfo.Skills}</span>
         <span className="stat-info-value flex">
           {/*{playerInfo?.skillmoves}*/}
@@ -103,7 +101,7 @@ const BasicInfoComponent: React.FC<BasicInfoComponentProps> = ({
         </span>
       </div>
       {/*Weak Foot*/}
-      <div className="stat">
+      <div className="player-stat">
         <span className="stat-label">{localeData.BasicInfo.WeakFoot}:</span>
         <span className="stat-info-value flex">
           {/*{playerInfo?.weakfootabilitytypecode}*/}
@@ -114,22 +112,22 @@ const BasicInfoComponent: React.FC<BasicInfoComponentProps> = ({
         </span>
       </div>
       {/*Foot	Right*/}
-      <div className="stat">
+      <div className="player-stat">
         <span className="stat-label">{localeData.BasicInfo.Foot}:</span>
         <span className="stat-info-value">
-          {(playerInfo?.preferredfoot || 1) === 1 ? 'Right' : 'Left'}
+          {Number(playerInfo.preferredfoot) === 1 ? 'Right' : 'Left'}
         </span>
       </div>
       {/*Height	177cm | 5'10"*/}
-      <div className="stat">
+      <div className="player-stat">
         <span className="stat-label">{localeData.BasicInfo.Height}:</span>
         <span className="stat-info-value">
-          {playerInfo?.height}cm | {Math.floor(playerInfo?.height / 2.54)}'{' '}
-          {playerInfo?.height % 12}"
+          {playerInfo?.height}cm | {Math.floor(heightInInches / 12)}'{' '}
+          {heightInInches % 12}"
         </span>
       </div>
       {/*Weight	67*/}
-      <div className="stat">
+      <div className="player-stat">
         <span className="stat-label">{localeData.BasicInfo.Weight}:</span>
         <span className="stat-info-value">
           {playerInfo?.weight}kg | {Math.floor(playerInfo?.weight * 2.20462)}
@@ -139,7 +137,7 @@ const BasicInfoComponent: React.FC<BasicInfoComponentProps> = ({
       {gameVersion === 24 && (
         <>
           {/*Att. WR	High*/}
-          <div className="stat">
+          <div className="player-stat">
             <span className="stat-label">
               {localeData.BasicInfo.AttackingWorkRate}:
             </span>
@@ -148,7 +146,7 @@ const BasicInfoComponent: React.FC<BasicInfoComponentProps> = ({
             </span>
           </div>
           {/*Def. WR	High*/}
-          <div className="stat">
+          <div className="player-stat">
             <span className="stat-label">
               {localeData.BasicInfo.DefensiveWorkRate}:
             </span>
@@ -159,7 +157,7 @@ const BasicInfoComponent: React.FC<BasicInfoComponentProps> = ({
         </>
       )}
       {/* Play styles */}
-      {playerInfo?.playStylesList?.length && (
+      {Boolean(playerInfo?.playStylesList?.length) && (
         <div className="w-full text-center p-1 rounded-xl mt-2">
           {playerInfo?.playStylesList?.map(
             (playStyle: string, index: number) => (

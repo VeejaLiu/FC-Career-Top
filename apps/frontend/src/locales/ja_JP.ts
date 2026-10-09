@@ -57,10 +57,20 @@ export default {
     Hello: 'こんにちは、',
     Logout: 'ログアウト',
   },
+  AsyncState: {
+    error: 'データを読み込めませんでした。接続を確認して再試行してください。',
+    retry: '再試行',
+  },
   NoDataComponent: {
     prefix: 'まだ表示するものがありません。',
     getStartedPage: '始める',
     suffix: 'ページを訪れて旅を始めましょう。',
+  },
+  PlayerTrendsPage: {
+    FOR: 'フォワード',
+    MID: 'ミッドフィールダー',
+    DEF: 'ディフェンダー',
+    GK: 'ゴールキーパー',
   },
   PlayerListTable: {
     name: '名前',
@@ -230,6 +240,12 @@ export default {
   },
 
   GetStartedPage: {
+    NEED_HELP: 'お困りですか？',
+    JOIN_DISCORD: 'Discordコミュニティに参加',
+    SCRIPT_LOADING: 'スクリプトを準備しています…',
+    SCRIPT_ERROR_HELP:
+      '設定のゲームバージョンとログイン状態を確認して、もう一度お試しください。',
+    RETRY: '再試行',
     EMAIL_UNVERIFIED: {
       Prefix: 'メールアドレスが確認されていません。',
       SettingsPage: '設定ページ',

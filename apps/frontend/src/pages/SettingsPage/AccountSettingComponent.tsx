@@ -41,8 +41,8 @@ function AccountSettingComponent({
 
       <div className="w-full p-4 border border-gray-200 rounded-md">
         {/* Account Info - Username */}
-        <div className="flex">
-          <div style={{ width: '300px' }}>
+        <div className="settings-row">
+          <div className="settings-field-label">
             <h5>{localeData?.AccountUsername}</h5>
           </div>
           <span style={{ color: 'gray', fontWeight: 500 }}>
@@ -50,8 +50,8 @@ function AccountSettingComponent({
           </span>
         </div>
 
-        <div className="flex mt-2">
-          <div style={{ width: '300px' }}>
+        <div className="settings-row mt-2">
+          <div className="settings-field-label">
             <h5>{localeData?.AccountEmail}</h5>
           </div>
           <span style={{ color: 'gray', fontWeight: 500 }}>
@@ -60,12 +60,13 @@ function AccountSettingComponent({
         </div>
         {/* Account Info - Change Password ---- START*/}
         <div className="mt-2">
-          <div className="flex">
-            <div style={{ width: '300px' }}>
+          <div className="settings-row">
+            <div className="settings-field-label">
               <h5>{localeData?.AccountChangePassword}</h5>
             </div>
             <span>
-              <a
+              <button
+                type="button"
                 style={{
                   cursor: 'pointer',
                   textDecoration: 'underline',
@@ -73,7 +74,7 @@ function AccountSettingComponent({
                 onClick={() => setShowChangePassword(!showChangePassword)}
               >
                 {localeData.AccountClickToChange}
-              </a>
+              </button>
             </span>
           </div>
           {showChangePassword && (

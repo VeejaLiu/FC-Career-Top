@@ -17,8 +17,10 @@ export const RegisterComponent = ({ setIsLogin }: { setIsLogin: any }) => {
   const [registerPassword, setRegisterPassword] = useState('');
   const [registerPasswordConfirm, setRegisterPasswordConfirm] = useState('');
   const [errorMessage, setErrorMessage] = useState(' ');
+  const [submitting, setSubmitting] = useState(false);
 
   async function doRegister(localeData: any) {
+    if (submitting) return;
     // Check if email is valid
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(registerEmail.trim())) {
@@ -28,7 +30,7 @@ export const RegisterComponent = ({ setIsLogin }: { setIsLogin: any }) => {
 
     // Check if password and confirm password match
     if (registerPassword !== registerPasswordConfirm) {
-      setErrorMessage(localeData.passwordNotMatch);
+      setErrorMessage(localeData.passwordMismatch);
       return;
     }
 
@@ -46,11 +48,13 @@ export const RegisterComponent = ({ setIsLogin }: { setIsLogin: any }) => {
       return;
     }
 
+    setSubmitting(true);
     const response = await UserApis.registerUser({
       email: registerEmail.trim(),
       password: registerPassword,
       confirmPassword: registerPasswordConfirm,
     });
+    setSubmitting(false);
     if (response.success) {
       Notification.success({
         position: 'top',
@@ -85,7 +89,10 @@ export const RegisterComponent = ({ setIsLogin }: { setIsLogin: any }) => {
             </div>
           </div>
           <div className={styles.form}>
-            <Form className={styles.inputs}>
+            <Form
+              className={styles.inputs}
+              onSubmit={() => doRegister(localeData)}
+            >
               <Form.Input
                 label={
                   <div className={'flex items-center'}>
@@ -120,6 +127,7 @@ export const RegisterComponent = ({ setIsLogin }: { setIsLogin: any }) => {
                   </div>
                 }
                 field="password"
+                autoComplete="new-password"
                 placeholder={localeData.passwordPlaceholder}
                 fieldStyle={{ alignSelf: 'stretch', padding: 0 }}
                 onChange={(e) => setRegisterPassword(e)}
@@ -152,6 +160,7 @@ export const RegisterComponent = ({ setIsLogin }: { setIsLogin: any }) => {
                 mode={'password'}
                 label={{ text: localeData.confirmPassword }}
                 field="password-confirm"
+                autoComplete="new-password"
                 placeholder={localeData.confirmPasswordPlaceholder}
                 fieldStyle={{ alignSelf: 'stretch', padding: 0 }}
                 onChange={(e) => setRegisterPasswordConfirm(e)}
@@ -163,19 +172,19 @@ export const RegisterComponent = ({ setIsLogin }: { setIsLogin: any }) => {
                   }
                 }}
               />
+              <div className={styles.errorMessage} role="alert">
+                <p>{errorMessage}</p>
+              </div>
+              <Button
+                theme="solid"
+                className={styles.button}
+                htmlType="submit"
+                loading={submitting}
+                disabled={submitting}
+              >
+                {localeData.register}
+              </Button>
             </Form>
-            <div className={styles.errorMessage}>
-              <p>{errorMessage}</p>
-            </div>
-            <Button
-              theme="solid"
-              className={styles.button}
-              onClick={(e) => {
-                doRegister(localeData);
-              }}
-            >
-              {localeData.register}
-            </Button>
             <Button
               theme={'outline'}
               className={styles.button}

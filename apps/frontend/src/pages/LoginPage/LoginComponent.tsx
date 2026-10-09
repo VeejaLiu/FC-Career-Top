@@ -14,12 +14,16 @@ import logo from '../../assets/image/logo.svg';
 export const LoginComponent = ({ setIsLogin }: { setIsLogin: any }) => {
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   async function doLogin() {
+    if (submitting) return;
+    setSubmitting(true);
     const response = await UserApis.loginUser({
       email: loginEmail.trim(),
       password: loginPassword,
     });
+    setSubmitting(false);
     const { success, message, data } = response;
     if (success) {
       // {
@@ -71,10 +75,13 @@ export const LoginComponent = ({ setIsLogin }: { setIsLogin: any }) => {
 
           {/* Form */}
           <div className={styles.form}>
-            <Form className={styles.inputs}>
+            <Form className={styles.inputs} onSubmit={doLogin}>
               <Form.Input
                 label={{ text: localeData.usernameEmail }}
                 field="email"
+                type="email"
+                autoComplete="email"
+                inputMode="email"
                 placeholder={localeData.usernameEmailPlaceholder}
                 fieldStyle={{ alignSelf: 'stretch', padding: 0 }}
                 onChange={(e) => setLoginEmail(e)}
@@ -83,14 +90,21 @@ export const LoginComponent = ({ setIsLogin }: { setIsLogin: any }) => {
                 mode={'password'}
                 label={{ text: localeData.password }}
                 field="password"
+                autoComplete="current-password"
                 placeholder={localeData.passwordPlaceholder}
                 fieldStyle={{ alignSelf: 'stretch', padding: 0 }}
                 onChange={(e) => setLoginPassword(e)}
               />
+              <Button
+                theme="solid"
+                className={styles.button}
+                htmlType="submit"
+                loading={submitting}
+                disabled={submitting}
+              >
+                {localeData.login}
+              </Button>
             </Form>
-            <Button theme="solid" className={styles.button} onClick={doLogin}>
-              {localeData.login}
-            </Button>
             <Button
               theme="outline"
               className={styles.button}

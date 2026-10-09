@@ -55,11 +55,13 @@ export default {
     Hello: '你好， ',
     Logout: '退出登录',
   },
+  AsyncState: { error: '无法加载数据，请检查网络连接后重试。', retry: '重试' },
   NoDataComponent: {
     prefix: '暂无数据哦。请前往',
     getStartedPage: '快速开始',
     suffix: '开启您的精彩旅程',
   },
+  PlayerTrendsPage: { FOR: '前锋', MID: '中场', DEF: '后卫', GK: '门将' },
   PlayerListTable: {
     name: '名字',
     age: '年龄',
@@ -217,6 +219,11 @@ export default {
     },
   },
   GetStartedPage: {
+    NEED_HELP: '遇到问题？',
+    JOIN_DISCORD: '加入 Discord 社区',
+    SCRIPT_LOADING: '正在准备你的脚本…',
+    SCRIPT_ERROR_HELP: '请检查设置中的游戏版本和登录状态，然后重试。',
+    RETRY: '重试',
     EMAIL_UNVERIFIED: {
       Prefix: '您尚未验证您的电子邮件地址。请前往',
       SettingsPage: '设置页面',

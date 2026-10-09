@@ -16,7 +16,6 @@ function ApiSecretKeyComponent({
 
   async function fetchSecretKey() {
     const key = await UserApis.getSecretKey();
-    console.log(`[fetchSecretKey] key: ${key}`);
     setSecretKey(key);
     setIsLoading(false);
   }
@@ -24,7 +23,6 @@ function ApiSecretKeyComponent({
   async function doRefreshSecretKey() {
     setIsLoading(true);
     const key = await UserApis.doRefreshSecretKey();
-    console.log(`[doRefreshSecretKey] key: ${key}`);
     setSecretKey(key);
     Notification.success({
       title: 'Success',
@@ -41,13 +39,13 @@ function ApiSecretKeyComponent({
   return (
     <div className="w-full p-4 border border-gray-200 rounded-md">
       <div className={'font-bold'}>{localeData?.APISecretKey}</div>
-      <div className="flex mt-4">
-        <div style={{ width: '300px' }}>{localeData?.APISecretKey}:</div>
+      <div className="settings-key-row">
+        <div className="settings-field-label">{localeData?.APISecretKey}:</div>
         <Input
-          // mode="password"
+          mode="password"
+          aria-label={localeData.APISecretKey}
           disabled={true}
           // contentEditable="false"
-          defaultValue={secretKey}
           value={secretKey}
         ></Input>
 
@@ -98,6 +96,7 @@ function ApiSecretKeyComponent({
             className={
               'ml-2 button px-2 rounded bg-gray-200 hover:bg-gray-300 content-center items-center flex whitespace-nowrap'
             }
+            disabled={isLoading}
             onClick={async () => {
               await doRefreshSecretKey();
             }}

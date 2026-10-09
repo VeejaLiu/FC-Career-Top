@@ -1,102 +1,89 @@
-import React, { useEffect, useState } from 'react';
-import { PlayerApis, PlayerOverall } from '../../service/PlayerApis.ts';
-import { getColorByPositionType } from '../../common/player-helper.ts';
-import { LoadingComponent } from '../../components/Other.tsx';
-import { RefreshIcon } from '../../common/icons.tsx';
+import { useEffect, useMemo } from 'react';
+import { Button, LocaleConsumer, Select } from '@douyinfe/semi-ui';
+import { IconRefresh } from '@douyinfe/semi-icons';
+import { PlayerApis } from '../../service/PlayerApis';
+import { getColorByPositionType } from '../../common/player-helper';
+import { comparePlayerPosition } from '../../common/player-sort';
+import { MOBILE_QUERY, useMediaQuery } from '../../hooks/useMediaQuery';
+import { useAsyncResource } from '../../hooks/useAsyncResource';
 
-interface PlayerPickerComponentProps {
+interface Props {
   playerID: number;
   setPlayerID: (id: number) => void;
 }
 
-const PlayerPickerComponent: React.FC<PlayerPickerComponentProps> = ({
+export default function PlayerPickerComponent({
   playerID,
   setPlayerID,
-}) => {
-  const [playerList, setPlayerList] = useState<PlayerOverall[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const getPlayerList = async () => {
-    setIsLoading(true);
-    const players: PlayerOverall[] = await PlayerApis.getPlayerList();
-    setPlayerList(players);
-    if (!playerID && players.length > 0) {
-      setPlayerID(players[0].playerID);
-    }
-    setIsLoading(false);
-  };
-
+}: Props) {
+  const {
+    data: players,
+    loading,
+    error,
+    reload,
+  } = useAsyncResource(PlayerApis.getPlayerList);
+  const isMobile = useMediaQuery(MOBILE_QUERY);
+  const sortedPlayers = useMemo(
+    () => [...(players || [])].sort(comparePlayerPosition),
+    [players],
+  );
   useEffect(() => {
-    getPlayerList().then();
-  }, []);
-
-  const handlePlayerSelect = (id: number) => {
-    setPlayerID(id);
-  };
+    if (!playerID && sortedPlayers.length)
+      setPlayerID(sortedPlayers[0].playerID);
+  }, [playerID, sortedPlayers, setPlayerID]);
 
   return (
-    <div className="flex sticky top-0 z-20 items-center min-h-12">
-      {isLoading ? (
-        <LoadingComponent />
-      ) : (
-        <div className="flex items-center w-full h-full bg-white">
-          {/* Player list */}
-          <div className="flex p-1 flex-wrap flex-grow">
-            {playerList
-              ?.sort((a: PlayerOverall, b: PlayerOverall) => {
-                const positionTypeMap = {
-                  GK: 1,
-                  DEF: 2,
-                  MID: 3,
-                  FOR: 4,
-                };
-                return (
-                  positionTypeMap[a.positionType] -
-                    positionTypeMap[b.positionType] ||
-                  a.position1.localeCompare(b.position1)
-                );
-              })
-              .map((player: any) => {
-                return (
-                  <div
-                    className={`inline-block
-                     py-1 px-2 m-1
-                     bg-gray-200 hover:bg-[#aaef88]
-                     cursor-pointer whitespace-nowrap
-                     border rounded-full
-                     text-gray-500
-                     ${player.playerID === playerID && 'bg-[#aaef88] border border-black text-black'}
-                     `}
-                    key={player.playerID}
-                    onClick={() => handlePlayerSelect(player.playerID)}
+    <LocaleConsumer componentName="PlayerDetailPage">
+      {(locale: any) => (
+        <div className="player-picker">
+          {isMobile ? (
+            <Select
+              aria-label={locale.BasicInfo.PlayerName}
+              placeholder={locale.BasicInfo.PlayerName}
+              filter
+              loading={loading}
+              value={playerID || undefined}
+              onChange={(value) => setPlayerID(Number(value))}
+              optionList={sortedPlayers.map((player) => ({
+                value: player.playerID,
+                label: `${player.position1} · ${player.playerName} (#${player.playerID})`,
+              }))}
+            />
+          ) : (
+            <div className="player-picker-chips">
+              {sortedPlayers.map((player) => (
+                <button
+                  type="button"
+                  className={`player-picker-chip ${playerID === player.playerID ? 'selected' : ''}`}
+                  key={player.playerID}
+                  aria-pressed={playerID === player.playerID}
+                  onClick={() => setPlayerID(player.playerID)}
+                >
+                  <span
+                    style={{
+                      color: getColorByPositionType(player.positionType),
+                    }}
                   >
-                    <span
-                      className="player-position font-bold mr-1"
-                      style={{
-                        color: getColorByPositionType(player.positionType),
-                      }}
-                    >
-                      {player.position1}
-                    </span>
-                    <span>{player.playerName}</span>
-                  </div>
-                );
-              })}
-          </div>
-          {/* Refresh button */}
-          <div
-            className="text-center items-center ml-auto mr-2 cursor-pointer text-green-900 p-2 rounded-full border hover:bg-gray-200"
-            title="Click to refresh player list"
-            onClick={() => {
-              getPlayerList().then();
-            }}
-          >
-            <RefreshIcon classname="h-6 w-6" />
-          </div>
+                    {player.position1}
+                  </span>{' '}
+                  {player.playerName}
+                </button>
+              ))}
+            </div>
+          )}
+          <LocaleConsumer componentName="SettingsPage">
+            {(settings: any) => (
+              <Button
+                icon={<IconRefresh />}
+                aria-label={settings.Refresh}
+                theme={error ? 'solid' : 'borderless'}
+                loading={loading}
+                onClick={reload}
+              />
+            )}
+          </LocaleConsumer>
         </div>
       )}
-    </div>
+    </LocaleConsumer>
   );
-};
-
-export default PlayerPickerComponent;
+}

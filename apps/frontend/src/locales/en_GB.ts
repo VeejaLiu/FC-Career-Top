@@ -58,10 +58,20 @@ export default {
     Hello: 'Hi, ',
     Logout: 'Sign out',
   },
+  AsyncState: {
+    error: 'Could not load data. Check your connection and try again.',
+    retry: 'Retry',
+  },
   NoDataComponent: {
     prefix: 'Nothing to display yet. Visit our',
     getStartedPage: 'Get Started',
     suffix: 'to begin your journey.',
+  },
+  PlayerTrendsPage: {
+    FOR: 'Forwards',
+    MID: 'Midfielders',
+    DEF: 'Defenders',
+    GK: 'Goalkeepers',
   },
   PlayerListTable: {
     name: 'Name',
@@ -231,6 +241,12 @@ export default {
   },
 
   GetStartedPage: {
+    NEED_HELP: 'Need a hand?',
+    JOIN_DISCORD: 'Join the Discord community',
+    SCRIPT_LOADING: 'Preparing your script…',
+    SCRIPT_ERROR_HELP:
+      'Check your game version in Settings and your login status, then try again.',
+    RETRY: 'Try again',
     EMAIL_UNVERIFIED: {
       Prefix: 'You have not verified your email address. Please go to',
       SettingsPage: 'Settings Page',
