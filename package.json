@@ -1,0 +1,37 @@
+{
+  "name": "fc-career-top",
+  "version": "1.0.0",
+  "private": true,
+  "description": "FC Career Top website, player dashboard, and API",
+  "packageManager": "pnpm@10.5.0",
+  "engines": {
+    "node": ">=22.13.1 <23",
+    "pnpm": ">=10.5.0 <11"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --stream -r dev",
+    "dev:frontend": "pnpm --filter @fc-career-top/frontend dev",
+    "dev:website": "pnpm --filter @fc-career-top/website dev",
+    "dev:backend": "pnpm --filter @fc-career-top/backend dev",
+    "build": "pnpm -r build",
+    "build:frontend": "pnpm --filter @fc-career-top/frontend build",
+    "build:website": "pnpm --filter @fc-career-top/website build",
+    "build:backend": "pnpm --filter @fc-career-top/backend build",
+    "typecheck": "pnpm -r typecheck",
+    "start:backend": "pnpm --filter @fc-career-top/backend start:prod",
+    "start:website": "pnpm --filter @fc-career-top/website start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VeejaLiu/FC-Career-Top.git"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp",
+      "sqlite3",
+      "@sequelize/sqlite3",
+      "event-loop-stats"
+    ]
+  }
+}

@@ -11,12 +11,12 @@ function ContactUsPage() {
             <p className="mt-2 text-gray-600 dark:text-gray-300">
               {/* <JoinGithub /> */}
               <a
-                href="https://github.com/VeejaLiu/FIFA-Career-Dashboard-Frontend"
+                href="https://github.com/VeejaLiu/FC-Career-Top"
                 title="Click to visit our Github"
                 target="_blank"
                 className="text-blue-500 dark:text-blue-400"
               >
-                VeejaLiu/FIFA-Career-Dashboard-Frontend
+                VeejaLiu/FC-Career-Top
               </a>
             </p>
           </div>

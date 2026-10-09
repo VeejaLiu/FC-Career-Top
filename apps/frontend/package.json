@@ -1,22 +1,22 @@
 {
-  "name": "fifa-career-dashboard-frontend",
+  "name": "@fc-career-top/frontend",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "engines": {
-    "node": "^22.13.1",
-    "npm": "^10.9.2",
-    "pnpm": "^10.5.0"
+    "node": ">=22.13.1 <23",
+    "pnpm": ">=10.5.0 <11"
   },
   "scripts": {
     "dev": "vite",
     "dev-expose": "vite --host --port 3000",
     "prod-expose": "vite --host --port 3000 --mode production",
     "build": "tsc && vite build",
-    "lint": "eslint antd-demo --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "preview-expose": "vite preview --host --port 3001",
-    "prettier-format": "prettier --write ."
+    "prettier-format": "prettier --write .",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@douyinfe/semi-icons": "^2.63.1",
@@ -47,5 +47,10 @@
     "tailwindcss": "^3.4.17",
     "typescript": "^5.5.4",
     "vite": "5.4.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VeejaLiu/FC-Career-Top.git",
+    "directory": "apps/frontend"
   }
 }

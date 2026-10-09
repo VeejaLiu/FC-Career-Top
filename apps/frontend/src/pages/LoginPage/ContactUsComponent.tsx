@@ -10,8 +10,8 @@ const contactLinks = [
   },
   {
     label: 'GitHub',
-    href: 'https://github.com/VeejaLiu/FIFA-Career-Dashboard-Frontend',
-    text: 'VeejaLiu/FCT-Frontend',
+    href: 'https://github.com/VeejaLiu/FC-Career-Top',
+    text: 'VeejaLiu/FC-Career-Top',
     icon: <IconGithubLogo />,
   },
   {

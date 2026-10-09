@@ -1,21 +1,12 @@
-cd /home/opc/FIFA-Career-Dashboard-Frontend
-git checkout -f master
-git fetch origin
-git reset --hard origin/master
-pnpm install
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Prepare the consolidated checkout. Deploy and restart specific services only
+# after their working directories and environment configuration are migrated.
+repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../../.." && pwd)"
+cd "$repository_root"
+
+pnpm install --frozen-lockfile
 pnpm build
 
-cd /home/opc/FIFA-Career-Dashboard
-git checkout -f master
-git fetch origin
-git reset --hard origin/master
-pnpm install
-
-cd /home/opc/FIFA-Career-Dashboard-Website
-git checkout -f master
-git fetch origin
-git reset --hard origin/master
-pnpm install
-pnpm build
-
-pm2 restart all
+printf '%s\n' 'FC Career Top builds are ready. No services were restarted.'

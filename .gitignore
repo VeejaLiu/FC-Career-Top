@@ -1,0 +1,16 @@
+node_modules/
+.pnpm-store/
+dist/
+.next/
+out/
+coverage/
+logs/
+*.log
+*.tsbuildinfo
+.DS_Store
+.idea/
+.env
+.env.local
+.env.*.local
+apps/backend/.env*
+!apps/backend/.env.example

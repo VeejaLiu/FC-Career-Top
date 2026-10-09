@@ -8,6 +8,11 @@ import Image from 'next/image';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { MenuIcon } from '@/constant/icons';
 
+export const metadata = {
+  title: 'FC Career Top',
+  description: 'Automatically track player development in EA FC Career Mode.',
+};
+
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html>

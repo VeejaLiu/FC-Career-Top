@@ -1,4 +1,4 @@
-# FIFA-Career-Top-Frontend
+# FC Career Top Frontend
 
 A fully functional web application that allows you to track the progress of your players in FIFA 24/25 Career Mode.
 
