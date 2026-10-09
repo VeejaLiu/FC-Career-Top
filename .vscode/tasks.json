@@ -1,0 +1,44 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "FCT: 启动整个项目",
+      "type": "process",
+      "command": "bash",
+      "args": ["${workspaceFolder}/.vscode/run-pnpm.sh", "dev"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "dependsOn": "FCT: 初始化本地数据库",
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": [],
+      "runOptions": { "instanceLimit": 1 },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      },
+      "detail": "启动球员管理界面（3000）、官网（3002）和本地 API（8888）。"
+    },
+    {
+      "label": "FCT: 初始化本地数据库",
+      "type": "process",
+      "command": "bash",
+      "args": ["${workspaceFolder}/.vscode/run-pnpm.sh", "db:migrate"],
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": { "CI": "true" }
+      },
+      "problemMatcher": [],
+      "presentation": { "reveal": "silent", "panel": "dedicated" },
+      "detail": "应用尚未执行的本地 D1 迁移；已执行的迁移会跳过。"
+    },
+    {
+      "label": "FCT: 安装依赖",
+      "type": "process",
+      "command": "bash",
+      "args": ["${workspaceFolder}/.vscode/run-pnpm.sh", "install", "--frozen-lockfile"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    }
+  ]
+}
