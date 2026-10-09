@@ -6,7 +6,7 @@
 
 | Tool | Version / purpose |
 | --- | --- |
-| Node.js | 22.13.1, as pinned in `.nvmrc` |
+| Node.js | 24.21.0 LTS, as pinned in root and application `.nvmrc` files |
 | pnpm | 10.5.0, as pinned in `package.json` |
 | MySQL | 8.4 for the backend database |
 | Docker | Runs the pinned Flyway CLI during migrations |
@@ -21,6 +21,7 @@ from the game machine; their connection settings must match the network you use.
 git clone https://github.com/VeejaLiu/FC-Career-Top.git
 cd FC-Career-Top
 # With nvm on macOS/Linux, select the repository's Node version:
+nvm install
 nvm use
 corepack enable
 pnpm install --frozen-lockfile
@@ -28,7 +29,10 @@ cp apps/backend/.env.example apps/backend/.env
 ```
 
 Install dependencies from the repository root. Workspace commands run each app
-with its own application directory as the working directory.
+with its own application directory as the working directory. All four package
+manifests require Node.js `>=24.21.0 <25`; `.npmrc` enforces the engine range and
+the pinned pnpm 10.5.0 version during installation and workspace commands.
+The three applications use Node.js 24 type definitions and TypeScript 5.7.
 
 ## Environment configuration
 

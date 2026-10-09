@@ -53,7 +53,7 @@ These application captures were taken on March 26, 2025.
 
 ## Quick start: run locally
 
-You need **Node.js 22.13.1**, **pnpm 10.5.0**, **MySQL 8.4**, and running **Docker**
+You need **Node.js 24.21.0**, **pnpm 10.5.0**, **MySQL 8.4**, and running **Docker**
 for Flyway migrations. Use the [development guide](docs/DEVELOPMENT.md) for complete
 environment and email setup.
 

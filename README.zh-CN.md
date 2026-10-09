@@ -40,7 +40,7 @@
 
 ## 本地运行
 
-需要 Node.js 22.13.1、pnpm 10.5.0、MySQL 8.4，以及用于 Flyway 迁移的 Docker。
+需要 Node.js 24.21.0、pnpm 10.5.0、MySQL 8.4，以及用于 Flyway 迁移的 Docker。
 详细配置说明见[开发指南](docs/DEVELOPMENT.md)。
 
 ```sh

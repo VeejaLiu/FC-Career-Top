@@ -5,7 +5,7 @@
   "description": "FC Career Top website, player dashboard, and API",
   "packageManager": "pnpm@10.5.0",
   "engines": {
-    "node": ">=22.13.1 <23",
+    "node": ">=24.21.0 <25",
     "pnpm": ">=10.5.0 <11"
   },
   "scripts": {
