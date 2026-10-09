@@ -1,84 +1,123 @@
 # FC Career Top
 
-Automatically track player development in EA FC 24/25 Career Mode. Live Editor
-Lua scripts collect squad data, the API stores player history, and the dashboard
-shows ratings, potential, attributes, trends, and change notifications.
+[English](README.md) · [简体中文](README.zh-CN.md) · [Documentation](docs/README.md)
 
-This repository combines the original FCT-Frontend, FCT-Website, and FCT-Backend
-repositories into one pnpm workspace. Each application keeps its own framework,
-configuration, and deployment target.
+Track your squad's development across seasons in **EA FC 24/25 Manager Career Mode**.
+FC Career Top uses Live Editor Lua scripts to collect player data automatically,
+then turns those snapshots into player lists, growth charts, detailed attributes,
+and change notifications.
 
-| Application | Directory | Technology | Development address |
-| --- | --- | --- | --- |
-| Player dashboard | [apps/frontend](apps/frontend) | React 18, Vite, Semi UI, Recharts | http://localhost:3000 |
-| Public website | [apps/website](apps/website) | Next.js 15, React 19, Tailwind CSS | http://localhost:3002 |
-| API and notifications | [apps/backend](apps/backend) | Express 5, Sequelize, MySQL, WebSocket | http://localhost:8888 |
+**Current availability:** there is no public hosted instance. Run the project
+locally or host your own instance using the guides below.
 
-## Getting started
+## Features
 
-Use Node.js 22.13.1 and pnpm 10.5.0. With nvm and Corepack installed:
+- **Automatic tracking:** collect a snapshot when the script starts and after each in-game week.
+- **Squad overview:** search and sort players by age, position, overall rating, and potential.
+- **Growth charts:** follow overall rating and potential across in-game dates.
+- **Player details:** view attributes, skill moves, weak foot, and available PlayStyles.
+- **Position leaders:** highlight the top three players by overall rating or potential at each position.
+- **Change notifications:** receive overall/potential, skill-move, and weak-foot updates.
+- **Game selection:** switch between FC 24 and FC 25 data.
+- **Five interface languages:** English, Simplified Chinese, French, German, and Japanese.
+
+The game integration requires a **Windows PC** and a compatible
+[FC 24 Live Editor](https://github.com/xAranaktu/FC-24-Live-Editor) or
+[FC 25 Live Editor](https://github.com/xAranaktu/FC-25-Live-Editor).
+See the [player guide](docs/USER_GUIDE.md) for the full setup and current limitations.
+
+## Screenshots
+
+These application captures were taken on March 26, 2025.
+
+**Player list**
+
+<img src="docs/assets/screenshots/player-list.jpeg" alt="Squad list with overall ratings, potential, positions, and ranking badges" width="900" />
+
+**Player growth trends**
+
+<img src="docs/assets/screenshots/player-trends.jpg" alt="Charts showing player overall rating and potential over time" width="900" />
+
+<details>
+<summary>Player details and game setup</summary>
+
+**Player details**
+
+<img src="docs/assets/screenshots/player-details.jpeg" alt="Individual player attributes and growth chart" width="900" />
+
+**Get Started**
+
+<img src="docs/assets/screenshots/get-started.jpeg" alt="Live Editor setup instructions and generated Lua script" width="900" />
+
+</details>
+
+## Quick start: run locally
+
+You need **Node.js 22.13.1**, **pnpm 10.5.0**, **MySQL 8.4**, and running **Docker**
+for Flyway migrations. Use the [development guide](docs/DEVELOPMENT.md) for complete
+environment and email setup.
 
 ```sh
-nvm use
+git clone https://github.com/VeejaLiu/FC-Career-Top.git
+cd FC-Career-Top
 corepack enable
 pnpm install --frozen-lockfile
 cp apps/backend/.env.example apps/backend/.env
 ```
 
-Edit `apps/backend/.env` with your local database credentials, a random JWT secret,
-and a Resend API key. Create an empty MySQL 8.4 database, start Docker, and run
-`pnpm db:migrate`. See the [database guide](apps/backend/db/README.md) for setup
-and future versioned SQL changes. The backend expects its
-configuration in `apps/backend/.env`; root commands run each app in its own directory.
+Edit the backend environment file with your MySQL connection, JWT secret, and
+Resend settings. Create an empty database with your MySQL client:
 
-The frontend and website include public development and production URLs. Override
-them in the application's `.env.local` or `.env.development.local` when needed.
-All `VITE_*` and `NEXT_PUBLIC_*` values are public browser configuration; never put
-credentials in them. Backend `.env` files are ignored by Git.
+```sql
+CREATE DATABASE fcd CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+```
 
 ```sh
-# Start all three applications
+pnpm db:migrate
 pnpm dev
-
-# Or start one application
-pnpm dev:frontend
-pnpm dev:website
-pnpm dev:backend
 ```
 
-Database schema changes are applied explicitly with `pnpm db:migrate` before
-starting the backend. Use `pnpm db:info` to inspect versions and `pnpm db:validate`
-to check applied migrations.
+| Application | Local address |
+| --- | --- |
+| Player dashboard | http://localhost:3000 |
+| Public website | http://localhost:3002 |
+| Backend health check | http://localhost:8888/api/health_check |
 
-The website uses port 3002 during development so it can run alongside the dashboard.
-Production URLs and API routes remain the same. See the
-[frontend guide](apps/frontend/README.md) for Live Editor setup and screenshots.
+Open the dashboard, register an account, and verify your email in **Settings**.
+Select your game version, then copy the account-specific Lua script from
+**Get Started** and run it in Live Editor. The [player guide](docs/USER_GUIDE.md)
+walks through these steps.
 
-## Build and check
+## Documentation
 
-```sh
-pnpm typecheck
-pnpm build
+| Guide | What it covers |
+| --- | --- |
+| [Player guide](docs/USER_GUIDE.md) | Live Editor setup, tracking, notifications, and troubleshooting |
+| [Development](docs/DEVELOPMENT.md) | Install, environment variables, commands, and project architecture |
+| [Database migrations](docs/DATABASE.md) | Flyway setup and adding versioned SQL migrations |
+| [Deployment](docs/DEPLOYMENT.md) | Build outputs and configuration for a first deployment |
+| [Application guides](docs/README.md#application-guides) | Frontend, website, and backend responsibilities |
 
-# Build just one application
-pnpm build:frontend
-pnpm build:website
-pnpm build:backend
+## Repository structure
+
+```text
+apps/
+  frontend/     React 18 player dashboard
+  website/      Next.js 15 / React 19 public website
+  backend/      Express API, MySQL models, and Flyway migrations
+docs/           Shared guides, screenshots, and historical material
+scripts/        Workspace helpers
 ```
 
-The frontend outputs `apps/frontend/dist`, Next.js outputs `apps/website/.next`,
-and the backend outputs `apps/backend/dist`. After building, run
-`pnpm start:backend` or `pnpm start:website`. Next.js production serving defaults
-to port 3000; set `PORT` if a different port is required.
+The three applications share one pnpm workspace and lockfile. Their original
+default-branch histories are preserved; see the [consolidation record](docs/archive/MONOREPO.md).
 
-## Repository history and deployment
+## Contributing and support
 
-The original frontend repository is the canonical repository, renamed to
-**FC-Career-Top**. The default-branch commit histories from all three repositories
-remain reachable without rewriting commit IDs. Frontend release tags are retained.
-The original backend license remains at [apps/backend/LICENSE](apps/backend/LICENSE)
-and applies to that application; this migration does not change licensing.
+Report bugs and suggest improvements through [GitHub Issues](https://github.com/VeejaLiu/FC-Career-Top/issues).
+For development work, follow the setup and checks in the [development guide](docs/DEVELOPMENT.md#contributing).
 
-See [docs/MONOREPO.md](docs/MONOREPO.md) for source revisions, deployment roots,
-and migration notes. Database changes and production deployment are separate from
-this repository consolidation.
+## License
+
+The backend's existing license is at [apps/backend/LICENSE](apps/backend/LICENSE).
+No repository-wide license has been added for the other applications.

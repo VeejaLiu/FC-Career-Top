@@ -1,3 +1,11 @@
+# Historical YouTube script
+
+Original Chinese/English production draft. Hosting, registration, user counts,
+and future plans below describe an earlier version of the project. Current
+instructions are in the [player guide](../../USER_GUIDE.md).
+
+---
+
 大家好，欢迎来到我的频道。 我是Veeja，一个专注在编程、游戏、足球上的新人博主。
 Hello everyone, welcome to my channel! I'm Veeja, a new content creator focused on programming, gaming, and football.
 

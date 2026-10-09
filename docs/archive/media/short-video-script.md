@@ -1,3 +1,11 @@
+# Historical short-video script
+
+Original Chinese/English production draft. Hosting, registration, user counts,
+and future plans below describe an earlier version of the project. Current
+instructions are in the [player guide](../../USER_GUIDE.md).
+
+---
+
 如何使用FCT记录你的球员成长？
 首先，前往www.fccareer.top，点击GO TO APP。
 注册一个账号，登录进去。
