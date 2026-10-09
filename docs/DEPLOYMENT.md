@@ -36,8 +36,14 @@ The committed production environment files contain the project's planned
 files before building:
 
 - Dashboard: `VITE_APP_BACKEND_URL`, `VITE_POST_PLAYER_URL`, and `VITE_WS_URL`.
-- Website: `NEXT_PUBLIC_BACKEND_URL` and `NEXT_PUBLIC_SITE_URL`.
-- Sitemap generation: `SITE_URL`, read by `apps/website/next-sitemap.config.js`.
+- Website: `NEXT_PUBLIC_BACKEND_URL`.
+
+For sitemap generation, set `SITE_URL` in the build process environment, read by
+`apps/website/next-sitemap.config.js`. For example:
+
+```sh
+SITE_URL=https://www.example.com pnpm build:website
+```
 
 The website's **Go to App** link is currently written in
 [layout.tsx](../apps/website/src/app/layout.tsx). Update it if your dashboard uses

@@ -61,7 +61,7 @@ them in `.env.development.local` when using different hosts or ports.
 | Application | Public settings |
 | --- | --- |
 | Dashboard | `VITE_APP_BACKEND_URL` for REST requests; `VITE_POST_PLAYER_URL` for Lua uploads; `VITE_WS_URL` for notifications |
-| Website | `NEXT_PUBLIC_BACKEND_URL` for public statistics; `NEXT_PUBLIC_SITE_URL` for its public site configuration |
+| Website | `NEXT_PUBLIC_BACKEND_URL` for public statistics |
 
 API and upload base URLs omit `/api`; application code appends the route prefix.
 All `VITE_*` and `NEXT_PUBLIC_*` values are visible to browsers. Backend credentials
