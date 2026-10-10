@@ -279,10 +279,30 @@ export default {
     AccountChangePassword: 'Changer de mot de passe',
     AccountClickToChange: 'Cliquez pour modifier',
 
-    OldPassword: 'Ancien mot de passe',
+    OldPassword: 'Mot de passe actuel',
     NewPassword: 'Nouveau mot de passe',
     ConfirmNewPassword: 'Confirmer le nouveau mot de passe',
-    ChangePassword: 'Enregistrer',
+    ChangePassword: 'Modifier le mot de passe',
+    PasswordForm: {
+      InvalidFormat:
+        'Choisissez un mot de passe qui respecte les critères ci-dessus.',
+      Required: 'Veuillez remplir ce champ.',
+      Rules:
+        'Au moins 6 caractères, avec trois catégories parmi : majuscules, minuscules, chiffres et caractères spéciaux.',
+      TooLong: 'Utilisez au maximum 72 octets.',
+      Show: 'Afficher le mot de passe',
+      Hide: 'Masquer le mot de passe',
+      Cancel: 'Annuler',
+      Submitting: 'Modification…',
+      SignInNotice: 'Vous devrez vous reconnecter après la modification.',
+      SuccessTitle: 'Mot de passe modifié',
+      SuccessDescription: 'Reconnectez-vous avec votre nouveau mot de passe.',
+      SignIn: 'Se connecter',
+      TryAgain:
+        'Modification impossible. Vérifiez votre connexion et réessayez.',
+      RateLimited: 'Trop de tentatives. Veuillez réessayer plus tard.',
+      SessionExpired: 'Votre session a expiré. Veuillez vous reconnecter.',
+    },
     ChangePasswordNotification: {
       ErrorTitle: 'Erreur',
       INVALID_PASSWORD: 'Veuillez remplir tous les champs',

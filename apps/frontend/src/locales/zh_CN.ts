@@ -252,11 +252,29 @@ export default {
     AccountChangePassword: '修改密码',
     AccountClickToChange: '点击修改',
 
-    OldPassword: '旧密码',
+    OldPassword: '当前密码',
     NewPassword: '新密码',
     ConfirmNewPassword: '确认新密码',
-    ChangePassword: '保存',
+    ChangePassword: '修改密码',
 
+    PasswordForm: {
+      InvalidFormat: '请按上述要求设置新密码。',
+      Required: '请填写此项',
+      Rules:
+        '至少 6 个字符，并包含大写字母、小写字母、数字、特殊符号中的至少三类。',
+      TooLong: '密码过长，请控制在 72 字节以内。',
+      Show: '显示密码',
+      Hide: '隐藏密码',
+      Cancel: '取消',
+      Submitting: '正在修改…',
+      SignInNotice: '修改后需要重新登录。',
+      SuccessTitle: '密码已更新',
+      SuccessDescription: '请使用新密码重新登录。',
+      SignIn: '去登录',
+      TryAgain: '修改失败，请检查网络后重试。',
+      RateLimited: '操作过于频繁，请稍后重试。',
+      SessionExpired: '登录已过期，请重新登录后修改密码。',
+    },
     ChangePasswordNotification: {
       ErrorTitle: '错误',
       INVALID_PASSWORD: '请填写所有字段',

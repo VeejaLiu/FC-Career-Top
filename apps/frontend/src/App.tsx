@@ -15,6 +15,9 @@ const PlayerDetailPage = lazy(
   () => import('./pages/PlayerDetailPage/PlayerDetailPage'),
 );
 const SettingsPage = lazy(() => import('./pages/SettingsPage/SettingsPage'));
+const ChangePasswordPage = lazy(
+  () => import('./pages/SettingsPage/ChangePasswordPage'),
+);
 const GetStartedPage = lazy(
   () => import('./pages/GetStartedPage/GetStartedPage'),
 );
@@ -42,6 +45,7 @@ export default function App() {
           <Route path="players-trends" element={<PlayerTrendsPage />} />
           <Route path="players-detail" element={<PlayerDetailPage />} />
           <Route path="settings" element={<SettingsPage />} />
+          <Route path="settings/password" element={<ChangePasswordPage />} />
           <Route path="get-started" element={<GetStartedPage />} />
           <Route
             path="*"

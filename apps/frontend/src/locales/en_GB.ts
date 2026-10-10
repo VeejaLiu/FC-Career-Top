@@ -275,10 +275,31 @@ export default {
     AccountChangePassword: 'Change Password',
     AccountClickToChange: 'Click to change',
 
-    OldPassword: 'Old Password',
+    OldPassword: 'Current password',
     NewPassword: 'New Password',
     ConfirmNewPassword: 'Confirm New Password',
-    ChangePassword: 'Save',
+    ChangePassword: 'Change password',
+    PasswordForm: {
+      InvalidFormat: 'Choose a password that meets the requirements above.',
+      Required: 'This field is required.',
+      Rules:
+        'At least 6 characters, using at least three of: uppercase letters, lowercase letters, numbers and special characters.',
+      TooLong: 'Use no more than 72 bytes.',
+      Show: 'Show password',
+      Hide: 'Hide password',
+      Cancel: 'Cancel',
+      Submitting: 'Updating…',
+      SignInNotice:
+        'You will need to sign in again after changing your password.',
+      SuccessTitle: 'Password updated',
+      SuccessDescription: 'Sign in again with your new password.',
+      SignIn: 'Sign in',
+      TryAgain:
+        'Could not update your password. Check your connection and try again.',
+      RateLimited: 'Too many attempts. Please try again later.',
+      SessionExpired:
+        'Your session has expired. Sign in again to change your password.',
+    },
     ChangePasswordNotification: {
       ErrorTitle: 'Error',
       INVALID_PASSWORD: 'Please fill in all fields',

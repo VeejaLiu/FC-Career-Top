@@ -65,3 +65,158 @@
     flex-basis: 100%;
   }
 }
+
+.settings-password-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.password-page {
+  max-width: 560px;
+}
+.password-card {
+  min-width: 0;
+  padding: 24px;
+  border: 1px solid var(--semi-color-border);
+  border-radius: 6px;
+  background: var(--semi-color-bg-0);
+}
+.password-card h1 {
+  margin: 0 0 24px;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.password-field {
+  margin-bottom: 18px;
+}
+.password-field label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.password-input {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  border: 1px solid var(--semi-color-border);
+  border-radius: 4px;
+  background: var(--semi-color-fill-0);
+}
+.password-input:focus-within {
+  border-color: var(--app-accent, #20824d);
+  box-shadow: 0 0 0 2px #20824d1a;
+}
+.password-input-invalid {
+  border-color: var(--semi-color-danger);
+}
+.password-input-invalid:focus-within {
+  border-color: var(--semi-color-danger);
+  box-shadow: 0 0 0 2px var(--semi-color-danger-light-default);
+}
+.password-input input {
+  width: 100%;
+  min-width: 0;
+  height: 44px;
+  padding: 10px 12px;
+  border: 0;
+  outline: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--semi-color-text-0);
+  font: inherit;
+  font-size: 16px;
+}
+.password-input button {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--semi-color-text-2);
+  cursor: pointer;
+}
+.password-input button:hover {
+  background: var(--semi-color-fill-1);
+}
+.password-hint,
+.password-error {
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.password-hint {
+  color: var(--semi-color-text-2);
+}
+.password-error {
+  color: var(--semi-color-danger);
+}
+.password-error:empty {
+  margin: 0;
+}
+.password-session-note {
+  margin-top: 24px;
+}
+.password-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+}
+.password-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 0;
+  padding: 9px 16px;
+  border: 1px solid var(--semi-color-border);
+  border-radius: 4px;
+  background: var(--semi-color-bg-0);
+  color: var(--semi-color-text-0);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.password-button-primary {
+  border-color: var(--app-accent, #20824d);
+  background: var(--app-accent, #20824d);
+  color: #fff;
+}
+.password-button:disabled,
+.password-input button:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+.password-success {
+  text-align: center;
+}
+.password-success-icon {
+  color: var(--app-accent, #20824d);
+  margin-bottom: 16px;
+}
+.password-success h1 {
+  margin-bottom: 8px;
+}
+.password-success p {
+  margin: 0 0 24px;
+  color: var(--semi-color-text-2);
+}
+@media (max-width: 767px) {
+  .password-card {
+    padding: 20px 16px;
+  }
+  .password-actions > * {
+    flex: 1;
+  }
+}

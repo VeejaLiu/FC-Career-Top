@@ -273,10 +273,29 @@ export default {
     AccountChangePassword: 'パスワードの変更',
     AccountClickToChange: 'クリックして変更',
 
-    OldPassword: '古いパスワード',
+    OldPassword: '現在のパスワード',
     NewPassword: '新しいパスワード',
     ConfirmNewPassword: '新しいパスワードの確認',
-    ChangePassword: '保存',
+    ChangePassword: 'パスワードを変更',
+    PasswordForm: {
+      InvalidFormat: '上記の条件を満たすパスワードを入力してください。',
+      Required: '入力してください。',
+      Rules:
+        '6文字以上で、大文字・小文字・数字・特殊記号のうち3種類以上を含めてください。',
+      TooLong: '72バイト以内で入力してください。',
+      Show: 'パスワードを表示',
+      Hide: 'パスワードを隠す',
+      Cancel: 'キャンセル',
+      Submitting: '変更中…',
+      SignInNotice: '変更後は再度ログインが必要です。',
+      SuccessTitle: 'パスワードを変更しました',
+      SuccessDescription: '新しいパスワードでログインしてください。',
+      SignIn: 'ログイン',
+      TryAgain: '変更できませんでした。接続を確認して再試行してください。',
+      RateLimited: '試行回数が多すぎます。しばらくしてから再試行してください。',
+      SessionExpired:
+        'セッションの有効期限が切れました。再度ログインしてください。',
+    },
     ChangePasswordNotification: {
       ErrorTitle: 'エラー',
       INVALID_PASSWORD: 'すべてのフィールドに入力してください',

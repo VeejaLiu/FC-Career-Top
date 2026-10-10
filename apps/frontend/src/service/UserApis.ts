@@ -331,7 +331,12 @@ export class UserApis {
     oldPassword: string;
     newPassword: string;
     confirmNewPassword: string;
-  }) {
+  }): Promise<{
+    success: boolean;
+    code?: string;
+    message?: string;
+    status?: number;
+  }> {
     try {
       const token = getToken();
       const response = await axios.post(
@@ -348,10 +353,20 @@ export class UserApis {
           },
         },
       );
-      return response.data;
+      return {
+        ...response.data,
+        code:
+          response.data.code ||
+          (response.data.message === 'Old password not matched'
+            ? 'PASSWORD_UPDATE_INCORRECT_OLD'
+            : undefined),
+      };
     } catch (e) {
+      const response = axios.isAxiosError(e) ? e.response : undefined;
       return {
         success: false,
+        code: response?.data?.code,
+        status: response?.status,
         message: 'Failed to change password',
       };
     }

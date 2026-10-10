@@ -277,10 +277,31 @@ export default {
     AccountChangePassword: 'Passwort ändern',
     AccountClickToChange: 'Klicke zum Ändern',
 
-    OldPassword: 'Altes Passwort',
+    OldPassword: 'Aktuelles Passwort',
     NewPassword: 'Neues Passwort',
     ConfirmNewPassword: 'Neues Passwort bestätigen',
-    ChangePassword: 'Speichern',
+    ChangePassword: 'Passwort ändern',
+    PasswordForm: {
+      InvalidFormat:
+        'Wähle ein Passwort, das die obigen Anforderungen erfüllt.',
+      Required: 'Bitte fülle dieses Feld aus.',
+      Rules:
+        'Mindestens 6 Zeichen und drei dieser Kategorien: Großbuchstaben, Kleinbuchstaben, Zahlen und Sonderzeichen.',
+      TooLong: 'Verwende höchstens 72 Bytes.',
+      Show: 'Passwort anzeigen',
+      Hide: 'Passwort verbergen',
+      Cancel: 'Abbrechen',
+      Submitting: 'Wird geändert…',
+      SignInNotice: 'Nach der Änderung musst du dich erneut anmelden.',
+      SuccessTitle: 'Passwort geändert',
+      SuccessDescription: 'Melde dich mit deinem neuen Passwort an.',
+      SignIn: 'Anmelden',
+      TryAgain:
+        'Das Passwort konnte nicht geändert werden. Prüfe deine Verbindung und versuche es erneut.',
+      RateLimited: 'Zu viele Versuche. Bitte versuche es später erneut.',
+      SessionExpired:
+        'Deine Sitzung ist abgelaufen. Bitte melde dich erneut an.',
+    },
     ChangePasswordNotification: {
       ErrorTitle: 'Fehler',
       INVALID_PASSWORD: 'Bitte fülle alle Felder aus',

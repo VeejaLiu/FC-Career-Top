@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect } from 'react';
-import ChangePasswordComponent from './ChangePassword.tsx';
+import { Link } from 'react-router-dom';
 import { UserApis } from '../../service/UserApis.ts';
 
 export interface ApiSecretKeyComponentProps {
@@ -10,9 +10,6 @@ export interface ApiSecretKeyComponentProps {
 function AccountSettingComponent({
   localeData,
 }: ApiSecretKeyComponentProps): React.ReactElement {
-  const [showChangePassword, setShowChangePassword] =
-    React.useState<boolean>(false);
-
   const [accountInfo, setAccountInfo] = React.useState<{
     userID?: string;
     username?: string;
@@ -65,21 +62,11 @@ function AccountSettingComponent({
               <h5>{localeData?.AccountChangePassword}</h5>
             </div>
             <span>
-              <button
-                type="button"
-                style={{
-                  cursor: 'pointer',
-                  textDecoration: 'underline',
-                }}
-                onClick={() => setShowChangePassword(!showChangePassword)}
-              >
+              <Link className="settings-password-link" to="/settings/password">
                 {localeData.AccountClickToChange}
-              </button>
+              </Link>
             </span>
           </div>
-          {showChangePassword && (
-            <ChangePasswordComponent localeData={localeData} />
-          )}
         </div>
         {/* Account Info - Change Password ---- END*/}
       </div>

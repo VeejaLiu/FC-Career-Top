@@ -195,6 +195,7 @@ export const WebsocketNotification = () => {
         }, 30000);
       };
       socket.onmessage = (event) => {
+        if (stopped) return;
         if (event.data === 'Session changed') {
           stopped = true;
           socket?.close(1000, 'Session changed');
@@ -235,8 +236,40 @@ export const WebsocketNotification = () => {
         delay = Math.min(delay * 2, 10000);
       };
     };
+    const pauseForPasswordChange = () => {
+      stopped = true;
+      if (retry) clearTimeout(retry);
+      if (heartbeat) clearInterval(heartbeat);
+      if (socket) {
+        socket.onopen = null;
+        socket.onmessage = null;
+        socket.onclose = null;
+      }
+      socket?.close(1000, 'Password change');
+    };
+    const resumeAfterPasswordChange = () => {
+      stopped = false;
+      delay = 1000;
+      connect();
+    };
+    window.addEventListener(
+      'fct-password-change-started',
+      pauseForPasswordChange,
+    );
+    window.addEventListener(
+      'fct-password-change-finished',
+      resumeAfterPasswordChange,
+    );
     connect();
     return () => {
+      window.removeEventListener(
+        'fct-password-change-started',
+        pauseForPasswordChange,
+      );
+      window.removeEventListener(
+        'fct-password-change-finished',
+        resumeAfterPasswordChange,
+      );
       stopped = true;
       if (retry) clearTimeout(retry);
       if (heartbeat) clearInterval(heartbeat);
