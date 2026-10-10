@@ -14,11 +14,12 @@ import { getDefaultGameVersion } from '../../common/common.ts';
 import './BasicInfoComponent.css';
 import { StarIcon } from '../../common/icons.tsx';
 import { PlayStylesComponent } from './PlayStylesComponent.tsx';
-import { PlayerModel } from '../../service/PlayerApis.ts';
+import { PlayerModel, PlayerProfile } from '../../service/PlayerApis.ts';
 
 interface BasicInfoComponentProps {
   playerInfo: PlayerModel & {
     playStylesList: string[];
+    playerProfile?: PlayerProfile | null;
   };
   localeData: any;
 }
@@ -29,6 +30,23 @@ const BasicInfoComponent: React.FC<BasicInfoComponentProps> = ({
 }) => {
   const [gameVersion, setGameVersion] = useState<number>(0);
   const heightInInches = Math.round(playerInfo.height / 2.54);
+  const secondaryPositions = Array.from(
+    new Set(
+      [
+        playerInfo.preferredposition2,
+        playerInfo.preferredposition3,
+        playerInfo.preferredposition4,
+        playerInfo.preferredposition5,
+        playerInfo.preferredposition6,
+        playerInfo.preferredposition7,
+      ]
+        .filter((position) => position != null && Number(position) > 0)
+        .map(Number)
+        .filter(
+          (position) => position !== Number(playerInfo.preferredposition1),
+        ),
+    ),
+  );
 
   useEffect(() => {
     getDefaultGameVersion().then((version) => {
@@ -57,8 +75,18 @@ const BasicInfoComponent: React.FC<BasicInfoComponentProps> = ({
             ),
           }}
         >
-          {PLAYER_PRIMARY_POS_NAME[playerInfo?.preferredposition1 || 0]}
+          {playerInfo.preferredposition1 == null
+            ? '—'
+            : PLAYER_PRIMARY_POS_NAME[playerInfo.preferredposition1] || '—'}
         </h1>
+        {secondaryPositions.length > 0 && (
+          <div className="text-sm opacity-75 mb-2">
+            {secondaryPositions
+              .map((position) => PLAYER_PRIMARY_POS_NAME[position])
+              .filter(Boolean)
+              .join(' · ')}
+          </div>
+        )}
         {/* Overall Rating -> Potential */}
         <Space style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>
           <span
@@ -66,7 +94,7 @@ const BasicInfoComponent: React.FC<BasicInfoComponentProps> = ({
               color: getColorByOverallRating(playerInfo?.overallrating || 0),
             }}
           >
-            {playerInfo?.overallrating}
+            {playerInfo?.overallrating ?? '—'}
           </span>
           {'→'}
           <span
@@ -74,7 +102,7 @@ const BasicInfoComponent: React.FC<BasicInfoComponentProps> = ({
               color: getColorByOverallRating(playerInfo?.potential || 0),
             }}
           >
-            {playerInfo?.potential}
+            {playerInfo?.potential ?? '—'}
           </span>
         </Space>
       </div>
@@ -95,7 +123,7 @@ const BasicInfoComponent: React.FC<BasicInfoComponentProps> = ({
         <span className="stat-info-value flex">
           {/*{playerInfo?.skillmoves}*/}
           <span className={`font-bold text-yellow-400`}>
-            {(playerInfo?.skillmoves || 0) + 1}
+            {playerInfo?.skillmoves == null ? '—' : playerInfo.skillmoves + 1}
           </span>
           <StarIcon classname={'text-yellow-400'} />
         </span>
@@ -106,7 +134,7 @@ const BasicInfoComponent: React.FC<BasicInfoComponentProps> = ({
         <span className="stat-info-value flex">
           {/*{playerInfo?.weakfootabilitytypecode}*/}
           <span className={`font-bold text-yellow-400`}>
-            {playerInfo?.weakfootabilitytypecode}
+            {playerInfo?.weakfootabilitytypecode ?? '—'}
           </span>
           <StarIcon classname="text-yellow-400" />
         </span>
@@ -115,23 +143,39 @@ const BasicInfoComponent: React.FC<BasicInfoComponentProps> = ({
       <div className="player-stat">
         <span className="stat-label">{localeData.BasicInfo.Foot}:</span>
         <span className="stat-info-value">
-          {Number(playerInfo.preferredfoot) === 1 ? 'Right' : 'Left'}
+          {Number(playerInfo.preferredfoot) === 1
+            ? 'Right'
+            : Number(playerInfo.preferredfoot) === 2
+              ? 'Left'
+              : '—'}
         </span>
       </div>
       {/*Height	177cm | 5'10"*/}
       <div className="player-stat">
         <span className="stat-label">{localeData.BasicInfo.Height}:</span>
         <span className="stat-info-value">
-          {playerInfo?.height}cm | {Math.floor(heightInInches / 12)}'{' '}
-          {heightInInches % 12}"
+          {playerInfo.height == null ? (
+            '—'
+          ) : (
+            <>
+              {playerInfo.height}cm | {Math.floor(heightInInches / 12)}'{' '}
+              {heightInInches % 12}"
+            </>
+          )}
         </span>
       </div>
       {/*Weight	67*/}
       <div className="player-stat">
         <span className="stat-label">{localeData.BasicInfo.Weight}:</span>
         <span className="stat-info-value">
-          {playerInfo?.weight}kg | {Math.floor(playerInfo?.weight * 2.20462)}
-          lbs
+          {playerInfo.weight == null ? (
+            '—'
+          ) : (
+            <>
+              {playerInfo.weight}kg | {Math.floor(playerInfo.weight * 2.20462)}
+              lbs
+            </>
+          )}
         </span>
       </div>
       {gameVersion === 24 && (
@@ -157,15 +201,16 @@ const BasicInfoComponent: React.FC<BasicInfoComponentProps> = ({
         </>
       )}
       {/* Play styles */}
-      {Boolean(playerInfo?.playStylesList?.length) && (
-        <div className="w-full text-center p-1 rounded-xl mt-2">
-          {playerInfo?.playStylesList?.map(
-            (playStyle: string, index: number) => (
-              <PlayStylesComponent playStyle={playStyle} key={index} />
-            ),
-          )}
-        </div>
-      )}
+      {playerInfo.playerProfile?.availability.playStyles !== false &&
+        Boolean(playerInfo?.playStylesList?.length) && (
+          <div className="w-full text-center p-1 rounded-xl mt-2">
+            {playerInfo?.playStylesList?.map(
+              (playStyle: string, index: number) => (
+                <PlayStylesComponent playStyle={playStyle} key={index} />
+              ),
+            )}
+          </div>
+        )}
     </div>
   );
 };

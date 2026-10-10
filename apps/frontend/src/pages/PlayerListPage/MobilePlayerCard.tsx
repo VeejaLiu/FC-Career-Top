@@ -3,7 +3,7 @@ import type { PlayerOverall } from '../../service/PlayerApis';
 import { PlayerAvatar } from '../../components/PlayerAvatar';
 import {
   getColorByOverallRating,
-  getColorByPositionType,
+  getColorByPosition,
 } from '../../common/player-helper';
 
 export function MobilePlayerCard({
@@ -27,59 +27,88 @@ export function MobilePlayerCard({
       tips: locale.potentialRankingTips,
     },
   ];
+  const positions = Array.from(
+    new Set(
+      [
+        player.position1,
+        player.position2,
+        player.position3,
+        player.position4,
+        player.position5,
+        player.position6,
+        player.position7,
+      ].filter((position): position is string => Boolean(position)),
+    ),
+  );
+
   return (
     <Link
       className="player-mobile-card"
       to={`/players-detail?id=${player.playerID}`}
+      title={`${player.playerName} · ID: ${player.playerID}`}
     >
-      <div className="player-mobile-heading">
+      <div className="player-mobile-portrait">
         <PlayerAvatar playerID={player.playerID} name={player.playerName} />
-        <div className="player-mobile-name">
-          <strong>{player.playerName}</strong>
-          <small>ID: {player.playerID}</small>
-        </div>
-        <span
-          className="player-mobile-position"
-          style={{ color: getColorByPositionType(player.positionType) }}
-        >
-          {player.position1}
-        </span>
-      </div>
-      <dl className="player-mobile-stats">
-        <div>
+        <dl className="player-mobile-age">
           <dt>{locale.age}</dt>
           <dd>{player.age}</dd>
-        </div>
-        {ratings.map((rating) => (
-          <div key={rating.label}>
-            <dt>{rating.label}</dt>
-            <dd style={{ color: getColorByOverallRating(rating.value) }}>
-              {rating.value}
-              {rating.ranking && rating.ranking <= 3 ? (
-                <small
-                  className={`ranking-badge rank-${rating.ranking}`}
-                  aria-label={rating.tips
-                    .replace('{ranking}', rating.ranking)
-                    .replace('{position}', player.position1)}
+        </dl>
+      </div>
+      <div className="player-mobile-info">
+        <strong className="player-mobile-name">{player.playerName}</strong>
+        <dl className="player-mobile-ratings">
+          {ratings.map((rating) => (
+            <div key={rating.label}>
+              <dt>{rating.label}</dt>
+              <dd>
+                <span
+                  className="player-mobile-rating-value"
+                  style={{
+                    backgroundColor: getColorByOverallRating(rating.value),
+                    color:
+                      rating.value > 70 || rating.value <= 50
+                        ? '#fff'
+                        : '#252b32',
+                  }}
                 >
-                  #{rating.ranking}
-                </small>
-              ) : null}
-            </dd>
+                  {rating.value}
+                </span>
+                {rating.ranking && rating.ranking <= 3 ? (
+                  <small
+                    className="player-mobile-ranking"
+                    aria-label={rating.tips
+                      .replace('{ranking}', rating.ranking)
+                      .replace('{position}', player.position1)}
+                    title={rating.tips
+                      .replace('{ranking}', rating.ranking)
+                      .replace('{position}', player.position1)}
+                  >
+                    #{rating.ranking}
+                  </small>
+                ) : null}
+              </dd>
+            </div>
+          ))}
+        </dl>
+        <div className="player-mobile-meta">
+          <div className="player-mobile-positions">
+            {positions.map((position) => (
+              <span
+                key={position}
+                style={{ color: getColorByPosition(position) }}
+              >
+                {position}
+              </span>
+            ))}
           </div>
-        ))}
-        <div>
-          <dt>{locale.SkillMovesAndWeakFoot}</dt>
-          <dd className="player-mobile-skills">
-            {(player.skillMoves || 0) + 1}★ /{' '}
-            {player.weakFootAbilityTypeCode || 0}★
-          </dd>
+          <div className="player-mobile-skills">
+            <span>{locale.SkillMovesAndWeakFoot}</span>
+            <b>
+              {(player.skillMoves || 0) + 1}★ /{' '}
+              {player.weakFootAbilityTypeCode || 0}★
+            </b>
+          </div>
         </div>
-      </dl>
-      <div className="player-mobile-positions">
-        {[player.position2, player.position3, player.position4]
-          .filter(Boolean)
-          .join(' · ')}
       </div>
     </Link>
   );

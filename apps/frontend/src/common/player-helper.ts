@@ -107,7 +107,7 @@ export function getWorkRateText(value: number | string | undefined) {
     case '2':
       return 'High';
     default:
-      return 'unknown';
+      return '—';
   }
 }
 

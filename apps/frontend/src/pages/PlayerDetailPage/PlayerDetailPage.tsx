@@ -10,6 +10,7 @@ import {
 import { PlayerTrendChart } from '../../components/PlayerTrendChart';
 import PlayerPickerComponent from './PlayerPickerComponent';
 import BasicInfoComponent from './BasicInfoComponent';
+import PlayerProfileComponent from './PlayerProfileComponent';
 import { getColorByOverallRating } from '../../common/player-helper';
 import './PlayerDetailPage.css';
 import { useAsyncResource } from '../../hooks/useAsyncResource';
@@ -132,33 +133,43 @@ export default function PlayerDetailPage() {
                 />
                 <div className="player-attributes">
                   {attributeGroups.map((group) => {
-                    if (
-                      'goalkeeper' in group &&
-                      detail.thisPlayer.preferredposition1 !== 0
-                    )
-                      return null;
-                    const average =
-                      group.attributes.reduce(
-                        (sum, [, field]) =>
-                          sum + (detail.thisPlayer[field] || 0),
-                        0,
-                      ) / group.attributes.length;
+                    const values = group.attributes
+                      .map(([, field]) => detail.thisPlayer[field])
+                      .filter(
+                        (value) =>
+                          typeof value === 'number' && Number.isFinite(value),
+                      );
+                    const average = values.length
+                      ? values.reduce((sum, value) => sum + value, 0) /
+                        values.length
+                      : null;
                     return (
                       <section className="attribute-section" key={group.title}>
                         <h2>{locale.Attributes[group.title]}</h2>
-                        <Progress percent={average} style={{ height: 8 }} />
+                        {average != null && (
+                          <>
+                            <div className="attribute-average">
+                              {locale.Profile.AverageAttribute}:{' '}
+                              {average.toFixed(1)}
+                            </div>
+                            <Progress percent={average} style={{ height: 8 }} />
+                          </>
+                        )}
                         {group.attributes.map(([label, field]) => (
                           <div className="player-stat" key={field}>
                             <span>{locale.Attributes[label]}</span>
                             <span
                               className="attribute-value"
                               style={{
-                                backgroundColor: getColorByOverallRating(
-                                  detail.thisPlayer[field],
-                                ),
+                                backgroundColor:
+                                  detail.thisPlayer[field] == null
+                                    ? '#777'
+                                    : getColorByOverallRating(
+                                        detail.thisPlayer[field],
+                                      ),
                               }}
                             >
-                              {detail.thisPlayer[field]}
+                              {detail.thisPlayer[field] ?? '—'}
                             </span>
                           </div>
                         ))}
@@ -167,6 +178,11 @@ export default function PlayerDetailPage() {
                   })}
                 </div>
               </div>
+              <PlayerProfileComponent
+                player={detail.thisPlayer}
+                profile={detail.thisPlayer.playerProfile}
+                locale={locale.Profile}
+              />
               <div className="player-detail-chart">
                 <PlayerTrendChart
                   key={playerID}

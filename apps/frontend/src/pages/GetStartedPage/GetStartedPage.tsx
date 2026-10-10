@@ -10,7 +10,8 @@ import {
 } from '@douyinfe/semi-ui';
 import { IconCopy, IconRefresh, IconExternalOpen } from '@douyinfe/semi-icons';
 import { UserApis } from '../../service/UserApis.ts';
-import { luaScript_FC24, luaScript_FC25 } from '../../constant/user-script.ts';
+import { createLuaScript } from '../../constant/user-script.ts';
+import { GAME_VERSIONS, isGameVersion } from '../../constant/game-versions';
 import { getDefaultGameVersion } from '../../common/common.ts';
 import './GetStartedPage.css';
 
@@ -38,16 +39,11 @@ export default function GetStartedPage() {
           UserApis.getSecretKey(),
           getDefaultGameVersion(),
         ]);
-        if (!key || (version !== 24 && version !== 25)) {
+        if (!key || !isGameVersion(version)) {
           throw new Error('Script configuration unavailable');
         }
         if (cancelled) return;
-        const template = version === 25 ? luaScript_FC25 : luaScript_FC24;
-        setCode(
-          template
-            .replace('{{user-secret-key}}', key)
-            .replace('{{post-player-url}}', postPlayerURL),
-        );
+        setCode(createLuaScript(version, key, postPlayerURL));
         setGameVersion(version);
         setStatus('ready');
       } catch {
@@ -95,20 +91,16 @@ export default function GetStartedPage() {
                   description={
                     <div className="get-started-downloads">
                       <span>{locale.STEP_1.DownloadLink}</span>
-                      <a
-                        href="https://www.patreon.com/collection/779838?view=expanded"
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        FC 25 Live Editor
-                      </a>
-                      <a
-                        href="https://www.patreon.com/collection/96422?view=expanded"
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        FC 24 Live Editor
-                      </a>
+                      {GAME_VERSIONS.map((version) => (
+                        <a
+                          key={version}
+                          href={`https://github.com/xAranaktu/FC-${version}-Live-Editor`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          FC {version} Live Editor
+                        </a>
+                      ))}
                     </div>
                   }
                 />

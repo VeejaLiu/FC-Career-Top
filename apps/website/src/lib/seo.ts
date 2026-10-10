@@ -10,7 +10,7 @@ export const SITE_URL = new URL(
 export const APP_URL = 'https://app.fccareer.top';
 export const GITHUB_URL = 'https://github.com/VeejaLiu/FC-Career-Top';
 export const SITE_DESCRIPTION =
-  'Track player growth in EA FC 24 and FC 25 Career Mode. Automatically record overall ratings, potential and squad changes with Live Editor.';
+  'Track player growth in EA FC 24, 25, 26 and 27 Career Mode. Automatically record overall ratings, potential and squad changes with Live Editor.';
 
 export function absoluteUrl(path = '/') {
   return new URL(path, `${SITE_URL}/`).toString();
@@ -27,7 +27,7 @@ export function pageMetadata(
     url: absoluteUrl('/og-image.png'),
     width: 1200,
     height: 630,
-    alt: 'FC Career Top — track player growth in EA FC 24 and FC 25 Career Mode',
+    alt: 'FC Career Top — track player growth in EA FC 24, 25, 26 and 27 Career Mode',
   };
 
   return {

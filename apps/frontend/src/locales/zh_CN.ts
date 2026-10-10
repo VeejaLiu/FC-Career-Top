@@ -38,11 +38,13 @@ export default {
     registerSuccess: '注册成功！将在3秒后重定向到登录页面',
   },
   WebsiteLogoComponent: {
-    title: 'Career.Top',
+    title: 'FCT',
     switchVersion: '切换游戏版本',
     current: '当前版本',
   },
   Navbar: {
+    Language: '语言',
+    MyAccount: '我的',
     PlayersList: '球员',
     PlayerDetail: '详情',
     PlayersTrends: '成长',
@@ -78,6 +80,83 @@ export default {
       '该球员在同位置({position})的潜力排名为第 {ranking}。',
   },
   PlayerDetailPage: {
+    Profile: {
+      Birthday: '出生日期',
+      DoubleYellow: '双黄变红',
+      AverageAttribute: '属性平均值',
+      CopyNewScript: '请从「快速上手」复制并运行最新脚本，以采集新增球员资料。',
+      Yes: '是',
+      No: '否',
+      Profile: '球员档案',
+      Reputation: '国际声望',
+      BodyType: '体型',
+      RealFace: '真实脸型',
+      Gender: '性别',
+      Male: '男',
+      Female: '女',
+      Nationality: '国籍（游戏编号）',
+      SecondNationality: '第二国籍（游戏编号）',
+      AccelerationType: '加速类型',
+      DerivedNote:
+        '计算标签只使用已确认的对应版本规则。「—」表示编辑器没有提供数据。',
+      SoFIFAReference: '查看 SoFIFA 原始参考资料',
+      Roles: '角色熟练度',
+      NoRolesInVersion: 'FC 24 使用攻防积极性，FC IQ 角色从 FC 25 开始引入。',
+      NotAvailable: '本次快照中，编辑器未提供这部分数据。',
+      NoRoles: '未记录到增强角色。',
+      HiddenTraits: '隐藏与 AI 特性',
+      NoTraits: '未记录到隐藏特性。',
+      UnknownBits: '无法识别的特性位已保留在完整采集资料中。',
+      Contract: '俱乐部与合同',
+      Joined: '加入日期',
+      ContractUntil: '合同到期年份',
+      Wage: '工资',
+      ReleaseClause: '解约金',
+      Value: '市场价值',
+      Jersey: '球衣号码',
+      Club: '俱乐部／游戏编号',
+      MoneyNote: '金额使用游戏自身的单位，不会用网站估值替换生涯中的真实数据。',
+      CareerState: '生涯状态',
+      DatabaseOverall: '数据库总评',
+      DynamicOverall: '动态总评',
+      BaselineOverall: '基础总评',
+      GrowthProfile: '成长曲线（游戏编号）',
+      SquadRank: '阵容评级',
+      Form: '状态',
+      Morale: '士气',
+      Fitness: '比赛体能',
+      Injury: '伤病（游戏编号）',
+      InjuryDays: '伤病持续时间',
+      CareerNote:
+        '新增生涯机制仅在编辑器提供值时展示；数据库总评不会被默认当成动态总评。',
+      OtherCareerFields: '其他已记录的生涯字段',
+      SeasonStats: '当前赛季统计',
+      NoMatches: '尚未记录到赛事统计。',
+      Competition: '赛事',
+      Appearances: '出场',
+      Goals: '进球',
+      Assists: '助攻',
+      Average: '评分',
+      CleanSheets: '零封',
+      Saves: '扑救',
+      Conceded: '失球',
+      Yellow: '黄牌',
+      Red: '红牌',
+      MOTM: '全场最佳',
+      SeasonNote:
+        '统计来自 Live Editor 的当前赛季接口；部分字段和赛事可能不完整，不会用估算值补齐。',
+      AllCapturedData: '完整游戏采集资料',
+      RawNote:
+        '新字段与尚未确认含义的字段以原始游戏编号保留。可用状态标明编辑器实际返回了哪些数据。',
+      GameCode: '游戏编号',
+      Lean: '偏瘦',
+      Normal: '标准',
+      Stocky: '壮硕',
+      Explosive: '爆发型',
+      Lengthy: '长距型',
+      Controlled: '受控型',
+      Calculated: '按规则计算',
+    },
     BasicInfo: {
       PlayerID: '球员ID',
       Age: '年龄',
@@ -231,12 +310,12 @@ export default {
     },
     Title: '快速开始',
     STEP_1: {
-      Title: '1. 使用 Live Editor 打开 FC24/FC25',
+      Title: '1. 使用 Live Editor 打开 FC 24–27',
       DownloadLink: '下载链接:',
     },
     STEP_2: {
       Title: '2. 进入职业模式',
-      Description: '请先进入 FC24/FC25 职业模式。',
+      Description: '请先进入 FC 24–27 职业模式。',
     },
     STEP_3: {
       Title: '3. 打开 Lua 脚本',
@@ -249,15 +328,9 @@ export default {
     },
 
     GET_STARTED_TEXT: `
-# 开始
-## 1. 依赖
-- 最新的 **[xAranaktu/FC-24-Live-Editor](https://www.patreon.com/collection/96422?view=expanded)** 或 **[xAranaktu/FC-25-Live-Editor](https://www.patreon.com/collection/779838?view=expanded)**。
-- **API 密钥**。（您可以在 [设置页面](/settings) 管理它，但您实际上不需要它，因为我已经在下面的代码片段中为您放入了它）
-
-## 2. 安装
-1. 打开带有Live Editor的 FC24/FC25。
-2. 进入职业模式。
-3. 在实时编辑器中转到 \`Lua Engine\` 选项卡。
+# 开始使用
+按游戏版本选择对应的 [FC 24](https://github.com/xAranaktu/FC-24-Live-Editor)、[FC 25](https://github.com/xAranaktu/FC-25-Live-Editor)、[FC 26](https://github.com/xAranaktu/FC-26-Live-Editor) 或 [FC 27](https://github.com/xAranaktu/FC-27-Live-Editor) Live Editor，并确认它兼容当前游戏更新。下方脚本已包含您的个人 API 密钥。
+\`Lua Engine\` 选项卡。
 4. 粘贴下面的代码片段。`,
     SUCCESS: '成功',
     SUCCESS_MESSAGE: '已复制到剪贴板',
@@ -269,36 +342,14 @@ export default {
     CODE_NOT_SHARE_WARNING:
       '这些代码包含您的秘钥。请不要与任何人分享这些代码哦~',
     IMPORTANT_TIPS: `
-# 重要提示 
-
-### 1. 游戏内日期可能不完全准确！
-
-您可能注意到，我们正在跟踪球员统计数据的增长，随着游戏内时间的变化。
-但这里有一个小秘密：我们很难获取确切的游戏内日期！我们曾经从您可以在实时编辑器的表格选项卡中找到的“career_table”中提取该数据。但在某个游戏更新后，该表中的数据不再准确。有趣的是，我发现了一个模式：当您第一次进入职业模式或在比赛后，表格是准确的。
-
-因此，根据这一点，我们不得不创建一种手动时间计算方法，通过监听游戏中的 DAY_PASSED 事件，并与我们仍然可以获取的数据进行交叉引用。这有点笨拙，我不得不添加大量冗余代码来让它工作。但目前，这是我们唯一的选择。因此，在使用该脚本时，请不要过于依赖游戏内日期，因为它可能并不准确。
-
-请您在进入职业模式后立即运行该脚本，以获取尽可能准确的数据。否则，数据只有在您进行比赛后才会变得准确。
-
-**我们的建议：在进入职业模式后立即运行该脚本！**
-
-### 2. 恼人的黑窗口！它可能抢走您的焦点。
-
-让我解释一下它是如何工作的。我们的应用程序依赖于实时编辑器提供的功能。每当游戏中触发 WEEK_PASSED 事件时，我们的 Lua 脚本会运行，收集您当前队伍中所有球员的数据并将其发送到我们的服务器。但这里有个问题：实时编辑器不提供直接向外部服务器发送 API 请求的方法，因此我们使用 Windows 的 Curl 命令来做到这一点。
-
-不幸的是，每次我们运行该命令时，都会弹出一个黑窗口，因为我们在 Windows 系统中执行 Curl。有时，这个黑窗口可能会抢走您游戏的焦点，这真的很糟糕。虽然这并不是每次都会发生，但确实可能。它远非完美，但这是我们目前能做的最好选择。
-
-对此带来的不便，我深表歉意，但我正在不断寻找更好的解决方案。因此，在使用该应用程序时，请不要关闭那个黑窗口——它正在忙着发送 API 请求。如果您的网络不太慢，该窗口应该会迅速消失。根据我的经验，这还算可以，因为黑窗口每个游戏周只会弹出一次。嘿，为了跟踪您球员的进展，这也是个小代价，对吧？请放心，我会继续寻找更好的解决方案，并在找到后立即更新应用程序。感谢您的理解！
-
-### 3. 仅支持一个存档槽！
-
-在封闭测试期间，我们仅支持一个存档槽。这是因为我们的服务器资源有限，无法为每个用户提供单独的存档。此外，我怀疑没有人会频繁地切换存档文件，所以我认为这个限制是合理的。未来，我们可能会提供更多的存档槽，但谁知道呢？未来充满惊喜！
-
-### 4. 由于文件系统权限不足导致的问题
-
-让我解释一下为什么这个脚本需要文件系统权限。正如我们之前提到的，我们使用命令行直接执行 curl 命令来发送您的球员数据。但是，由于众多球员属性，JSON 数据字符串可能会变得非常长，导致无法在单行的 curl 中连接所有这些数据，因为超出了命令行的允许长度。
-
-因此，我的做法是先将这些数据写入文件，然后在命令中连接文件的路径。基于此，请确保您拥有管理员权限和文件夹的写入权限。通常，我们将写入 EA FC 游戏的根目录，如果写入失败，将显示错误：“权限被拒绝。”`,
+# 重要提示
+- 选择对应的 FC 版本，载入经理职业模式后再运行脚本。更换密钥或游戏版本后，请重新复制脚本。
+- 脚本立即上传一次完整阵容，此后每个游戏周上传一次。阵容采集不完整时会跳过上传，请查看 Live Editor 日志中的原因。
+- 支持内置上传的编辑器会直接发送数据；FC 24 和旧版编辑器会使用 Windows curl 和临时文件，可能出现命令窗口，无需向游戏目录写入文件。
+- FC 24 保留日期补偿逻辑，请在读档后运行脚本，并留意记录中的日期。
+- 每个账号的每个游戏版本请只跟踪一个生涯存档，不同存档的数据尚未分开。
+- 重复执行只替换本脚本自己的监听器，其他职业模式脚本的监听器会保留。
+`,
     VIDEO_TUTORIAL_TITLE: `视频教程`,
     VIDEO_TUTORIAL_DESCRIPTION: `您也可以通过视频教程了解如何使用此应用程序。`,
   },

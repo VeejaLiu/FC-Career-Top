@@ -5,7 +5,7 @@ import { pageMetadata } from '@/lib/seo';
 
 export const metadata = pageMetadata(
   'EA FC Career Mode Guides & Articles',
-  'Learn to track EA FC 24 and FC 25 player growth with Live Editor, and read a guide to importing legendary players into FC 24 Career Mode.',
+  'Learn to track EA FC 24, 25, 26 and 27 player growth with Live Editor, and read a guide to importing legendary players into FC 24 Career Mode.',
   '/posts'
 );
 

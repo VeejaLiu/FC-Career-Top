@@ -49,3 +49,11 @@ uses the `MYSQL_*` values in `apps/backend/.env` and translates local hosts to
 
 References: [D1 migrations](https://developers.cloudflare.com/d1/reference/migrations/)
 and [Flyway validation](https://documentation.red-gate.com/flyway/reference/commands/validate).
+
+## Extended player data
+
+Migration `0004_add_player_profile.sql` adds `player.player_profile`, a JSON
+text column for version-specific player fields, optional related career rows,
+season statistics, trait masks and source availability. It stores the latest
+profile; the existing growth history remains overall rating and potential.
+See [player data support](PLAYER_DATA_SUPPORT.md) for the field/source contract.

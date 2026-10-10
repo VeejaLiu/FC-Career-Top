@@ -38,6 +38,18 @@ limits persist in Durable Object storage. Browser origins use an explicit allowl
 Lua clients without an Origin header are supported. Data queries isolate accounts
 and game versions. Snapshot writes are atomic and reject older career dates.
 
+The Worker accepts FC 24, 25, 26 and 27. Uploads remain complete squad snapshots;
+players absent from a successful snapshot are archived. PlayStyles are sorted
+and deduplicated, and an omitted PlayStyles field preserves the previously saved
+value. Migration `0003_add_player_positions.sql` adds the fifth through seventh
+preferred positions and must be applied before running the updated Worker.
+
+Migration `0004_add_player_profile.sql` adds the latest extended profile. Lua
+uploads can supply `profileData` with raw player fields, readable career rows,
+current-season statistics and availability flags. The API validates its identity,
+nesting, field names and size before storing it, and returns `playerProfile` in
+player detail. Older clients that omit it retain previously stored profiles.
+
 ## Legacy backend
 
 The original Express/MySQL implementation remains in `src/router`, `src/general`,

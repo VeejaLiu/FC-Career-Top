@@ -12,7 +12,7 @@ TypeScript, Vite, Semi UI, and Recharts. It provides the player-facing interface
 | `/` and `/players` | Searchable squad list and position-ranking badges |
 | `/players-trends` | Overall/potential growth charts |
 | `/players-detail?id=...` | Individual attributes, PlayStyles, and history |
-| `/get-started` | Account-specific FC 24/25 Lua script and setup instructions |
+| `/get-started` | Account-specific FC 24–27 Lua script and setup instructions |
 | `/settings` | Username, email, password, API key, and notifications |
 
 Authentication controls whether the dashboard or login/registration interface is
@@ -27,7 +27,11 @@ shown. The interface supports English, Simplified Chinese, French, German, and J
 - [src/hooks](../../apps/frontend/src/hooks): viewport detection and asynchronous resource lifecycle.
 - [src/common/language-options.ts](../../apps/frontend/src/common/language-options.ts): shared language menu options.
 - [src/locales](../../apps/frontend/src/locales): interface translations.
-- [src/constant/user-script.ts](../../apps/frontend/src/constant/user-script.ts): Lua templates used by Get Started.
+- [lua-scripts/client-script.lua](../../apps/frontend/lua-scripts/client-script.lua): shared Lua tracker with native HTTP detection and curl fallback.
+- [src/constant/user-script.ts](../../apps/frontend/src/constant/user-script.ts): safely inserts the account key, URL and version into the Lua template.
+- [src/constant/game-versions.ts](../../apps/frontend/src/constant/game-versions.ts): supported FC versions for the selector and script generation.
+- [src/constant/player-features.ts](../../apps/frontend/src/constant/player-features.ts): version-specific PlayStyle masks and role IDs; also supplies the Lua catalog.
+- [src/pages/PlayerDetailPage/PlayerProfileComponent.tsx](../../apps/frontend/src/pages/PlayerDetailPage/PlayerProfileComponent.tsx): extended player, contract, role, trait and season data with availability states.
 
 Use the generated script from Get Started when connecting a game; that page adds
 the current account key, upload URL, and selected game version to the template.

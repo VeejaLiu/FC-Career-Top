@@ -216,3 +216,14 @@
     top: 0;
   }
 }
+
+.get-started-page
+  .semi-steps-basic.semi-steps-vertical
+  .semi-steps-item
+  .semi-steps-item-title
+  .semi-steps-item-title-text {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  overflow-wrap: anywhere;
+}

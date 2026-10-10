@@ -2,7 +2,7 @@
 
 [English](README.md) · [简体中文](README.zh-CN.md) · [文档目录](docs/README.md)
 
-自动记录 **EA FC 24/25 经理生涯模式**中的球员成长。
+自动记录 **EA FC 24–27 经理生涯模式**中的球员成长。
 通过 Live Editor 的 Lua 脚本采集球队数据，在网页中查看球员列表、成长曲线、
 详细属性，以及能力值、潜力、花式动作和逆足变化通知。
 
@@ -17,12 +17,14 @@
 - 查看球员详细属性、花式动作、逆足和可用的 PlayStyles。
 - 标记同一位置中能力值或潜力排名前三的球员。
 - 接收能力值、潜力、花式动作和逆足变化通知。
-- 切换 FC 24 与 FC 25 的数据。
+- 切换 FC 24、25、26 和 27 的数据。
 - 支持英文、简体中文、法文、德文和日文界面。
 
 游戏数据采集需要 Windows PC，以及匹配游戏版本的
-[FC 24 Live Editor](https://github.com/xAranaktu/FC-24-Live-Editor) 或
-[FC 25 Live Editor](https://github.com/xAranaktu/FC-25-Live-Editor)。
+[FC 24](https://github.com/xAranaktu/FC-24-Live-Editor)、
+[FC 25](https://github.com/xAranaktu/FC-25-Live-Editor)、
+[FC 26](https://github.com/xAranaktu/FC-26-Live-Editor) 或
+[FC 27 Live Editor](https://github.com/xAranaktu/FC-27-Live-Editor)。
 完整步骤见[使用指南](docs/USER_GUIDE.md)。
 
 ## 界面预览

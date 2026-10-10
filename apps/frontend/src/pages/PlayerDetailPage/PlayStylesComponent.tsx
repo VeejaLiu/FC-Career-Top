@@ -1,3 +1,8 @@
+import { featureLabel } from '../../constant/player-features';
+import {
+  LANGUAGE_LOCAL_STORAGE_KEY,
+  normalizeLanguage,
+} from '../../common/language';
 import ICON_1v1_Close_Down from '../../assets/image/player-styles/25/1v1_Close_Down.png';
 import ICON_1v1_Close_Down_ from '../../assets/image/player-styles/25/1v1_Close_Down_.png';
 import ICON_Acrobatic from '../../assets/image/player-styles/25/Acrobatic.png';
@@ -625,45 +630,81 @@ const PLAY_STYLES_LIST: {
   //////////////////////////////////////////////////////////////////////////////////////////
 };
 
-export const PlayStylesComponent = ({ playStyle }: { playStyle: string }) => {
-  return (
-    <div className="inline-block h-14 w-14 m-1 rounded-full bg-gray-600 p-2">
-      <ResponsivePopover
-        desktopPosition="topLeft"
-        title={PLAY_STYLES_LIST[playStyle]?.title || playStyle}
-        content={
-          <div className="bg-gray-100 p-2">
-            <div className={`text-lg font-bold mb-1 text-green-700`}>
-              {PLAY_STYLES_LIST[playStyle]?.title}
-            </div>
+const extraDescriptions: Record<string, { en: string; zh: string }> = {
+  Low_Driven_Shot: {
+    en: 'Improves low driven finishes along the ground.',
+    zh: '提升贴地低平射门的终结表现。',
+  },
+  Precision_Header: {
+    en: 'Improves controlled, accurate attacking headers.',
+    zh: '提升进攻头球的控制和精度。',
+  },
+  Aerial_Fortress: {
+    en: 'Strengthens aerial duels in defensive situations.',
+    zh: '增强防守场景中的空中争顶表现。',
+  },
+  Gamechanger: {
+    en: 'Improves unconventional finishes, including Trivela shots.',
+    zh: '提升非常规终结，包括外脚背射门。',
+  },
+  Inventive: {
+    en: 'Improves creative passing, including fancy and Trivela passes.',
+    zh: '提升创造性传球，包括花式和外脚背传球。',
+  },
+  Enforcer: {
+    en: 'Improves shielding and physical contact while dribbling.',
+    zh: '增强盘带时的护球和身体接触能力。',
+  },
+  Rush_Out: {
+    en: 'Supports goalkeeper rushing and one-on-one situations.',
+    zh: '增强门将出击和一对一应对表现。',
+  },
+  Quick_Reflexes: {
+    en: 'Supports goalkeeper reactions and reflex saves.',
+    zh: '增强门将反应和反射扑救表现。',
+  },
+  Deflector: {
+    en: 'Improves control of goalkeeper save deflections.',
+    zh: '提升门将扑救时的挡球控制。',
+  },
+  Relentless: {
+    en: 'Supports stamina management; FC 26 also adds short-term stamina recovery benefits.',
+    zh: '改善体能管理；FC 26 还增强短期体力恢复。',
+  },
+};
+const keeperAliases: Record<string, string> = {
+  Rush_Out: '1v1_Close_Down',
+  Quick_Reflexes: 'Deflector',
+};
 
-            {/* Info */}
-            <div className="text-sm italic border-l-4 border-gray-400 p-2 text-gray-700">
-              {PLAY_STYLES_LIST[playStyle]?.info}
-            </div>
-            {/* Description */}
-            <div className="text-sm font-mono mt-2">
-              {PLAY_STYLES_LIST[playStyle]?.description}
-            </div>
-          </div>
-        }
+export const PlayStylesComponent = ({ playStyle }: { playStyle: string }) => {
+  const language = normalizeLanguage(
+    localStorage.getItem(LANGUAGE_LOCAL_STORAGE_KEY) || navigator.language,
+  );
+  const enhanced = playStyle.endsWith('_');
+  const base = enhanced ? playStyle.slice(0, -1) : playStyle;
+  const legacyID = `${keeperAliases[base] || base}${enhanced ? '_' : ''}`;
+  const legacy = PLAY_STYLES_LIST[legacyID];
+  const title = featureLabel(playStyle, language);
+  const description = extraDescriptions[base]
+    ? extraDescriptions[base][language === 'zh' ? 'zh' : 'en']
+    : legacy?.description;
+  return (
+    <ResponsivePopover
+      desktopPosition="topLeft"
+      title={title}
+      content={
+        <div className="playstyle-description">{description || title}</div>
+      }
+    >
+      <button
+        type="button"
+        className={`playstyle-chip${enhanced ? ' playstyle-enhanced' : ''}`}
+        aria-label={title}
       >
-        <button
-          type="button"
-          className="h-10 w-10"
-          aria-label={PLAY_STYLES_LIST[playStyle]?.title || playStyle}
-        >
-          {PLAY_STYLES_LIST[playStyle] ? (
-            <img
-              className="h-10 w-10"
-              src={PLAY_STYLES_LIST[playStyle].icon}
-              alt=""
-            />
-          ) : (
-            <span className="text-xs">{playStyle}</span>
-          )}
-        </button>
-      </ResponsivePopover>
-    </div>
+        {legacy?.icon && <img src={legacy.icon} alt="" />}
+        <span>{title}</span>
+      </button>
+    </ResponsivePopover>
   );
 };

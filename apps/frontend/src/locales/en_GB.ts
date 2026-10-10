@@ -41,11 +41,13 @@ export default {
       'Register success! Will redirect to login page in 3 seconds',
   },
   WebsiteLogoComponent: {
-    title: 'Career.Top',
+    title: 'FCT',
     switchVersion: 'Switch Game Version',
     current: 'Current',
   },
   Navbar: {
+    Language: 'Language',
+    MyAccount: 'My account',
     PlayersList: 'Players',
     PlayerDetail: 'Detail',
     PlayersTrends: 'Trends',
@@ -90,6 +92,87 @@ export default {
       'The player ranks {ranking} in potential for his position({position}).',
   },
   PlayerDetailPage: {
+    Profile: {
+      Birthday: 'Date of birth',
+      DoubleYellow: 'Two yellows',
+      AverageAttribute: 'Attribute average',
+      CopyNewScript:
+        'Copy and run the latest script from Get Started to collect the additional player data.',
+      Yes: 'Yes',
+      No: 'No',
+      Profile: 'Player profile',
+      Reputation: 'International reputation',
+      BodyType: 'Body type',
+      RealFace: 'Real face',
+      Gender: 'Gender',
+      Male: 'Male',
+      Female: 'Female',
+      Nationality: 'Nationality (game ID)',
+      SecondNationality: 'Second nationality (game ID)',
+      AccelerationType: 'Acceleration type',
+      DerivedNote:
+        'Calculated labels use verified rules for this game version. A dash means the editor did not supply the data.',
+      SoFIFAReference: 'View the original SoFIFA reference',
+      Roles: 'Role familiarity',
+      NoRolesInVersion: 'FC 24 uses work rates; FC IQ roles start with FC 25.',
+      NotAvailable:
+        'This editor did not provide the data in the latest snapshot.',
+      NoRoles: 'No enhanced roles recorded.',
+      HiddenTraits: 'Hidden and AI traits',
+      NoTraits: 'No hidden traits recorded.',
+      UnknownBits:
+        'Unrecognized trait bits have been preserved in the captured data.',
+      Contract: 'Club and contract',
+      Joined: 'Joined',
+      ContractUntil: 'Contract valid until',
+      Wage: 'Wage',
+      ReleaseClause: 'Release clause',
+      Value: 'Market value',
+      Jersey: 'Kit number',
+      Club: 'Club / game ID',
+      MoneyNote:
+        'Amounts use the game’s own units. Website valuations are not used to replace career values.',
+      CareerState: 'Career status',
+      DatabaseOverall: 'Database OVR',
+      DynamicOverall: 'Dynamic OVR',
+      BaselineOverall: 'Baseline OVR',
+      GrowthProfile: 'Growth profile (game ID)',
+      SquadRank: 'Squad rank',
+      Form: 'Form',
+      Morale: 'Morale',
+      Fitness: 'Match fitness',
+      Injury: 'Injury (game ID)',
+      InjuryDays: 'Injury duration',
+      CareerNote:
+        'New career systems are shown only when the editor exposes their values. Database OVR is not assumed to be Dynamic OVR.',
+      OtherCareerFields: 'Other recorded career fields',
+      SeasonStats: 'Current-season statistics',
+      NoMatches: 'No competition statistics recorded yet.',
+      Competition: 'Competition',
+      Appearances: 'Apps',
+      Goals: 'Goals',
+      Assists: 'Assists',
+      Average: 'Rating',
+      CleanSheets: 'Clean sheets',
+      Saves: 'Saves',
+      Conceded: 'Conceded',
+      Yellow: 'Yellow',
+      Red: 'Red',
+      MOTM: 'MOTM',
+      SeasonNote:
+        'Statistics come from Live Editor’s current-season API. Some fields and competitions may be incomplete; values are not estimated.',
+      AllCapturedData: 'All recorded game data',
+      RawNote:
+        'New or unfamiliar fields are preserved here with their original game IDs. Availability flags show which sources the editor supplied.',
+      GameCode: 'Game ID',
+      Lean: 'Lean',
+      Normal: 'Normal',
+      Stocky: 'Stocky',
+      Explosive: 'Explosive',
+      Lengthy: 'Lengthy',
+      Controlled: 'Controlled',
+      Calculated: 'Calculated',
+    },
     BasicInfo: {
       PlayerID: 'ID',
       Age: 'Age',
@@ -255,12 +338,12 @@ export default {
 
     Title: 'Quick Start',
     STEP_1: {
-      Title: '1. Open the FC24/FC25 with Live Editor.',
+      Title: '1. Open the FC 24–27 with Live Editor.',
       DownloadLink: 'Download link:',
     },
     STEP_2: {
       Title: '2. Enter career mode.',
-      Description: 'Please enter FC24/FC25 career mode first.',
+      Description: 'Please enter FC 24–27 career mode first.',
     },
     STEP_3: {
       Title: '3. Open Lua script',
@@ -275,10 +358,8 @@ export default {
 
     GET_STARTED_TEXT: `
 # Get Started
-## 1. Dependencies
-- Latest **[xAranaktu/FC-24-Live-Editor](https://www.patreon.com/collection/96422?view=expanded)** or **[xArnatu/FC-25-Live-Editor](https://www.patreon.com/collection/779838?view=expanded)**.
-- **Secret API key**. (You can manage it from [Setting Page](/settings), BUT you don't really need it because I have put it in the code snippet below for you)
-      `,
+Use the matching [FC 24](https://github.com/xAranaktu/FC-24-Live-Editor), [FC 25](https://github.com/xAranaktu/FC-25-Live-Editor), [FC 26](https://github.com/xAranaktu/FC-26-Live-Editor) or [FC 27](https://github.com/xAranaktu/FC-27-Live-Editor) Live Editor for your game build. Your personal API key is already included in the script below.
+`,
     SUCCESS: 'Success',
     SUCCESS_MESSAGE: 'Copied to clipboard',
     ERROR: 'Error',
@@ -289,36 +370,14 @@ export default {
     CODE_NOT_SHARE_WARNING:
       'Warning: These codes contain your secret key. Do not share these codes with others.',
     IMPORTANT_TIPS: `
-# Important Notes & Tips
-
-### 1. In-game Date Might Not Be Perfectly Accurate!
-
-You might have noticed that we’re tracking player stat growth as the in-game time changes.  
-BUT here’s a little secret: it’s tricky for us to get the exact in-game date! We used to pull that data from the “career_table” you can find in the Live Editor under the Table tab. But after a certain game update, the data in that table isn’t accurate anymore. Interestingly, I found a pattern: the table is accurate when you first enter Career Mode or after you play a match. 
-
-So, based on that, we had to create a manual time calculation method by listening to the DAY_PASSED event in the game and cross-referencing it with the data we can still get. It’s a bit clunky, and I had to add a bunch of redundant code to make it work. But for now, that’s our only option. So, when using this script, don’t rely too heavily on the in-game date, as it might not be spot-on.  
-
-And please, run this script immediately after entering Career Mode to get the most accurate data possible. Otherwise, the data will only become accurate after you play a match.  
-
-**Our Tip: Run this script right after entering Career Mode!**
-
-### 2. The Annoying Black Window! It Might Steal Your Focus.
-
-Let me explain how this works. Our application relies on the functions provided by Live Editor. Whenever the WEEK_PASSED event is triggered in the game, our Lua script runs, collecting data from all your current team players and sending it to our server. But here’s the catch: Live Editor doesn’t offer a way to send API requests directly to an external server, so we’re using Windows’ Curl command to do that. 
-
-Unfortunately, every time we run that command, a black window pops up because we’re executing Curl in the Windows system. And sometimes, this black window might steal focus from your game, which is a bummer. It doesn’t happen every time, but it’s possible. It’s far from perfect, but it’s the best we can do right now. 
-
-I’m sorry about this inconvenience, but I’m constantly searching for a better solution. So, while using this application, please don’t close that black window—it’s busy sending the API request. If your network isn’t too slow, the window should disappear quickly. In my experience, it’s bearable since the black window only pops up once per in-game week. And hey, it’s a small price to pay for keeping track of your players’ progress, right? Rest assured, I’m on the lookout for a better solution, and I’ll update the application as soon as we find one. Thanks for your understanding!
-
-### 3. Only One Save Slot Supported!
-
-During the closed beta, we’re only supporting one save slot. This is because our server resources are limited, and we can’t provide a separate save for every single user. Plus, I doubt anyone is switching save files back and forth that often, so I think this limitation is fair. In the future, we might offer more save slots, but who knows? The future is full of surprises!
-
-### 4. Issues Caused by Insufficient File System Permissions
-
-Let me explain why this script requires file system permissions. As we mentioned earlier, we use the command line to directly execute a curl command to send your player data. However, due to the numerous player attributes, the JSON data string can get very long, making it impossible to concatenate all this data in a single line of curl, as it exceeds the command line's allowed length. 
-
-Therefore, what I do is write this data to a file first and then concatenate the file's path in the command. Based on this, please ensure you have administrative privileges and write permissions for the folder. Generally, we will write to the root directory of the EA FC game, and if writing fails, an error will be displayed: "Permission denied."`,
+# Important notes
+- Select the matching FC version and load Manager Career Mode before running the script. Copy a new script after changing your API key or game version.
+- An initial squad snapshot is uploaded immediately, followed by snapshots each in-game week. Incomplete squads are skipped; check the Live Editor log if an upload is missing.
+- Supported editors upload directly. FC 24 and older editors use Windows curl and temporary files; a command window may appear. The game folder does not need write permission.
+- FC 24 retains its date workaround. Run the script after loading your career, and check the displayed dates.
+- Use one career per account and game version. Different saves are not separated.
+- Running this script again replaces only its own listener. Other career-mode scripts keep their listeners.
+`,
     VIDEO_TUTORIAL_TITLE: `Video Tutorial`,
     VIDEO_TUTORIAL_DESCRIPTION: `You can also learn how to use this app through the video tutorial.`,
   },

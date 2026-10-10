@@ -22,7 +22,7 @@ import {
 import { IconActivity, IconSearch } from '@douyinfe/semi-icons';
 import { PlayerAvatar } from '../../components/PlayerAvatar';
 import { MobilePlayerCard } from './MobilePlayerCard';
-import { MOBILE_QUERY, useMediaQuery } from '../../hooks/useMediaQuery';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { comparePlayerPosition } from '../../common/player-sort';
 import './PlayerListPage.css';
 import { useAsyncResource } from '../../hooks/useAsyncResource';
@@ -274,7 +274,7 @@ function PlayerListPage(): React.ReactElement {
   const data = React.useMemo(() => players || [], [players]);
   const [searchValue, setSearchValue] = React.useState('');
   const [sortField, setSortField] = React.useState<SortField>('position');
-  const isMobile = useMediaQuery(MOBILE_QUERY);
+  const isCompact = useMediaQuery('(max-width: 1023px)');
   const navigate = useNavigate();
 
   const filteredData = React.useMemo(
@@ -314,7 +314,7 @@ function PlayerListPage(): React.ReactElement {
               onChange={setSearchValue}
               showClear
             />
-            {isMobile && (
+            {isCompact && (
               <Select
                 aria-label={locale.position}
                 value={sortField}
@@ -329,7 +329,7 @@ function PlayerListPage(): React.ReactElement {
               />
             )}
           </div>
-          {isMobile ? (
+          {isCompact ? (
             <div className="player-mobile-list">
               {filteredData.map((player) => (
                 <MobilePlayerCard

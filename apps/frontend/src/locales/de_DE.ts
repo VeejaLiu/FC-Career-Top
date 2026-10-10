@@ -41,11 +41,13 @@ export default {
       'Registrierung erfolgreich! Du wirst in 3 Sekunden zur Anmeldeseite weitergeleitet',
   },
   WebsiteLogoComponent: {
-    title: 'Career.Top',
+    title: 'FCT',
     switchVersion: 'Spielversion wechseln',
     current: 'Aktuell',
   },
   Navbar: {
+    Language: 'Sprache',
+    MyAccount: 'Mein Konto',
     PlayersList: 'Spieler',
     PlayerDetail: 'Detail',
     PlayersTrends: 'Trends',
@@ -91,6 +93,88 @@ export default {
       'Der Spieler belegt Rang {ranking} im Potenzial für seine Position ({position}).',
   },
   PlayerDetailPage: {
+    Profile: {
+      Birthday: 'Geburtsdatum',
+      DoubleYellow: 'Zweimal Gelb',
+      AverageAttribute: 'Attributdurchschnitt',
+      CopyNewScript:
+        'Kopiere und starte das aktuelle Skript im Schnellstart, um die zusätzlichen Spielerdaten zu erfassen.',
+      Yes: 'Ja',
+      No: 'Nein',
+      Profile: 'Spielerprofil',
+      Reputation: 'Internationales Ansehen',
+      BodyType: 'Körperbau',
+      RealFace: 'Echtes Gesicht',
+      Gender: 'Geschlecht',
+      Male: 'Männlich',
+      Female: 'Weiblich',
+      Nationality: 'Nationalität (Spiel-ID)',
+      SecondNationality: 'Zweite Nationalität (Spiel-ID)',
+      AccelerationType: 'Beschleunigungstyp',
+      DerivedNote:
+        'Berechnete Kategorien verwenden bestätigte Regeln dieser Spielversion. Ein Strich bedeutet, dass keine Daten geliefert wurden.',
+      SoFIFAReference: 'Originaldaten bei SoFIFA ansehen',
+      Roles: 'Rollenvertrautheit',
+      NoRolesInVersion:
+        'FC 24 verwendet Arbeitsraten; FC-IQ-Rollen gibt es ab FC 25.',
+      NotAvailable:
+        'Der Editor hat diese Daten im aktuellen Datensatz nicht geliefert.',
+      NoRoles: 'Keine verbesserten Rollen erfasst.',
+      HiddenTraits: 'Verborgene und KI-Eigenschaften',
+      NoTraits: 'Keine verborgenen Eigenschaften erfasst.',
+      UnknownBits:
+        'Unbekannte Eigenschaftsbits bleiben in den vollständigen Daten erhalten.',
+      Contract: 'Verein und Vertrag',
+      Joined: 'Beitritt',
+      ContractUntil: 'Vertragsende',
+      Wage: 'Gehalt',
+      ReleaseClause: 'Ausstiegsklausel',
+      Value: 'Marktwert',
+      Jersey: 'Trikotnummer',
+      Club: 'Verein / Spiel-ID',
+      MoneyNote:
+        'Beträge verwenden die Einheiten des Spiels. Website-Schätzungen ersetzen keine Karrierewerte.',
+      CareerState: 'Karrierestatus',
+      DatabaseOverall: 'Datenbank-Gesamtwert',
+      DynamicOverall: 'Dynamischer Gesamtwert',
+      BaselineOverall: 'Basis-Gesamtwert',
+      GrowthProfile: 'Wachstumsprofil (Spiel-ID)',
+      SquadRank: 'Kaderbewertung',
+      Form: 'Form',
+      Morale: 'Moral',
+      Fitness: 'Spielfitness',
+      Injury: 'Verletzung (Spiel-ID)',
+      InjuryDays: 'Verletzungsdauer',
+      CareerNote:
+        'Neue Karrieresysteme werden nur mit Daten des Editors angezeigt. Der Datenbankwert gilt nicht automatisch als dynamischer Gesamtwert.',
+      OtherCareerFields: 'Weitere Karrierefelder',
+      SeasonStats: 'Aktuelle Saisonstatistik',
+      NoMatches: 'Noch keine Wettbewerbsstatistik erfasst.',
+      Competition: 'Wettbewerb',
+      Appearances: 'Spiele',
+      Goals: 'Tore',
+      Assists: 'Vorlagen',
+      Average: 'Note',
+      CleanSheets: 'Zu null',
+      Saves: 'Paraden',
+      Conceded: 'Gegentore',
+      Yellow: 'Gelb',
+      Red: 'Rot',
+      MOTM: 'Spieler des Spiels',
+      SeasonNote:
+        'Die Statistiken stammen aus der Saison-API von Live Editor. Einige Felder oder Wettbewerbe können unvollständig sein; Werte werden nicht geschätzt.',
+      AllCapturedData: 'Alle erfassten Spieldaten',
+      RawNote:
+        'Neue oder unbekannte Felder bleiben mit ihren Spiel-IDs erhalten. Verfügbarkeitsangaben zeigen die vom Editor gelieferten Quellen.',
+      GameCode: 'Spiel-ID',
+      Lean: 'Schlank',
+      Normal: 'Normal',
+      Stocky: 'Kräftig',
+      Explosive: 'Explosiv',
+      Lengthy: 'Langanhaltend',
+      Controlled: 'Kontrolliert',
+      Calculated: 'Berechnet',
+    },
     BasicInfo: {
       PlayerID: 'ID',
       Age: 'Alter',
@@ -257,12 +341,12 @@ export default {
 
     Title: 'Schnellstart',
     STEP_1: {
-      Title: '1. Öffne FC24/FC25 mit dem Live Editor.',
+      Title: '1. Öffne FC 24–27 mit dem Live Editor.',
       DownloadLink: 'Download-Link:',
     },
     STEP_2: {
       Title: '2. Gehe in den Karrieremodus.',
-      Description: 'Bitte öffne zuerst den FC24/FC25 Karrieremodus.',
+      Description: 'Bitte öffne zuerst den FC 24–27 Karrieremodus.',
     },
     STEP_3: {
       Title: '3. Öffne das Lua-Skript',
@@ -276,11 +360,9 @@ export default {
     },
 
     GET_STARTED_TEXT: `
-# Los geht's
-## 1. Abhängigkeiten
-- Neuester **[xAranaktu/FC-24-Live-Editor](https://www.patreon.com/collection/96422?view=expanded)** oder **[xArnatu/FC-25-Live-Editor](https://www.patreon.com/collection/779838?view=expanded)**.
-- **API-Geheimschlüssel**. (Du kannst ihn auf der [Einstellungsseite](/settings) verwalten, ABER du brauchst ihn nicht wirklich, da ich ihn bereits in den folgenden Code-Snippet für dich eingefügt habe)
-      `,
+# Los geht’s
+Verwende den passenden Live Editor für [FC 24](https://github.com/xAranaktu/FC-24-Live-Editor), [FC 25](https://github.com/xAranaktu/FC-25-Live-Editor), [FC 26](https://github.com/xAranaktu/FC-26-Live-Editor) oder [FC 27](https://github.com/xAranaktu/FC-27-Live-Editor), der mit deinem Spielstand kompatibel ist. Dein persönlicher API-Schlüssel ist im Skript enthalten.
+`,
     SUCCESS: 'Erfolg',
     SUCCESS_MESSAGE: 'In die Zwischenablage kopiert',
     ERROR: 'Fehler',
@@ -291,36 +373,14 @@ export default {
     CODE_NOT_SHARE_WARNING:
       'Warnung: Diese Codes enthalten deinen geheimen Schlüssel. Teile diese Codes nicht mit anderen.',
     IMPORTANT_TIPS: `
-# Wichtige Hinweise & Tipps
-
-### 1. Das Spieldatum ist möglicherweise nicht perfekt genau!
-
-Du hast vielleicht bemerkt, dass wir die Wachstumsstatistiken der Spieler verfolgen, während sich die Spielzeit ändert.  
-ABER hier ist ein kleines Geheimnis: Es ist für uns schwierig, das genaue Spieldatum zu erhalten! Wir haben diese Daten früher aus der "career_table" gezogen, die du im Live-Editor unter dem Tab "Tabelle" finden kannst. Aber nach einem bestimmten Spiel-Update sind die Daten in dieser Tabelle nicht mehr genau. Interessanterweise habe ich ein Muster gefunden: Die Tabelle ist genau, wenn du zum ersten Mal den Karrieremodus betrittst oder nachdem du ein Spiel gespielt hast.
-
-Auf dieser Grundlage mussten wir eine manuelle Zeitberechnungsmethode erstellen, indem wir auf das DAY_PASSED-Ereignis im Spiel hören und es mit den Daten abgleichen, die wir noch erhalten können. Es ist etwas umständlich, und ich musste eine Menge redundanten Code hinzufügen, um es zum Laufen zu bringen. Aber im Moment ist das unsere einzige Option. Also, wenn du dieses Skript verwendest, verlass dich nicht zu sehr auf das Spieldatum, da es möglicherweise nicht punktgenau ist.
-
-Und bitte führe dieses Skript sofort nach dem Betreten des Karrieremodus aus, um die genauesten Daten zu erhalten. Andernfalls werden die Daten erst genau, nachdem du ein Spiel gespielt hast.
-
-**Unser Tipp: Führe dieses Skript direkt nach dem Betreten des Karrieremodus aus!**
-
-### 2. Das lästige schwarze Fenster! Es könnte deine Aufmerksamkeit stehlen.
-
-Lass mich erklären, wie das funktioniert. Unsere Anwendung nutzt die vom Live-Editor bereitgestellten Funktionen. Immer wenn das WEEK_PASSED-Ereignis im Spiel ausgelöst wird, läuft unser Lua-Skript, sammelt Daten von allen Spielern deines aktuellen Teams und sendet sie an unseren Server. Aber hier ist der Haken: Der Live-Editor bietet keine Möglichkeit, API-Anfragen direkt an einen externen Server zu senden, also verwenden wir den Curl-Befehl von Windows dafür.
-
-Leider erscheint jedes Mal, wenn wir diesen Befehl ausführen, ein schwarzes Fenster, weil wir Curl im Windows-System ausführen. Und manchmal könnte dieses schwarze Fenster den Fokus von deinem Spiel stehlen, was ärgerlich ist. Es passiert nicht jedes Mal, aber es ist möglich. Es ist weit von perfekt entfernt, aber es ist das Beste, was wir im Moment tun können.
-
-Es tut mir leid für diese Unannehmlichkeit, aber ich suche ständig nach einer besseren Lösung. Während du diese Anwendung benutzt, bitte schließe dieses schwarze Fenster nicht—es ist damit beschäftigt, die API-Anfrage zu senden. Wenn dein Netzwerk nicht zu langsam ist, sollte das Fenster schnell verschwinden. Nach meiner Erfahrung ist es erträglich, da das schwarze Fenster nur einmal pro Spielwoche erscheint. Und hey, es ist ein kleiner Preis, um den Fortschritt deiner Spieler zu verfolgen, oder? Sei versichert, ich bin auf der Suche nach einer besseren Lösung und werde die Anwendung aktualisieren, sobald wir eine finden. Danke für dein Verständnis!
-
-### 3. Nur ein Speicherplatz unterstützt!
-
-Während der geschlossenen Beta unterstützen wir nur einen Speicherplatz. Das liegt daran, dass unsere Serverressourcen begrenzt sind und wir nicht für jeden einzelnen Benutzer einen separaten Speicherstand bereitstellen können. Außerdem bezweifle ich, dass jemand so oft zwischen Speicherdateien hin und her wechselt, also denke ich, dass diese Einschränkung fair ist. In Zukunft könnten wir mehr Speicherplätze anbieten, aber wer weiß? Die Zukunft ist voller Überraschungen!
-
-### 4. Probleme durch unzureichende Dateisystem-Berechtigungen
-
-Lass mich erklären, warum dieses Skript Dateisystem-Berechtigungen benötigt. Wie bereits erwähnt, verwenden wir die Kommandozeile, um direkt einen Curl-Befehl auszuführen, um deine Spielerdaten zu senden. Aufgrund der zahlreichen Spielerattribute kann die JSON-Datenzeichenfolge jedoch sehr lang werden, was es unmöglich macht, all diese Daten in einer einzigen Zeile von Curl zu verketten, da sie die erlaubte Länge der Kommandozeile überschreitet.
-
-Daher schreibe ich diese Daten zuerst in eine Datei und verkette dann den Pfad der Datei in den Befehl. Auf dieser Grundlage stelle bitte sicher, dass du über Administratorrechte und Schreibberechtigungen für den Ordner verfügst. In der Regel schreiben wir in das Stammverzeichnis des EA FC-Spiels, und wenn das Schreiben fehlschlägt, wird ein Fehler angezeigt: "Zugriff verweigert."`,
+# Wichtige Hinweise
+- Wähle die passende FC-Version und lade die Managerkarriere, bevor du das Skript ausführst. Kopiere nach einem Schlüssel- oder Versionswechsel ein neues Skript.
+- Der gesamte Kader wird sofort und danach jede Spielwoche hochgeladen. Unvollständige Kader werden übersprungen; Einzelheiten stehen im Live-Editor-Protokoll.
+- Unterstützte Editoren laden direkt hoch. FC 24 und ältere Editoren verwenden Windows curl und temporäre Dateien; dabei kann ein Befehlsfenster erscheinen. Schreibrechte im Spielordner sind nicht nötig.
+- FC 24 behält die Datumskorrektur. Führe das Skript nach dem Laden aus und prüfe die angezeigten Daten.
+- Verwende pro Konto und Spielversion nur eine Karriere. Verschiedene Spielstände werden nicht getrennt.
+- Erneutes Ausführen ersetzt nur den eigenen Ereignis-Listener. Andere Karriereskripte behalten ihre Listener.
+`,
     VIDEO_TUTORIAL_TITLE: `Video-Tutorial`,
     VIDEO_TUTORIAL_DESCRIPTION: `Du kannst auch durch das Video-Tutorial lernen, wie man diese App benutzt.`,
   },

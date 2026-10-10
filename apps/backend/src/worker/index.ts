@@ -414,7 +414,11 @@ export class Backend extends DurableObject<Env> {
                     player.player_id,
                 );
                 return json({
-                    thisPlayer: { ...player, playStylesList: JSON.parse(player.play_styles || '[]') },
+                    thisPlayer: {
+                        ...player,
+                        playStylesList: JSON.parse(player.play_styles || '[]'),
+                        playerProfile: player.player_profile ? JSON.parse(player.player_profile) : null,
+                    },
                     trends: history.map(trend),
                 });
             }
@@ -503,6 +507,13 @@ export class Backend extends DurableObject<Env> {
             throw new HttpError(409, 'An older snapshot cannot replace newer career data');
         const previous = await this.rows('SELECT * FROM player WHERE user_id=? AND game_version=?', userId, version);
         const previousMap = new Map(previous.map((p) => [p.player_id, p]));
+        // Missing masks in a particular editor must not erase known PlayStyles.
+        for (const player of players) {
+            if (player.play_styles == null)
+                player.play_styles = previousMap.get(player.player_id)?.play_styles || '[]';
+            if (player.player_profile == null)
+                player.player_profile = previousMap.get(player.player_id)?.player_profile || null;
+        }
         const setting = await this.settings(userId);
         const enabled: string[] = JSON.parse(setting.notification_items || '[]');
         const notifications: Row[] = [];

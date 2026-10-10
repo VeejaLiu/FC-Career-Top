@@ -12,7 +12,7 @@ import {
 import './page.css';
 
 export const metadata = pageMetadata(
-  'EA FC 24 & FC 25 Career Mode Player Tracker',
+  'EA FC 24–27 Career Mode Player Tracker',
   SITE_DESCRIPTION,
   '/'
 );
@@ -22,10 +22,10 @@ const features = [
     src: '/feature/multi_version.webp',
     width: 988,
     height: 540,
-    title: 'Track EA FC 24 and FC 25 careers',
-    alt: 'Game-version selector for separate FC 24 and FC 25 player data',
+    title: 'Track EA FC 24, 25, 26 and 27 careers',
+    alt: 'Game-version selector for separate FC 24–27 player data',
     paragraph:
-      'Choose EA FC 24 or FC 25 in the dashboard. Player records are kept separately by account and game version, so you can follow your squad in the matching Manager Career Mode.',
+      'Choose EA FC 24, 25, 26 or 27 in the dashboard. Player records are kept separately by account and game version, so you can follow your squad in the matching Manager Career Mode.',
   },
   {
     src: '/feature/automated_efficiency.webp',
@@ -126,7 +126,7 @@ export default function HomePage() {
               operatingSystem:
                 'Web browser; Windows PC for game data collection',
               softwareRequirements:
-                'EA FC 24 or EA FC 25 and a compatible Live Editor on Windows',
+                'EA FC 24, 25, 26 or 27 and a compatible Live Editor on Windows',
               offers: { '@type': 'Offer', price: 0, priceCurrency: 'USD' },
               sameAs: GITHUB_URL,
               screenshot: absoluteUrl('/feature/player_trends.webp'),
@@ -145,7 +145,7 @@ export default function HomePage() {
           Track player growth in EA FC Career Mode
         </h1>
         <p className="mt-5 max-w-3xl text-lg leading-relaxed">
-          FC Career Top automatically records your squad in EA FC 24 and FC 25
+          FC Career Top automatically records your squad in EA FC 24, 25, 26 and 27
           Manager Career Mode. Follow overall ratings and potential across
           seasons, compare player attributes and see when your players improve.
         </p>
@@ -225,7 +225,7 @@ export default function HomePage() {
               Which EA FC versions and platforms are supported?
             </h3>
             <p className="mt-2">
-              Game data collection supports EA FC 24 and FC 25 on Windows with
+              Game data collection supports EA FC 24, 25, 26 and 27 on Windows with
               Live Editor. Console careers cannot run this Windows Lua upload
               workflow. You can view uploaded records in a web browser.
             </p>

@@ -44,26 +44,56 @@
   border-radius: 4px;
   padding: 4px;
 }
+.game-version-switcher {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--semi-color-text-2);
+  font: inherit;
+  cursor: pointer;
+}
+.game-version-switcher > .semi-icon {
+  flex: none;
+}
+.game-version-switcher:hover {
+  color: var(--semi-color-text-0);
+}
+.game-version-switcher:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.app-game-wordmark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 36px;
+  border-radius: 4px;
+  background: #151616;
+  color: white;
+  font-size: 18px;
+  font-weight: 800;
+  font-style: italic;
+  white-space: nowrap;
+}
+.account-language-flag {
+  display: block;
+  width: 20px;
+  height: 16px;
+  object-fit: contain;
+}
 .app-brand-title {
   color: #252b32;
   font-size: 26px;
   font-weight: 800;
   font-style: italic;
   white-space: nowrap;
-}
-.version-switcher {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 40px;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: #e9f6ed;
-  color: #216d3f;
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
 }
 .app-header-actions {
   display: flex;
@@ -85,26 +115,6 @@
 }
 .header-icon-button:hover {
   background: var(--semi-color-fill-0);
-}
-.language-switcher {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 44px;
-  padding: 6px 12px;
-  border: 0;
-  border-radius: 999px;
-  background: #f0f2f5;
-  color: #252b32;
-  font: inherit;
-  font-weight: 600;
-  white-space: nowrap;
-  cursor: pointer;
-}
-.language-switcher img {
-  width: 20px;
-  flex-shrink: 0;
 }
 .app-navigation {
   display: flex;
@@ -170,15 +180,6 @@ a:focus-visible {
   flex: none;
   object-fit: contain;
 }
-@media (max-width: 1023px) {
-  .version-switcher-label {
-    display: none;
-  }
-  .version-switcher {
-    width: 44px;
-    padding: 0;
-  }
-}
 @media (max-width: 767px) {
   :root {
     --app-page-padding: 16px;
@@ -194,28 +195,18 @@ a:focus-visible {
     gap: 6px;
   }
   .app-game-logo {
-    width: 40px;
-    height: 28px;
+    width: 64px;
+    height: 30px;
   }
   .app-brand-title {
     font-size: 20px;
   }
-  .app-header-actions .discord-button,
-  .language-switcher span {
-    display: none;
-  }
-  .language-switcher {
-    width: 44px;
-    padding: 0;
+  .app-game-wordmark {
+    height: 30px;
+    font-size: 16px;
   }
   .app-header-actions {
     gap: 0;
-  }
-  .version-switcher {
-    gap: 4px;
-  }
-  .version-switcher-version {
-    font-size: 11px;
   }
   .semi-input-wrapper,
   .auth-page .semi-select {
@@ -240,11 +231,96 @@ a:focus-visible {
     max-width: calc(100vw - 24px);
   }
 }
-@media (max-width: 359px) {
-  .app-game-logo {
-    display: none;
+
+@media (max-width: 767px) {
+  .app-navigation-link {
+    flex: 1 1 0;
+    min-width: 0;
+    flex-direction: column;
+    gap: 2px;
+    padding: 6px 2px;
+    font-size: 12px;
+    line-height: 1.25;
   }
-  .app-brand-title {
-    font-size: 18px;
+  .app-navigation-link span {
+    min-width: 0;
+    white-space: normal;
+    text-align: center;
+    overflow-wrap: anywhere;
   }
+  .app-navigation-link .semi-icon {
+    flex: none;
+  }
+}
+
+.account-sheet .semi-sidesheet-header {
+  padding: 20px;
+  padding-top: max(20px, env(safe-area-inset-top));
+}
+.account-sheet .semi-sidesheet-body {
+  min-height: 0;
+  padding: 0;
+  overflow-y: auto;
+}
+.account-sheet .semi-sidesheet-footer {
+  padding: 12px 20px;
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+  border-top: 1px solid var(--semi-color-border);
+}
+.account-sheet-content {
+  padding: 0 20px 20px;
+}
+.account-sheet-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  margin: 4px 0 24px;
+}
+.account-sheet-profile strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.account-sheet-action,
+.account-sheet-language {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--semi-color-text-0);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.account-sheet-action:hover,
+.account-sheet-language:hover {
+  background: var(--semi-color-fill-0);
+}
+.account-sheet-languages {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--semi-color-border);
+}
+.account-sheet-languages h2 {
+  margin: 0 12px 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--semi-color-text-2);
+}
+.account-sheet-language span {
+  flex: 1;
+  min-width: 0;
+}
+.account-sheet-language[aria-pressed='true'] {
+  background: var(--semi-color-fill-0);
+  font-weight: 600;
+}
+.account-sheet-language .semi-icon {
+  flex: none;
+  color: var(--app-accent);
 }

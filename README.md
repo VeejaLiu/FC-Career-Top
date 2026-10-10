@@ -2,7 +2,7 @@
 
 [English](README.md) · [简体中文](README.zh-CN.md) · [Documentation](docs/README.md)
 
-Track your squad's development across seasons in **EA FC 24/25 Manager Career Mode**.
+Track your squad's development across seasons in **EA FC 24–27 Manager Career Mode**.
 FC Career Top uses Live Editor Lua scripts to collect player data automatically,
 then turns those snapshots into player lists, growth charts, detailed attributes,
 and change notifications.
@@ -22,8 +22,10 @@ You can also run locally or deploy your own instance on Cloudflare Free.
 - **Five interface languages:** English, Simplified Chinese, French, German, and Japanese.
 
 The game integration requires a **Windows PC** and a compatible
-[FC 24 Live Editor](https://github.com/xAranaktu/FC-24-Live-Editor) or
-[FC 25 Live Editor](https://github.com/xAranaktu/FC-25-Live-Editor).
+[FC 24](https://github.com/xAranaktu/FC-24-Live-Editor),
+[FC 25](https://github.com/xAranaktu/FC-25-Live-Editor),
+[FC 26](https://github.com/xAranaktu/FC-26-Live-Editor) or
+[FC 27 Live Editor](https://github.com/xAranaktu/FC-27-Live-Editor).
 See the [player guide](docs/USER_GUIDE.md) for the full setup and current limitations.
 
 ## Screenshots

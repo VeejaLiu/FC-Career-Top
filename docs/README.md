@@ -8,6 +8,7 @@
 | --- | --- |
 | Players using an available instance | [Player guide](USER_GUIDE.md) |
 | Running locally or contributing | [Development](DEVELOPMENT.md) |
+| Comparing FC 24–27 player fields and editor support | [球员数据与接口支持](PLAYER_DATA_SUPPORT.md) |
 | Creating or changing the database | [Database migrations](DATABASE.md) |
 | Preparing a first deployment | [Deployment](DEPLOYMENT.md) |
 

@@ -14,6 +14,9 @@ export interface PlayerOverall {
   position2: string;
   position3: string;
   position4: string;
+  position5?: string;
+  position6?: string;
+  position7?: string;
   imageUrl?: string;
   overallRanking?: number;
   potentialRanking?: number;
@@ -53,6 +56,9 @@ export interface PlayerModel {
   preferredposition2: number;
   preferredposition3: number;
   preferredposition4: number;
+  preferredposition5?: number | null;
+  preferredposition6?: number | null;
+  preferredposition7?: number | null;
   skillmoves: number;
   weakfootabilitytypecode: number;
   attackingworkrate: number;
@@ -91,16 +97,42 @@ export interface PlayerModel {
   gkkicking: number;
   gkpositioning: number;
   gkreflexes: number;
-  play_styles: number;
+  play_styles: string;
+  player_profile?: string | null;
   is_archived: number;
   is_deleted: boolean;
   create_time: Date;
   update_time: Date;
 }
 
+export type GameFieldValue = string | number | boolean | null;
+export type GameRecord = Record<string, GameFieldValue>;
+
+export interface PlayerProfile {
+  schemaVersion: number;
+  gameVersion: number;
+  liveEditorVersion: string;
+  observedOn: string;
+  player: GameRecord;
+  related?: Record<string, GameRecord[]>;
+  seasonStats?: GameRecord[];
+  traits?: string[];
+  unknownPlayStyleBits?: Record<string, string>;
+  unreadableFields?: string[];
+  availability: {
+    playerFields: boolean;
+    fullPlayerFields?: boolean;
+    relatedTables: Record<string, boolean>;
+    seasonStats: boolean;
+    roles: boolean;
+    playStyles: boolean;
+  };
+}
+
 export interface PlayerDetail {
   thisPlayer: PlayerModel & {
     playStylesList: string[];
+    playerProfile?: PlayerProfile | null;
   };
   trends: PlayerTrend[];
 }

@@ -4,8 +4,8 @@ import Breadcrumbs from '../components/Breadcrumbs';
 import { APP_URL, GITHUB_URL, pageMetadata } from '@/lib/seo';
 
 export const metadata = pageMetadata(
-  'FC 24 & FC 25 Player Tracking Setup Guide',
-  'Set up FC Career Top with Live Editor on Windows. Connect your EA FC 24 or FC 25 career, run the Lua script and troubleshoot missing player uploads.',
+  'FC 24–27 Player Tracking Setup Guide',
+  'Set up FC Career Top with Live Editor on Windows. Connect your EA FC 24, 25, 26 or 27 career, run the Lua script and troubleshoot missing player uploads.',
   '/get-started'
 );
 
@@ -14,7 +14,7 @@ export default function GetStartedPage() {
     <article className="container mx-auto max-w-4xl px-2 sm:px-4 py-8 leading-relaxed">
       <Breadcrumbs title="Setup guide" path="/get-started" />
       <h1 className="text-3xl sm:text-4xl font-bold">
-        How to track players in EA FC 24 and FC 25 Career Mode
+        How to track players in EA FC 24, 25, 26 and 27 Career Mode
       </h1>
       <p className="mt-5 text-lg">
         Connect your Windows career to FC Career Top with Live Editor. The Lua
@@ -27,22 +27,20 @@ export default function GetStartedPage() {
           What you need
         </h2>
         <ul className="mt-4 list-disc pl-6 space-y-2">
-          <li>EA FC 24 or EA FC 25 on a Windows PC.</li>
+          <li>EA FC 24, 25, 26 or 27 on a Windows PC.</li>
           <li>
-            A compatible{' '}
-            <a
-              href="https://github.com/xAranaktu/FC-24-Live-Editor"
-              className="underline"
-            >
-              FC 24 Live Editor
-            </a>{' '}
-            or{' '}
-            <a
-              href="https://github.com/xAranaktu/FC-25-Live-Editor"
-              className="underline"
-            >
-              FC 25 Live Editor
-            </a>
+            A compatible Live Editor:{' '}
+            {[24, 25, 26, 27].map((version, index) => (
+              <span key={version}>
+                {index > 0 && ', '}
+                <a
+                  href={`https://github.com/xAranaktu/FC-${version}-Live-Editor`}
+                  className="underline"
+                >
+                  FC {version}
+                </a>
+              </span>
+            ))}
             . Follow that project’s installation and game-build compatibility
             instructions.
           </li>
@@ -51,8 +49,8 @@ export default function GetStartedPage() {
             and API.
           </li>
           <li>
-            Windows curl and permission to write files in the directory used by
-            the Lua engine.
+            FC 24 and older editors without direct uploads require Windows curl
+            and permission to write files in the Windows temporary directory.
           </li>
         </ul>
         <p className="mt-4">
@@ -77,7 +75,7 @@ export default function GetStartedPage() {
             Register with an email and password, then sign in with those
             credentials.
           </li>
-          <li>Select FC 24 or FC 25 in the game-version selector.</li>
+          <li>Select FC 24, 25, 26 or 27 in the game-version selector.</li>
           <li>
             Start the matching game through Live Editor and load your Manager
             Career Mode save.
@@ -137,7 +135,7 @@ export default function GetStartedPage() {
         </ul>
         <p className="mt-4">
           The dashboard supports English, Simplified Chinese, French, German and
-          Japanese. FC 24 and FC 25 records are selected separately.
+          Japanese. FC 24–27 records are selected separately.
         </p>
       </section>
 
@@ -165,8 +163,9 @@ export default function GetStartedPage() {
               Why does a command window appear?
             </h3>
             <p className="mt-2">
-              The script writes a JSON file and runs Windows curl to upload it.
-              The command window can briefly take focus; let the upload finish.
+              Compatible editors upload directly. Editors without that feature
+              use Windows curl and temporary files. The command window can
+              briefly take focus; let the upload finish.
             </p>
           </div>
           <div>
@@ -174,8 +173,8 @@ export default function GetStartedPage() {
               How do I fix “Permission denied”?
             </h3>
             <p className="mt-2">
-              Allow the script to write in its working directory, typically the
-              game directory.
+              Allow the curl fallback to write in the Windows temporary directory.
+              Direct uploads do not need temporary files.
             </p>
           </div>
           <div>
@@ -193,9 +192,9 @@ export default function GetStartedPage() {
               Can I combine this with other Lua scripts?
             </h3>
             <p className="mt-2">
-              The tracking script removes existing career-mode event handlers
-              before registering its own. Check event-handler registration when
-              combining scripts.
+              The tracking script replaces only its own listener when run again.
+              Other scripts keep their listeners. When upgrading from the older
+              tracking script, restart the game before running the new script.
             </p>
           </div>
         </div>
