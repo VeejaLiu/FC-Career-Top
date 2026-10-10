@@ -115,5 +115,7 @@ For development work, follow the setup and checks in the [development guide](doc
 
 ## License
 
-The backend's existing license is at [apps/backend/LICENSE](apps/backend/LICENSE).
-No repository-wide license has been added for the other applications.
+FC Career Top is free and open source. The project is licensed under the
+[MIT License](LICENSE), except where a component or third-party asset has its
+own license. The backend's existing license is preserved at
+[apps/backend/LICENSE](apps/backend/LICENSE).

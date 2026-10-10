@@ -84,4 +84,4 @@ pnpm dev
 三者统一使用根目录的 pnpm workspace 与锁定文件。
 
 问题和建议请提交到 [GitHub Issues](https://github.com/VeejaLiu/FC-Career-Top/issues)。
-后端原有许可证保留在 [apps/backend/LICENSE](apps/backend/LICENSE)；当前未新增覆盖其他应用的统一许可证。
+FC Career Top 完全免费并开放源码，项目采用 [MIT 许可证](LICENSE)，已有独立许可证的组件和第三方资源除外。后端原有许可证保留在 [apps/backend/LICENSE](apps/backend/LICENSE)。
