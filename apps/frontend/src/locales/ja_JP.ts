@@ -380,6 +380,10 @@ export default {
     VIDEO_TUTORIAL_DESCRIPTION: `ビデオチュートリアルを通じてこのアプリの使い方を学ぶこともできます。`,
   },
   NotificationPopover: {
+    FilterLabel: '通知を絞り込む',
+    Empty: '通知はありません',
+    EmptyUnread: '未読の通知はありません',
+
     Title: '通知',
     OnlyShowUnread: '未読のみ表示',
     SwitchOn: 'オン',

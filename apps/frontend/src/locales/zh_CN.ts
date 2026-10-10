@@ -354,6 +354,10 @@ export default {
     VIDEO_TUTORIAL_DESCRIPTION: `您也可以通过视频教程了解如何使用此应用程序。`,
   },
   NotificationPopover: {
+    FilterLabel: '筛选通知',
+    Empty: '暂无通知',
+    EmptyUnread: '暂无未读通知',
+
     Title: '通知',
     OnlyShowUnread: '只显示未读',
     SwitchOn: '开',

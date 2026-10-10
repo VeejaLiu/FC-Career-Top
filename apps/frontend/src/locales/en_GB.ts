@@ -382,6 +382,10 @@ Use the matching [FC 24](https://github.com/xAranaktu/FC-24-Live-Editor), [FC 25
     VIDEO_TUTORIAL_DESCRIPTION: `You can also learn how to use this app through the video tutorial.`,
   },
   NotificationPopover: {
+    FilterLabel: 'Filter notifications',
+    Empty: 'No notifications yet',
+    EmptyUnread: 'No unread notifications',
+
     Title: 'Notifications',
     OnlyShowUnread: 'only show unread',
     SwitchOn: 'On',

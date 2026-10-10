@@ -389,6 +389,10 @@ Utilisez le Live Editor correspondant à [FC 24](https://github.com/xAranaktu/FC
     VIDEO_TUTORIAL_DESCRIPTION: `Vous pouvez également apprendre à utiliser cette application grâce au tutoriel vidéo.`,
   },
   NotificationPopover: {
+    FilterLabel: 'Filtrer les notifications',
+    Empty: 'Aucune notification',
+    EmptyUnread: 'Aucune notification non lue',
+
     Title: 'Notifications',
     OnlyShowUnread: 'afficher uniquement non lues',
     SwitchOn: 'Activé',
