@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   Avatar,
-  Badge,
   Dropdown,
   LocaleConsumer,
   Notification,
@@ -30,6 +29,7 @@ import { NotificationApis } from '../../service/NotificationApis';
 import { NotificationPopover } from '../NotificationPopover';
 import { navigationItems } from './navigation';
 import { ResponsivePopover } from '../ResponsivePopover';
+import { HeaderIconButton } from './HeaderIconButton';
 import fc24Logo from '../../../public/fc24-logo.svg';
 import fc25Logo from '../../../public/fc25-logo.png';
 import { GAME_VERSIONS } from '../../constant/game-versions';
@@ -160,21 +160,16 @@ export function AppHeader() {
                       <NotificationPopover updateUnreadCount={refreshUnread} />
                     }
                   >
-                    <button
-                      type="button"
-                      className="header-icon-button"
+                    <HeaderIconButton
                       aria-label={notificationLocale.Title}
+                      unreadCount={unreadCount}
                     >
-                      <Badge count={unreadCount || undefined} theme="solid">
-                        <IconBell size="large" />
-                      </Badge>
-                    </button>
+                      <IconBell size="large" />
+                    </HeaderIconButton>
                   </ResponsivePopover>
                 )}
               </LocaleConsumer>
-              <button
-                type="button"
-                className="header-icon-button"
+              <HeaderIconButton
                 aria-label={locale.MyAccount}
                 aria-expanded={accountOpen}
                 aria-controls="account-sheet-content"
@@ -183,7 +178,7 @@ export function AppHeader() {
                 <Avatar size="small" color="light-blue">
                   {username.charAt(0).toUpperCase()}
                 </Avatar>
-              </button>
+              </HeaderIconButton>
             </div>
           </div>
           <SideSheet
