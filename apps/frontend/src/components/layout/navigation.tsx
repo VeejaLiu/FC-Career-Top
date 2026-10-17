@@ -7,6 +7,7 @@ import {
 
 // Shared by every viewport; add navigation destinations here.
 export const navigationItems = [
+  { path: '/career', label: 'CareerHub', icon: <IconHistogram /> },
   { path: '/players', label: 'PlayersList', icon: <IconUser /> },
   { path: '/players-detail', label: 'PlayerDetail', icon: <IconIdCard /> },
   { path: '/players-trends', label: 'PlayersTrends', icon: <IconHistogram /> },

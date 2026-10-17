@@ -1,24 +1,25 @@
+import { canonicalUploadKey, generateUploadKey as secretKey, uploadKeyAliases } from '../utils/UploadKey';
 import { DurableObject } from 'cloudflare:workers';
 import bcrypt from 'bcryptjs';
+import { googleAccount, verifyGoogleCredential } from './google-auth';
 import { passwordValid, signToken, tokenId } from './auth';
 import { date, game, normalize, positions, positionType, Row, squad, trend } from './players';
 import { playerFields } from './player-fields';
+import { HttpError } from './http';
+import { handleAdmin } from './admin';
+import { administrator, adminLogin, requireAdminOrigin } from './admin-auth';
+import { careerRoutes, resolveCareer, historyDetails } from './careers';
+import { luaErrorBody, saveLuaError } from './lua-errors';
 
 interface Env {
     DB: D1Database;
     BACKEND: DurableObjectNamespace<Backend>;
     SECRET_JWT: string;
+    GOOGLE_CLIENT_ID: string;
     ALLOWED_ORIGINS: string;
+    ADMIN_ALLOWED_ORIGINS: string;
 }
 
-class HttpError extends Error {
-    constructor(
-        public status: number,
-        message: string,
-    ) {
-        super(message);
-    }
-}
 const ok = (data?: unknown, message = 'success') => ({
     success: true,
     message,
@@ -32,8 +33,6 @@ const emailValue = (value: unknown): string | null => {
     return email.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? email : null;
 };
 const sqlDate = () => new Date().toISOString().replace('T', ' ').slice(0, 19);
-const secretKey = () =>
-    `fcd-${Array.from(crypto.getRandomValues(new Uint8Array(32)), (n) => n.toString(16).padStart(2, '0')).join('')}`;
 const notificationKinds = [
     'PlayerUpdate.Overall',
     'PlayerUpdate.SkillMove',
@@ -54,6 +53,9 @@ export class Backend extends DurableObject<Env> {
         super(ctx, env);
         ctx.setWebSocketAutoResponse(new WebSocketRequestResponsePair('ping', 'pong'));
         ctx.storage.sql.exec(
+            'CREATE TABLE IF NOT EXISTS google_challenge (nonce TEXT PRIMARY KEY, origin TEXT NOT NULL, expires INTEGER NOT NULL)',
+        );
+        ctx.storage.sql.exec(
             'CREATE TABLE IF NOT EXISTS auth_rate_limit (key TEXT PRIMARY KEY, count INTEGER NOT NULL, expires INTEGER NOT NULL)',
         );
     }
@@ -71,9 +73,9 @@ export class Backend extends DurableObject<Env> {
         return this.statement(sql, ...values).run();
     }
 
-    private rate(request: Request, action: string, limit: number, seconds: number) {
+    private rate(request: Request, action: string, limit: number, seconds: number, identity?: string) {
         const now = Date.now();
-        const key = `${action}:${request.headers.get('CF-Connecting-IP') || 'local'}`;
+        const key = `${action}:${identity ?? (request.headers.get('CF-Connecting-IP') || 'local')}`;
         const previous = this.ctx.storage.sql
             .exec<{ count: number; expires: number }>('SELECT count, expires FROM auth_rate_limit WHERE key = ?', key)
             .toArray()[0];
@@ -106,10 +108,27 @@ export class Backend extends DurableObject<Env> {
         if (!token) throw new HttpError(401, 'Missing token');
         const id = await tokenId(token, this.env.SECRET_JWT);
         const user = id
-            ? await this.first('SELECT * FROM user WHERE id=? AND is_deleted=0 AND token=?', id, token)
+            ? await this.first(
+                  'SELECT * FROM user WHERE id=? AND is_deleted=0 AND is_disabled=0 AND token=?',
+                  id,
+                  token,
+              )
             : null;
         if (!user) throw new HttpError(401, 'Token is not valid');
         return user;
+    }
+
+    private googleOrigin(request: Request): string {
+        const origin = request.headers.get('Origin');
+        if (
+            !origin ||
+            !(this.env.ALLOWED_ORIGINS || '')
+                .split(',')
+                .map((v) => v.trim())
+                .includes(origin)
+        )
+            throw new HttpError(403, 'Origin is not allowed');
+        return origin;
     }
 
     private async body(request: Request): Promise<any> {
@@ -151,7 +170,11 @@ export class Backend extends DurableObject<Env> {
         try {
             return await work;
         } catch (error) {
-            if (error instanceof HttpError) return json({ success: false, message: error.message }, error.status);
+            if (error instanceof HttpError)
+                return json(
+                    { success: false, message: error.message, ...(error.code ? { code: error.code } : {}) },
+                    error.status,
+                );
             console.error('Backend request failed', error instanceof Error ? error.message : 'Unknown error');
             return json({ success: false, message: 'Request failed. Please try again.' }, 500);
         }
@@ -179,6 +202,64 @@ export class Backend extends DurableObject<Env> {
                     'Sec-WebSocket-Protocol': request.headers.get('Sec-WebSocket-Protocol')!.split(',')[0].trim(),
                 },
             });
+        }
+        if (path.startsWith('/api/v1/admin/')) {
+            if (method !== 'GET') requireAdminOrigin(request, this.env.ADMIN_ALLOWED_ORIGINS || '');
+            if (path === '/api/v1/admin/login' && method === 'POST') {
+                this.rate(request, 'admin-login', 20, 600);
+                return adminLogin(request, this.env.DB, await this.body(request));
+            }
+            const actor = await administrator(request, this.env.DB);
+            this.rate(request, `admin:${actor.id}`, 180, 60);
+            if (path === '/api/v1/admin/password') this.rate(request, `admin-password:${actor.id}`, 10, 600);
+            return handleAdmin(
+                request,
+                this.env.DB,
+                actor,
+                () => this.body(request),
+                (id) => this.closeSockets(id),
+            );
+        }
+        if (path === '/api/v1/user/google/challenge' && method === 'GET') {
+            this.rate(request, 'google-challenge', 30, 600);
+            if (!this.env.GOOGLE_CLIENT_ID) throw new HttpError(503, 'Google sign-in is not configured');
+            const origin = this.googleOrigin(request);
+            const nonce = crypto.randomUUID();
+            this.ctx.storage.sql.exec('DELETE FROM google_challenge WHERE expires<?', Date.now());
+            this.ctx.storage.sql.exec(
+                'INSERT INTO google_challenge(nonce,origin,expires) VALUES (?,?,?)',
+                nonce,
+                origin,
+                Date.now() + 600_000,
+            );
+            return json(ok({ clientId: this.env.GOOGLE_CLIENT_ID, nonce }));
+        }
+        if (path === '/api/v1/user/google' && method === 'POST') {
+            this.rate(request, 'google-login', 30, 600);
+            if (!this.env.GOOGLE_CLIENT_ID) throw new HttpError(503, 'Google sign-in is not configured');
+            const origin = this.googleOrigin(request);
+            if (request.headers.get('Content-Type')?.split(';')[0].trim().toLowerCase() !== 'application/json')
+                throw new HttpError(415, 'JSON is required');
+            const input = await this.body(request);
+            if (typeof input.nonce !== 'string' || input.nonce.length > 100)
+                throw new HttpError(400, 'Invalid sign-in challenge');
+            const challenge = this.ctx.storage.sql
+                .exec<{
+                    origin: string;
+                    expires: number;
+                }>('SELECT origin,expires FROM google_challenge WHERE nonce=?', input.nonce)
+                .toArray()[0];
+            if (!challenge || challenge.expires <= Date.now() || challenge.origin !== origin)
+                throw new HttpError(401, 'Sign-in expired. Please try again.');
+            const identity = await verifyGoogleCredential(input.credential, this.env.GOOGLE_CLIENT_ID, input.nonce);
+            let authenticatedAccountId: number | undefined;
+            if (request.headers.has('token')) authenticatedAccountId = (await this.user(request)).id;
+            const user = await googleAccount(this.env.DB, identity, authenticatedAccountId);
+            const token = await signToken(user.id, this.env.SECRET_JWT);
+            await this.run('UPDATE user SET token=?,update_time=CURRENT_TIMESTAMP WHERE id=?', token, user.id);
+            this.ctx.storage.sql.exec('DELETE FROM google_challenge WHERE nonce=?', input.nonce);
+            this.closeSockets(user.id);
+            return json(ok({ id: user.id, username: user.username, email: user.email, token }));
         }
         if (path === '/api/v1/user/register' && method === 'POST') {
             this.rate(request, 'register', 10, 3600);
@@ -232,14 +313,18 @@ export class Backend extends DurableObject<Env> {
                 typeof input.password === 'string' &&
                 new TextEncoder().encode(input.password).length <= 72;
             const user = valid
-                ? await this.first('SELECT * FROM user WHERE email=? COLLATE NOCASE AND is_deleted=0', email)
+                ? await this.first(
+                      'SELECT * FROM user WHERE email=? COLLATE NOCASE AND is_deleted=0 AND is_disabled=0',
+                      email,
+                  )
                 : null;
             const hash = user?.password || '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy';
             const matches = await bcrypt.compare(
                 typeof input.password === 'string' ? input.password.slice(0, 72) : '',
                 hash,
             );
-            if (!valid || !user || !matches) return json({ success: false, message: 'Email or password not matched' });
+            if (!valid || !user || !user.password || !matches)
+                return json({ success: false, message: 'Email or password not matched' });
             const token = await signToken(user.id, this.env.SECRET_JWT);
             await this.run('UPDATE user SET token=?,update_time=CURRENT_TIMESTAMP WHERE id=?', token, user.id);
             this.closeSockets(user.id);
@@ -267,12 +352,25 @@ export class Backend extends DurableObject<Env> {
             }
             if (path.endsWith('/verify-email')) throw new HttpError(410, 'Email verification is disabled');
         }
+        if (path === '/api/v1/lua/errors' && method === 'POST') {
+            this.rate(request, 'lua-errors-ip', 60, 600);
+            const key = request.headers.get('secret-key');
+            if (!key || key.length > 128) throw new HttpError(401, 'Invalid secret key');
+            const owner = await this.first(
+                'SELECT s.user_id FROM user_secret_key s JOIN user u ON u.id=s.user_id WHERE s.secret_key IN (?,?) AND s.is_deleted=0 AND u.is_deleted=0 AND u.is_disabled=0',
+                ...uploadKeyAliases(key),
+            );
+            if (!owner) throw new HttpError(401, 'Invalid secret key');
+            this.rate(request, 'lua-errors-user', 20, 600, String(owner.user_id));
+            await saveLuaError(this.env.DB, owner.user_id, key, await luaErrorBody(request));
+            return json(ok(undefined, 'Diagnostic saved'));
+        }
         if (path === '/api/v1/player/bulk' && method === 'POST') {
             const key = request.headers.get('secret-key');
             if (!key || key.length > 128) throw new HttpError(401, 'Invalid secret key');
             const owner = await this.first(
-                'SELECT s.user_id FROM user_secret_key s JOIN user u ON u.id=s.user_id WHERE s.secret_key=? AND s.is_deleted=0 AND u.is_deleted=0',
-                key,
+                'SELECT s.user_id FROM user_secret_key s JOIN user u ON u.id=s.user_id WHERE s.secret_key IN (?,?) AND s.is_deleted=0 AND u.is_deleted=0 AND u.is_disabled=0',
+                ...uploadKeyAliases(key),
             );
             if (!owner) throw new HttpError(401, 'Invalid secret key');
             this.rate(request, `upload:${owner.user_id}`, 120, 600);
@@ -280,7 +378,38 @@ export class Backend extends DurableObject<Env> {
             const version = game(url.searchParams.get('gameVersion'));
             if (!Array.isArray(input) || input.length < 1 || input.length > 200)
                 throw new HttpError(400, 'Upload must contain 1-200 players');
-            await this.upload(owner.user_id, version, input);
+            const career = await resolveCareer(this.env.DB, owner.user_id, version, url.searchParams.get('careerId'));
+            const scriptVersion = (url.searchParams.get('scriptVersion') || 'legacy')
+                .slice(0, 80)
+                .replace(/[^a-zA-Z0-9._-]/g, '');
+            const editorVersion = (url.searchParams.get('editorVersion') || '')
+                .slice(0, 80)
+                .replace(/[^a-zA-Z0-9._ -]/g, '');
+            try {
+                if (career.is_archived)
+                    throw new HttpError(
+                        409,
+                        'This career is archived. Restore it before uploading.',
+                        'CAREER_ARCHIVED',
+                    );
+                await this.upload(owner.user_id, version, input, career.id, scriptVersion, editorVersion);
+            } catch (error) {
+                const message = error instanceof HttpError ? error.message : 'Upload failed. Please try again.';
+                await this.env.DB.batch([
+                    this.statement(
+                        'UPDATE career SET last_attempt=CURRENT_TIMESTAMP,last_error=? WHERE user_id=? AND id=?',
+                        message,
+                        owner.user_id,
+                        career.id,
+                    ),
+                    this.statement(
+                        "INSERT INTO career_upload_daily(user_id,day,script_version,failures) VALUES (?,date('now'),?,1) ON CONFLICT(user_id,day,script_version) DO UPDATE SET failures=failures+1",
+                        owner.user_id,
+                        scriptVersion,
+                    ),
+                ]);
+                throw error;
+            }
             return json({ success: true, message: 'Snapshot saved' });
         }
 
@@ -293,9 +422,14 @@ export class Backend extends DurableObject<Env> {
                         userID: user.id,
                         username: user.username,
                         email: user.email,
-                        isEmailVerified: false,
-                        emailLoginEnabled: true,
-                        authMode: 'email_password',
+                        isEmailVerified: Boolean(user.is_email_verified),
+                        emailLoginEnabled: Boolean(user.password),
+                        googleLoginEnabled: Boolean(user.google_sub),
+                        authMode: user.google_sub
+                            ? user.password
+                                ? 'google_and_password'
+                                : 'google'
+                            : 'email_password',
                     }),
                 );
             if (path.endsWith('/logout') && method === 'POST') {
@@ -308,7 +442,7 @@ export class Backend extends DurableObject<Env> {
                     'SELECT secret_key FROM user_secret_key WHERE user_id=? AND is_deleted=0',
                     user.id,
                 );
-                return json(ok({ secretKey: row!.secret_key }));
+                return json(ok({ secretKey: canonicalUploadKey(row!.secret_key) }));
             }
             if (path.endsWith('/secret/refresh') && method === 'POST') {
                 const value = secretKey();
@@ -321,6 +455,7 @@ export class Backend extends DurableObject<Env> {
             }
             if (path.endsWith('/password') && method === 'POST') {
                 this.rate(request, `password:${user.id}`, 10, 600);
+                if (!user.password) throw new HttpError(400, 'This account uses Google sign-in and has no password.');
                 const input = await this.body(request);
                 if (!passwordValid(input.newPassword) || input.newPassword !== input.confirmNewPassword)
                     throw new HttpError(400, 'New password is invalid or does not match');
@@ -376,21 +511,30 @@ export class Backend extends DurableObject<Env> {
             if (path.includes('/email')) throw new HttpError(410, 'Email verification is disabled');
         }
 
+        if (path.startsWith('/api/v1/careers')) {
+            this.rate(request, `careers:${user.id}`, 180, 60);
+            return careerRoutes(request, this.env.DB, user.id, game(url.searchParams.get('gameVersion')), () =>
+                this.body(request),
+            );
+        }
         if (path.startsWith('/api/v1/player')) {
             const version = game(url.searchParams.get('gameVersion'));
+            const career = await resolveCareer(this.env.DB, user.id, version, url.searchParams.get('careerId'));
             if (method !== 'GET') throw new HttpError(405, 'Method not allowed');
             const players = await this.rows(
-                'SELECT * FROM player WHERE user_id=? AND game_version=? AND is_deleted=0 AND is_archived=0',
+                `SELECT * FROM player WHERE user_id=? AND game_version=? AND save_id=? AND is_deleted=0 ${url.searchParams.get('includeArchived') === 'true' ? '' : 'AND is_archived=0'}`,
                 user.id,
                 version,
+                career.id,
             );
             if (path === '/api/v1/player') return json(squad(players));
             if (path.endsWith('/count')) return json(players.length);
             if (path.endsWith('/trends')) {
                 const history = await this.rows(
-                    'SELECT player_id,in_game_date,overallrating,potential FROM player_status_history WHERE user_id=? AND game_version=? AND is_deleted=0 ORDER BY in_game_date',
+                    'SELECT player_id,in_game_date,overallrating,potential FROM player_status_history WHERE user_id=? AND game_version=? AND save_id=? AND is_deleted=0 ORDER BY in_game_date',
                     user.id,
                     version,
+                    career.id,
                 );
                 return json(
                     players.map((p) => ({
@@ -408,9 +552,10 @@ export class Backend extends DurableObject<Env> {
                 const player = players.find((p) => p.player_id === id) || (id === 0 ? players[0] : null);
                 if (!player) return json(null);
                 const history = await this.rows(
-                    'SELECT * FROM player_status_history WHERE user_id=? AND game_version=? AND player_id=? AND is_deleted=0 ORDER BY in_game_date',
+                    'SELECT * FROM player_status_history WHERE user_id=? AND game_version=? AND save_id=? AND player_id=? AND is_deleted=0 ORDER BY in_game_date',
                     user.id,
                     version,
+                    career.id,
                     player.player_id,
                 );
                 return json({
@@ -420,36 +565,49 @@ export class Backend extends DurableObject<Env> {
                         playerProfile: player.player_profile ? JSON.parse(player.player_profile) : null,
                     },
                     trends: history.map(trend),
+                    history: history.map((h) => ({
+                        ...trend(h),
+                        attributes: h.details ? JSON.parse(h.details) : null,
+                    })),
                 });
             }
         }
         if (path.startsWith('/api/v1/notification')) {
             const input = method === 'POST' ? await this.body(request) : null;
             const version = game(input?.gameVersion ?? url.searchParams.get('gameVersion'));
+            const career = await resolveCareer(
+                this.env.DB,
+                user.id,
+                version,
+                input?.careerId ?? url.searchParams.get('careerId'),
+            );
             if (path.endsWith('/unread-count') && method === 'GET')
                 return json({
                     count: (await this.first(
-                        'SELECT count(*) AS count FROM user_notification WHERE user_id=? AND game_version=? AND is_deleted=0 AND is_read=0',
+                        'SELECT count(*) AS count FROM user_notification WHERE user_id=? AND game_version=? AND save_id=? AND is_deleted=0 AND is_read=0',
                         user.id,
                         version,
+                        career.id,
                     ))!.count,
                 });
             if (path.endsWith('/mark-read') && method === 'POST') {
                 const id = Number(input.id);
                 if (!Number.isSafeInteger(id) || id < 1) throw new HttpError(400, 'Invalid notification ID');
                 await this.run(
-                    'UPDATE user_notification SET is_read=1 WHERE id=? AND user_id=? AND game_version=?',
+                    'UPDATE user_notification SET is_read=1 WHERE id=? AND user_id=? AND game_version=? AND save_id=?',
                     id,
                     user.id,
                     version,
+                    career.id,
                 );
                 return json(ok());
             }
             if (path.endsWith('/mark-all-read') && method === 'POST') {
                 await this.run(
-                    'UPDATE user_notification SET is_read=1 WHERE user_id=? AND game_version=? AND is_read=0',
+                    'UPDATE user_notification SET is_read=1 WHERE user_id=? AND game_version=? AND save_id=? AND is_read=0',
                     user.id,
                     version,
+                    career.id,
                 );
                 return json(ok());
             }
@@ -460,8 +618,8 @@ export class Backend extends DurableObject<Env> {
                     throw new HttpError(400, 'Invalid pagination');
                 const filter = url.searchParams.get('filter') || 'all';
                 if (filter !== 'all' && !notificationKinds.includes(filter)) throw new HttpError(400, 'Invalid filter');
-                let where = 'n.user_id=? AND n.game_version=? AND n.is_deleted=0';
-                const values: any[] = [user.id, version];
+                let where = 'n.user_id=? AND n.game_version=? AND n.save_id=? AND n.is_deleted=0';
+                const values: any[] = [user.id, version, career.id];
                 if (url.searchParams.get('onlyUnread') === 'true') where += ' AND n.is_read=0';
                 if (filter !== 'all') {
                     where += ' AND n.message_subtype=?';
@@ -472,7 +630,7 @@ export class Backend extends DurableObject<Env> {
                     ...values,
                 ))!.count;
                 const items = await this.rows(
-                    `SELECT n.*,p.player_name,p.preferredposition1 FROM user_notification n LEFT JOIN player p ON p.user_id=n.user_id AND p.game_version=n.game_version AND p.player_id=n.player_id WHERE ${where} ORDER BY n.in_game_date DESC,n.id DESC LIMIT ? OFFSET ?`,
+                    `SELECT n.*,p.player_name,p.preferredposition1 FROM user_notification n LEFT JOIN player p ON p.user_id=n.user_id AND p.game_version=n.game_version AND p.save_id=n.save_id AND p.player_id=n.player_id WHERE ${where} ORDER BY n.in_game_date DESC,n.id DESC LIMIT ? OFFSET ?`,
                     ...values,
                     limit,
                     (page - 1) * limit,
@@ -486,10 +644,20 @@ export class Backend extends DurableObject<Env> {
         throw new HttpError(404, 'Not found');
     }
 
-    private async upload(userId: number, version: number, input: Row[]) {
+    private async upload(
+        userId: number,
+        version: number,
+        input: Row[],
+        careerId: number,
+        scriptVersion: string,
+        editorVersion: string,
+    ) {
         let players: Row[];
         try {
-            players = input.map((p) => normalize(p, [...playerFields], userId, version));
+            players = input.map((p) => {
+                const normalized = { ...normalize(p, [...playerFields], userId, version), save_id: careerId };
+                return { ...normalized, history_details: historyDetails(normalized) };
+            });
         } catch (e) {
             throw new HttpError(400, e instanceof Error ? e.message : 'Invalid snapshot');
         }
@@ -499,18 +667,27 @@ export class Backend extends DurableObject<Env> {
         )
             throw new HttpError(400, 'Snapshot must contain unique players and a single in-game date');
         const latest = await this.first(
-            'SELECT max(in_game_date) AS date FROM player_status_history WHERE user_id=? AND game_version=?',
+            'SELECT max(in_game_date) AS date FROM player_status_history WHERE user_id=? AND game_version=? AND save_id=?',
             userId,
             version,
+            careerId,
         );
         if (latest?.date && players[0].in_game_date < latest.date)
-            throw new HttpError(409, 'An older snapshot cannot replace newer career data');
-        const previous = await this.rows('SELECT * FROM player WHERE user_id=? AND game_version=?', userId, version);
+            throw new HttpError(
+                409,
+                'An older snapshot cannot replace newer career data. Create a new career and copy its script to track this earlier save.',
+                'OLDER_SNAPSHOT',
+            );
+        const previous = await this.rows(
+            'SELECT * FROM player WHERE user_id=? AND game_version=? AND save_id=?',
+            userId,
+            version,
+            careerId,
+        );
         const previousMap = new Map(previous.map((p) => [p.player_id, p]));
         // Missing masks in a particular editor must not erase known PlayStyles.
         for (const player of players) {
-            if (player.play_styles == null)
-                player.play_styles = previousMap.get(player.player_id)?.play_styles || '[]';
+            if (player.play_styles == null) player.play_styles = previousMap.get(player.player_id)?.play_styles || '[]';
             if (player.player_profile == null)
                 player.player_profile = previousMap.get(player.player_id)?.player_profile || null;
         }
@@ -524,11 +701,12 @@ export class Backend extends DurableObject<Env> {
             const common = {
                 user_id: userId,
                 game_version: version,
+                save_id: careerId,
                 in_game_date: p.in_game_date,
                 player_id: p.player_id,
                 message_type: 'PlayerUpdate',
             };
-            const payload = { playerID: p.player_id, playerName: p.player_name, gameVersion: version };
+            const payload = { playerID: p.player_id, playerName: p.player_name, gameVersion: version, careerId };
             const push = (kind: string, values: Row, details: Row) => {
                 if (enabled.includes(kind)) {
                     notifications.push({ ...common, message_subtype: kind, ...values });
@@ -584,17 +762,18 @@ export class Backend extends DurableObject<Env> {
         const data = JSON.stringify(players);
         const batch = [
             this.statement(
-                `INSERT INTO player(${columns.join(',')}) SELECT ${selection} FROM json_each(?) WHERE true ON CONFLICT(user_id,game_version,player_id) DO UPDATE SET ${updates},is_archived=0,is_deleted=0,update_time=CURRENT_TIMESTAMP`,
+                `INSERT INTO player(${columns.join(',')}) SELECT ${selection} FROM json_each(?) WHERE true ON CONFLICT(user_id,game_version,save_id,player_id) DO UPDATE SET ${updates},is_archived=0,is_deleted=0,update_time=CURRENT_TIMESTAMP`,
                 data,
             ),
             this.statement(
-                "UPDATE player SET is_archived=1,update_time=CURRENT_TIMESTAMP WHERE user_id=? AND game_version=? AND player_id NOT IN (SELECT json_extract(value,'$.player_id') FROM json_each(?))",
+                "UPDATE player SET is_archived=1,update_time=CURRENT_TIMESTAMP WHERE user_id=? AND game_version=? AND save_id=? AND player_id NOT IN (SELECT json_extract(value,'$.player_id') FROM json_each(?))",
                 userId,
                 version,
+                careerId,
                 data,
             ),
             this.statement(
-                "INSERT INTO player_status_history(user_id,game_version,player_id,in_game_date,overallrating,potential) SELECT json_extract(value,'$.user_id'),json_extract(value,'$.game_version'),json_extract(value,'$.player_id'),json_extract(value,'$.in_game_date'),json_extract(value,'$.overallrating'),json_extract(value,'$.potential') FROM json_each(?) WHERE true ON CONFLICT(user_id,game_version,player_id,in_game_date) DO UPDATE SET overallrating=excluded.overallrating,potential=excluded.potential,update_time=CURRENT_TIMESTAMP",
+                "INSERT INTO player_status_history(user_id,game_version,save_id,player_id,in_game_date,overallrating,potential,details) SELECT json_extract(value,'$.user_id'),json_extract(value,'$.game_version'),json_extract(value,'$.save_id'),json_extract(value,'$.player_id'),json_extract(value,'$.in_game_date'),json_extract(value,'$.overallrating'),json_extract(value,'$.potential'),json_extract(value,'$.history_details') FROM json_each(?) WHERE true ON CONFLICT(user_id,game_version,save_id,player_id,in_game_date) DO UPDATE SET overallrating=excluded.overallrating,potential=excluded.potential,details=excluded.details,update_time=CURRENT_TIMESTAMP",
                 data,
             ),
         ];
@@ -602,6 +781,7 @@ export class Backend extends DurableObject<Env> {
             const names = [
                 'user_id',
                 'game_version',
+                'save_id',
                 'in_game_date',
                 'player_id',
                 'message_type',
@@ -624,7 +804,32 @@ export class Backend extends DurableObject<Env> {
                 ),
             );
         }
+        batch.push(
+            this.statement(
+                'UPDATE career SET last_upload=CURRENT_TIMESTAMP,last_attempt=CURRENT_TIMESTAMP,last_error=NULL,last_game_date=?,player_count=?,script_version=?,editor_version=?,upload_count=upload_count+1 WHERE user_id=? AND id=?',
+                players[0].in_game_date,
+                players.length,
+                scriptVersion,
+                editorVersion,
+                userId,
+                careerId,
+            ),
+            this.statement(
+                'INSERT INTO career_upload(user_id,save_id,in_game_date,script_version,editor_version) VALUES (?,?,?,?,?) ON CONFLICT(user_id,save_id,in_game_date) DO UPDATE SET last_seen=CURRENT_TIMESTAMP,script_version=excluded.script_version,editor_version=excluded.editor_version',
+                userId,
+                careerId,
+                players[0].in_game_date,
+                scriptVersion,
+                editorVersion,
+            ),
+            this.statement(
+                "INSERT INTO career_upload_daily(user_id,day,script_version,successes) VALUES (?,date('now'),?,1) ON CONFLICT(user_id,day,script_version) DO UPDATE SET successes=successes+1",
+                userId,
+                scriptVersion,
+            ),
+        );
         await this.env.DB.batch(batch);
+        messages.push({ type: 'Snapshot.Saved', payload: { gameVersion: version, careerId } });
         for (const socket of this.ctx.getWebSockets(String(userId)))
             for (const message of messages) {
                 try {
@@ -651,6 +856,8 @@ export default {
         // Buffer a bounded upload before forwarding it. This also lets the actor
         // reject authentication without leaving the caller's stream unread.
         if (request.body) {
+            const diagnostic = new URL(request.url).pathname.replace(/\/$/, '') === '/api/v1/lua/errors';
+            const limit = diagnostic ? 16 * 1024 : 1024 * 1024;
             const reader = request.body.getReader();
             const parts: Uint8Array[] = [];
             let length = 0;
@@ -658,9 +865,12 @@ export default {
                 const { done, value } = await reader.read();
                 if (done) break;
                 length += value.byteLength;
-                if (length > 1024 * 1024) {
+                if (length > limit) {
                     await reader.cancel();
-                    return json({ success: false, message: 'Upload exceeds 1 MB' }, 413);
+                    return json(
+                        { success: false, message: diagnostic ? 'Diagnostic exceeds 16 KB' : 'Upload exceeds 1 MB' },
+                        413,
+                    );
                 }
                 parts.push(value);
             }

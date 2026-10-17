@@ -1,5 +1,15 @@
 export default {
   LoginComponent: {
+    uploadKeyAsPassword:
+      'Cela ressemble à une clé d’envoi. Utilisez votre mot de passe ou Google.',
+    capsLockWarning: 'Verr. Maj est activé',
+    invalidEmail: 'Saisissez une adresse e-mail valide.',
+    passwordRequired: 'Saisissez votre mot de passe.',
+    invalidCredentials: 'E-mail ou mot de passe incorrect. Réessayez.',
+    loginFailed: 'Connexion impossible. Réessayez.',
+    loginSuccessTitle: 'Connexion réussie',
+    loggedInMessage: 'Bon retour, {username} !',
+
     VideoTutorial:
       'Comment utiliser cette application ? Apprenez-en plus grâce à la vidéo !',
     welcome: 'Bon retour',
@@ -47,6 +57,7 @@ export default {
     current: 'Actuel',
   },
   Navbar: {
+    CareerHub: 'Carrière',
     Language: 'Langue',
     MyAccount: 'Mon compte',
     PlayersList: 'Joueurs',
@@ -241,6 +252,40 @@ export default {
   },
 
   SettingsPage: {
+    ShowKey: 'Afficher la clé',
+    HideKey: 'Masquer la clé',
+    SettingsDescription:
+      'Gérez votre compte, vos connexions et vos notifications.',
+    AccountDescription:
+      'Vos informations personnelles et méthodes de connexion.',
+    GoogleConnected: 'Associé',
+    GoogleNotConnected: 'Non associé',
+    GoogleConnectedDescription:
+      'Google est associé. Vous pouvez vous connecter avec Google.',
+    GoogleConnectDescription: 'Associez Google pour vous connecter facilement.',
+    PasswordLogin: 'Connexion par mot de passe',
+    PasswordDescription:
+      'Connectez-vous avec votre e-mail et votre mot de passe.',
+    GoogleOnlyDescription:
+      'Ce compte utilise Google. Aucun mot de passe requis.',
+    NotEnabled: 'Désactivé',
+    NotificationsDescription: 'Choisissez les changements de joueurs à suivre.',
+    KeyDescription:
+      'Connectez Live Editor pour envoyer les données de vos joueurs.',
+    RegenerateKey: 'Régénérer',
+    KeyPrivateNote:
+      'Gardez cette clé privée et utilisez-la uniquement dans votre script.',
+    KeyRegenerateNotice:
+      'L’ancienne clé cessera de fonctionner. Copiez un nouveau script depuis le guide après la régénération.',
+    KeyRefreshSuccess: 'Clé régénérée',
+    LogoutDescription: 'Déconnectez votre session sur cet appareil.',
+    LogoutFailed: 'Déconnexion impossible. Réessayez.',
+    Loading: 'Chargement…',
+    LoadFailed: 'Chargement impossible. Réessayez.',
+    Retry: 'Réessayer',
+    SaveFailed: 'Enregistrement impossible. Réessayez.',
+    Cancel: 'Annuler',
+
     Settings: 'Paramètres',
 
     APISecretKey: 'Clé secrète API',
@@ -350,6 +395,7 @@ export default {
   },
 
   GetStartedPage: {
+    DIAGNOSTICS_NOTICE: 'Les erreurs et les versions sont signalées automatiquement pour faciliter la maintenance. Les clés sont masquées ; les rapports couvrent les 30 derniers jours.',
     NEED_HELP: 'Besoin d’aide ?',
     JOIN_DISCORD: 'Rejoindre la communauté Discord',
     SCRIPT_LOADING: 'Préparation de votre script…',
@@ -402,7 +448,7 @@ Utilisez le Live Editor correspondant à [FC 24](https://github.com/xAranaktu/FC
 - L’effectif complet est envoyé immédiatement, puis chaque semaine du jeu. Les effectifs incomplets ne sont pas envoyés ; consultez le journal de Live Editor.
 - Les éditeurs compatibles envoient directement les données. FC 24 et les anciens éditeurs utilisent Windows curl et des fichiers temporaires ; une fenêtre de commande peut apparaître. Le dossier du jeu ne nécessite pas de droit d’écriture.
 - FC 24 conserve la correction de date. Exécutez le script après le chargement et contrôlez les dates affichées.
-- Utilisez une seule carrière par compte et par version du jeu. Les sauvegardes différentes ne sont pas séparées.
+- Créez une carrière et un script distincts pour chaque sauvegarde. Les anciens scripts utilisent la carrière par défaut.
 - Relancer le script remplace uniquement son propre écouteur. Les écouteurs des autres scripts restent actifs.
 `,
     VIDEO_TUTORIAL_TITLE: `Tutoriel vidéo`,

@@ -1,3 +1,4 @@
+import { HttpError } from './http';
 import { DateUtils } from '../utils/Date';
 
 export type Row = Record<string, any>;
@@ -37,7 +38,7 @@ export function positionType(value: unknown) {
 }
 export function game(value: unknown): number {
     const n = Number(value);
-    if (![24, 25, 26, 27].includes(n)) throw new Error('Game version must be 24, 25, 26 or 27');
+    if (![24, 25, 26, 27].includes(n)) throw new HttpError(400, 'Game version must be 24, 25, 26 or 27');
     return n;
 }
 export function date(value: unknown): string {
@@ -49,6 +50,8 @@ export function date(value: unknown): string {
     return `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
 }
 
+const optionalPosition = (value: unknown) => (value == null ? undefined : positions[Number(value)]);
+
 export function squad(rows: Row[]) {
     const result = rows.map((p) => ({
         playerID: p.player_id,
@@ -58,12 +61,12 @@ export function squad(rows: Row[]) {
         age: p.age,
         positionType: positionType(p.preferredposition1),
         position1: positions[Number(p.preferredposition1)],
-        position2: positions[Number(p.preferredposition2)],
-        position3: positions[Number(p.preferredposition3)],
-        position4: positions[Number(p.preferredposition4)],
-        position5: p.preferredposition5 == null ? undefined : positions[Number(p.preferredposition5)],
-        position6: p.preferredposition6 == null ? undefined : positions[Number(p.preferredposition6)],
-        position7: p.preferredposition7 == null ? undefined : positions[Number(p.preferredposition7)],
+        position2: optionalPosition(p.preferredposition2),
+        position3: optionalPosition(p.preferredposition3),
+        position4: optionalPosition(p.preferredposition4),
+        position5: optionalPosition(p.preferredposition5),
+        position6: optionalPosition(p.preferredposition6),
+        position7: optionalPosition(p.preferredposition7),
         skillMoves: p.skillmoves,
         weakFootAbilityTypeCode: p.weakfootabilitytypecode,
         overallRanking: 0,
@@ -86,18 +89,19 @@ type ProfileJSON = null | boolean | number | string | ProfileJSON[] | { [key: st
 function profileJSON(value: unknown, depth = 0): ProfileJSON {
     if (depth > 5) throw new Error('Player profile is too deeply nested');
     if (value === null || typeof value === 'boolean') return value;
-    if (typeof value === 'number' && Number.isFinite(value) && Math.abs(value) <= Number.MAX_SAFE_INTEGER)
-        return value;
+    if (typeof value === 'number' && Number.isFinite(value) && Math.abs(value) <= Number.MAX_SAFE_INTEGER) return value;
     if (typeof value === 'string' && value.length <= 4096) return value;
     if (Array.isArray(value) && value.length <= 256) return value.map((item) => profileJSON(item, depth + 1));
     if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
         const entries = Object.entries(value);
         if (entries.length > 512) throw new Error('Too many player profile fields');
-        return Object.fromEntries(entries.map(([key, entry]) => {
-            if (!/^[a-zA-Z0-9_]{1,100}$/.test(key) || ['__proto__', 'constructor', 'prototype'].includes(key))
-                throw new Error('Invalid player profile field');
-            return [key, profileJSON(entry, depth + 1)];
-        }));
+        return Object.fromEntries(
+            entries.map(([key, entry]) => {
+                if (!/^[a-zA-Z0-9_]{1,100}$/.test(key) || ['__proto__', 'constructor', 'prototype'].includes(key))
+                    throw new Error('Invalid player profile field');
+                return [key, profileJSON(entry, depth + 1)];
+            }),
+        );
     }
     throw new Error('Invalid player profile value');
 }
@@ -155,19 +159,28 @@ export function normalize(input: Row, fields: string[], userId: number, version:
         const record = (value: unknown) => typeof value === 'object' && value !== null && !Array.isArray(value);
         const records = (value: unknown) => Array.isArray(value) && value.every(record);
         const strings = (value: unknown) => Array.isArray(value) && value.every((entry) => typeof entry === 'string');
-        if (typeof input.profileData !== 'object' || Array.isArray(input.profileData)
-            || input.profileData.schemaVersion !== 1 || input.profileData.gameVersion !== version
-            || input.profileData.observedOn !== input.currentDate
-            || typeof input.profileData.player !== 'object' || input.profileData.player === null
-            || Array.isArray(input.profileData.player)
-            || typeof input.profileData.availability !== 'object' || input.profileData.availability === null
-            || Array.isArray(input.profileData.availability))
+        if (
+            typeof input.profileData !== 'object' ||
+            Array.isArray(input.profileData) ||
+            input.profileData.schemaVersion !== 1 ||
+            input.profileData.gameVersion !== version ||
+            input.profileData.observedOn !== input.currentDate ||
+            typeof input.profileData.player !== 'object' ||
+            input.profileData.player === null ||
+            Array.isArray(input.profileData.player) ||
+            typeof input.profileData.availability !== 'object' ||
+            input.profileData.availability === null ||
+            Array.isArray(input.profileData.availability)
+        )
             throw new Error('Invalid player profile identity');
-        if (typeof profileInput.liveEditorVersion !== 'string'
-            || (profileInput.related != null && (!record(profileInput.related) || !Object.values(profileInput.related).every(records)))
-            || (profileInput.seasonStats != null && !records(profileInput.seasonStats))
-            || (profileInput.traits != null && !strings(profileInput.traits))
-            || (profileInput.unreadableFields != null && !strings(profileInput.unreadableFields)))
+        if (
+            typeof profileInput.liveEditorVersion !== 'string' ||
+            (profileInput.related != null &&
+                (!record(profileInput.related) || !Object.values(profileInput.related).every(records))) ||
+            (profileInput.seasonStats != null && !records(profileInput.seasonStats)) ||
+            (profileInput.traits != null && !strings(profileInput.traits)) ||
+            (profileInput.unreadableFields != null && !strings(profileInput.unreadableFields))
+        )
             throw new Error('Invalid player profile structure');
         const profile = JSON.stringify(profileJSON(input.profileData));
         if (new TextEncoder().encode(profile).length > 128 * 1024) throw new Error('Player profile exceeds 128 KB');

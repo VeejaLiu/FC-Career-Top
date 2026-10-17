@@ -1,3 +1,4 @@
+import { GoogleLoginComponent } from './GoogleLoginComponent';
 import {
   Button,
   Form,
@@ -21,25 +22,35 @@ export const RegisterComponent = ({ setIsLogin }: { setIsLogin: any }) => {
 
   async function doRegister(localeData: any) {
     if (submitting) return;
+    const element = document.getElementById(
+      'sign-up-form',
+    ) as HTMLFormElement | null;
+    const fields = element ? new FormData(element) : null;
+    const email = String(fields?.get('email') ?? registerEmail).trim();
+    const password = String(fields?.get('new-password') ?? registerPassword);
+    const confirmation = String(
+      fields?.get('confirm-password') ?? registerPasswordConfirm,
+    );
     // Check if email is valid
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(registerEmail.trim())) {
+    if (!emailPattern.test(email)) {
       setErrorMessage(localeData.invalidEmail);
       return;
     }
 
     // Check if password and confirm password match
-    if (registerPassword !== registerPasswordConfirm) {
+    if (password !== confirmation) {
       setErrorMessage(localeData.passwordMismatch);
       return;
     }
 
     // Check if password meets criteria
-    const hasUpperCase = /[A-Z]/.test(registerPassword);
-    const hasLowerCase = /[a-z]/.test(registerPassword);
-    const hasNumber = /\d/.test(registerPassword);
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(registerPassword);
-    const lengthValid = registerPassword.length >= 6;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    const lengthValid =
+      password.length >= 6 && new TextEncoder().encode(password).length <= 72;
     const criteriaMet =
       [hasUpperCase, hasLowerCase, hasNumber, hasSpecialChar].filter(Boolean)
         .length >= 3;
@@ -50,9 +61,9 @@ export const RegisterComponent = ({ setIsLogin }: { setIsLogin: any }) => {
 
     setSubmitting(true);
     const response = await UserApis.registerUser({
-      email: registerEmail.trim(),
-      password: registerPassword,
-      confirmPassword: registerPasswordConfirm,
+      email,
+      password,
+      confirmPassword: confirmation,
     });
     setSubmitting(false);
     if (response.success) {
@@ -90,6 +101,8 @@ export const RegisterComponent = ({ setIsLogin }: { setIsLogin: any }) => {
           </div>
           <div className={styles.form}>
             <Form
+              id="sign-up-form"
+              method="post"
               className={styles.inputs}
               onSubmit={() => doRegister(localeData)}
             >
@@ -102,7 +115,13 @@ export const RegisterComponent = ({ setIsLogin }: { setIsLogin: any }) => {
                     </Tooltip>
                   </div>
                 }
-                field="register.email"
+                field="email"
+                name="email"
+                type="email"
+                inputMode="email"
+                autoComplete="username"
+                autoCapitalize="none"
+                spellCheck={false}
                 placeholder={localeData.emailPlaceholder}
                 fieldStyle={{ alignSelf: 'stretch', padding: 0 }}
                 onChange={(e) => setRegisterEmail(e)}
@@ -127,6 +146,7 @@ export const RegisterComponent = ({ setIsLogin }: { setIsLogin: any }) => {
                   </div>
                 }
                 field="password"
+                name="new-password"
                 autoComplete="new-password"
                 placeholder={localeData.passwordPlaceholder}
                 fieldStyle={{ alignSelf: 'stretch', padding: 0 }}
@@ -160,6 +180,7 @@ export const RegisterComponent = ({ setIsLogin }: { setIsLogin: any }) => {
                 mode={'password'}
                 label={{ text: localeData.confirmPassword }}
                 field="password-confirm"
+                name="confirm-password"
                 autoComplete="new-password"
                 placeholder={localeData.confirmPasswordPlaceholder}
                 fieldStyle={{ alignSelf: 'stretch', padding: 0 }}
@@ -185,6 +206,7 @@ export const RegisterComponent = ({ setIsLogin }: { setIsLogin: any }) => {
                 {localeData.register}
               </Button>
             </Form>
+            <GoogleLoginComponent />
             <Button
               theme={'outline'}
               className={styles.button}

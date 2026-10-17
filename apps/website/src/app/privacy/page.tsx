@@ -1,0 +1,23 @@
+import { pageMetadata } from '@/lib/seo';
+export const metadata = pageMetadata('Privacy Policy', 'How FC Career Top handles account information, Google sign-in and career data.', '/privacy');
+export default function PrivacyPage() {
+  return <article className="container max-w-3xl mx-auto px-2 sm:px-4 py-8 leading-relaxed">
+    <h1 className="text-3xl font-bold mb-4">Privacy Policy</h1>
+    <p className="mb-6">Last updated: October 13, 2026</p>
+    <p className="mb-6">FC Career Top is operated by Veeja Liu. This policy covers the public website and player dashboard at fccareer.top and its subdomains. Contact <a className="underline" href="mailto:veejaliu@gmail.com">veejaliu@gmail.com</a> about privacy or your account.</p>
+    <h2 className="text-xl font-bold mt-6 mb-2">Information we collect</h2>
+    <p>We store your account email, generated username, account status and creation dates. For email and password accounts, we store a password hash. If you sign in with Google, we receive an identity token containing your Google account identifier, email and basic profile information. We verify the token and store the Google identifier and email to create or link your account. We do not store your Google password or use this sign-in to access Gmail, Drive, contacts or calendars.</p>
+    <p className="mt-3">When you connect Live Editor, we store uploaded game career information, such as player attributes, ratings, potential and in-game dates, along with your dashboard settings, notifications and upload key. Requests may also include technical information such as IP address, request time and errors, used for hosting, troubleshooting and rate limiting.</p>
+    <p className="mt-3">The game script automatically reports runtime errors for maintenance. These diagnostics contain the error message and call stack, script and Live Editor versions, game version, and, when available, the event, HTTP status and in-game date. They are associated with your account and available to authorized administrators. Diagnostics use a limited set of fields rather than uploading your squad or save as an error report; upload keys and common credential patterns are redacted. The error viewer covers the latest 30 days, and older diagnostic groups are removed when the next report arrives.</p>
+    <h2 className="text-xl font-bold mt-6 mb-2">How we use information</h2>
+    <p>We use this information to authenticate you, keep career data associated with your account, display player history and notifications, support the service and prevent abuse. Your upload key allows the game script to send data to your account; keep it private.</p>
+    <h2 className="text-xl font-bold mt-6 mb-2">Browser storage and analytics</h2>
+    <p>The dashboard stores your session token, language and game preferences in your browser&apos;s local storage. Signing out removes the local session token and invalidates the server session. The public website uses Google Analytics, which can process cookies, page visits and browser or device information. Google sign-in loads Google Identity Services and communicates with Google when you choose to sign in.</p>
+    <h2 className="text-xl font-bold mt-6 mb-2">Service providers and disclosure</h2>
+    <p>Cloudflare hosts the application and its database. Google provides Google sign-in and website analytics. These providers process information for their services under their own policies, and processing can occur outside your country. We do not sell your Google account data or use it for advertising. Access to account and career data is limited to service operations and authorized administration, except where disclosure is required by law.</p>
+    <h2 className="text-xl font-bold mt-6 mb-2">Retention and your choices</h2>
+    <p>Account and career data are retained while needed to provide and operate the service. To request account deletion, access or correction, email veejaliu@gmail.com from the account address; we may ask you to verify ownership. You can also remove FC Career Top&apos;s access in your Google account settings. Removing Google access does not itself delete the data already held by FC Career Top. You can clear local browser storage and manage cookies through your browser settings.</p>
+    <h2 className="text-xl font-bold mt-6 mb-2">Security and updates</h2>
+    <p>We use HTTPS, hashed account passwords, server-side identity verification and account access controls. No online service can guarantee absolute security. We may update this policy as the service changes and will publish the updated date on this page.</p>
+  </article>;
+}

@@ -15,7 +15,9 @@
     }
   ],
   "vars": {
-    "ALLOWED_ORIGINS": "https://app.fccareer.top,https://www.fccareer.top"
+    "GOOGLE_CLIENT_ID": "1060939749768-lj8ksbveaqqncjasrikjao8ia6pvcinp.apps.googleusercontent.com",
+    "ALLOWED_ORIGINS": "https://app.fccareer.top,https://www.fccareer.top,https://admin.fccareer.top,https://fc-career-top-admin.veejaliu.workers.dev",
+    "ADMIN_ALLOWED_ORIGINS": "https://admin.fccareer.top,https://fc-career-top-admin.veejaliu.workers.dev"
   },
   "d1_databases": [
     {

@@ -24,12 +24,12 @@ export default function PostsPage() {
         <article className="rounded-lg border border-gray-400 p-5">
           <h2 className="text-2xl font-semibold">
             <Link href="/get-started" className="underline">
-              Set up player growth tracking in FC 24 and FC 25
+              Start tracking your EA FC career squad
             </Link>
           </h2>
           <p className="mt-3 leading-relaxed">
-            Check Windows and Live Editor requirements, connect your account,
-            run the Lua script and troubleshoot missing squad uploads.
+            See what you need, connect your career and start following your
+            players’ progress with a simple setup guide.
           </p>
           <Link href="/get-started" className="inline-block mt-4 underline">
             Read the FC Career Top setup guide

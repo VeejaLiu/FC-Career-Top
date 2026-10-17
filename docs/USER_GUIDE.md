@@ -28,9 +28,9 @@ Follow the Live Editor project's own installation and compatibility instructions
 2. Register with an email and password. Sign in with email and password; verification is disabled.
 3. Select **FC 24**, **FC 25**, **FC 26** or **FC 27** using the game-version selector.
 4. Start the matching game through Live Editor and load your Manager Career Mode save.
-5. Open **Get Started** in the dashboard and copy the generated Lua script.
+5. In **Career hub**, create or select the career for this game save. Open **Get Started** in the dashboard and copy the generated Lua script.
 6. Open Live Editor's **Lua engine**, paste the script, and execute it.
-7. Check the **Players** page for the initial snapshot. Further snapshots are
+7. Keep **Get Started** open to see the initial upload confirmation, game date and squad size. Check **Players** for the initial snapshot. Further snapshots are
    uploaded after in-game weeks pass while the script's event handler is registered.
 
 The generated script contains your personal API secret key and the upload URL.
@@ -74,9 +74,19 @@ guide](PLAYER_DATA_SUPPORT.md) for game differences and API limitations.
 | Get Started is unavailable | Sign in again and check API connectivity. Email verification is not required. |
 | Players do not appear | Check the selected game version, load Manager Career Mode, check Live Editor's logs, and confirm the upload URL is reachable. |
 | A refreshed API key no longer works in-game | Copy the current script from Get Started and replace the older script. |
-| Tracking different saves | There is no multi-save selector. Use one career per account/game version to avoid mixing snapshots. |
-| Full historical attributes | Growth charts track overall rating and potential; detailed attributes show the current snapshot. |
+| Tracking different saves | Create a named career per save in Career hub and run its dedicated script. Old scripts continue targeting the default career. Switching the website view never retargets a running script. |
+| Full historical attributes | Career hub compares recorded attributes, positions and PlayStyles across dates. Detailed history starts with the October 17 update; earlier unavailable values stay blank. |
 | Using other career-mode Lua scripts | The tracking script manages only its own listener; other career-mode listeners are preserved. |
 
 If you need help, open a [GitHub issue](https://github.com/VeejaLiu/FC-Career-Top/issues)
 with the game version, the page or step involved, and relevant logs with API keys removed.
+
+## Career hub
+
+Create, rename, switch, archive or restore careers for each game version. Archiving preserves all history and stops uploads. Load the corresponding save before running its script; careers are selected manually, not detected from save filenames. If you return to an older game date, the API protects newer records. Create a new career and run its script to keep a separate timeline. This does not copy the previous timeline.
+
+The sync card shows the last received upload and any latest script error, not a live connection heartbeat. Successful uploads clear earlier errors. Keep Get Started open while connecting for automatic confirmation.
+
+Growth leaders compare the first and last observed values inside the selected period: the last 30 in-game days, the season starting July 1, or all history. Each row shows the actual baseline and end dates. Sparse records only cover the observed part of the period; one date is insufficient to measure growth. Watchlists are private to each career. Compare up to three current players, then use Player history to inspect attributes on two recorded dates. Departed players remain available there.
+
+Preview and download a PNG growth card. The card contains the career name and displayed player growth, with no email, account identifiers or upload keys. Downloading does not publish it. [Try the fictional demo](https://app.fccareer.top/demo) without signing in; demo watch preferences stay in the browser tab session.

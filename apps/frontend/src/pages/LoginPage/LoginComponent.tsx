@@ -1,3 +1,4 @@
+import { GoogleLoginComponent } from './GoogleLoginComponent';
 import {
   Button,
   Form,
@@ -15,13 +16,35 @@ export const LoginComponent = ({ setIsLogin }: { setIsLogin: any }) => {
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [capsLock, setCapsLock] = useState(false);
+  const [formError, setFormError] = useState('');
 
-  async function doLogin() {
+  async function doLogin(copy: any) {
     if (submitting) return;
+    const element = document.getElementById(
+      'sign-in-form',
+    ) as HTMLFormElement | null;
+    const fields = element ? new FormData(element) : null;
+    const email = String(fields?.get('email') ?? loginEmail).trim();
+    const password = String(fields?.get('password') ?? loginPassword);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !password) {
+      setFormError(
+        !email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+          ? copy.invalidEmail
+          : copy.passwordRequired,
+      );
+      element
+        ?.querySelector<HTMLInputElement>(
+          !email ? 'input[name="email"]' : 'input[name="password"]',
+        )
+        ?.focus();
+      return;
+    }
+    setFormError('');
     setSubmitting(true);
     const response = await UserApis.loginUser({
-      email: loginEmail.trim(),
-      password: loginPassword,
+      email,
+      password,
     });
     setSubmitting(false);
     const { success, message, data } = response;
@@ -40,21 +63,21 @@ export const LoginComponent = ({ setIsLogin }: { setIsLogin: any }) => {
       setToken(token);
       Notification.success({
         position: 'top',
-        title: 'Success',
-        content: 'Welcome back, ' + username + '!',
+        title: copy.loginSuccessTitle,
+        content: copy.loggedInMessage.replace('{username}', username),
         duration: 3,
       });
 
       // Navigate({ to: '/players' });
       window.location.href = '/players';
     } else {
-      // console.log(`[doLogin] message: ${message}`);
-      Notification.error({
-        position: 'top',
-        title: 'Error',
-        content: message,
-        duration: 3,
-      });
+      setFormError(
+        message === 'Email or password not matched'
+          ? /^fc[dt]-[a-f0-9-]{32,64}$/i.test(password)
+            ? copy.uploadKeyAsPassword
+            : copy.invalidCredentials
+          : copy.loginFailed,
+      );
     }
   }
 
@@ -75,12 +98,20 @@ export const LoginComponent = ({ setIsLogin }: { setIsLogin: any }) => {
 
           {/* Form */}
           <div className={styles.form}>
-            <Form className={styles.inputs} onSubmit={doLogin}>
+            <Form
+              id="sign-in-form"
+              className={styles.inputs}
+              method="post"
+              onSubmit={() => void doLogin(localeData)}
+            >
               <Form.Input
                 label={{ text: localeData.usernameEmail }}
                 field="email"
                 type="email"
-                autoComplete="email"
+                name="email"
+                autoComplete="username"
+                autoCapitalize="none"
+                spellCheck={false}
                 inputMode="email"
                 placeholder={localeData.usernameEmailPlaceholder}
                 fieldStyle={{ alignSelf: 'stretch', padding: 0 }}
@@ -90,11 +121,32 @@ export const LoginComponent = ({ setIsLogin }: { setIsLogin: any }) => {
                 mode={'password'}
                 label={{ text: localeData.password }}
                 field="password"
+                name="password"
                 autoComplete="current-password"
                 placeholder={localeData.passwordPlaceholder}
                 fieldStyle={{ alignSelf: 'stretch', padding: 0 }}
-                onChange={(e) => setLoginPassword(e)}
+                onChange={(e) => {
+                  setLoginPassword(e);
+                  setFormError('');
+                }}
+                onKeyDown={(event) =>
+                  setCapsLock(event.getModifierState('CapsLock'))
+                }
+                onKeyUp={(event) =>
+                  setCapsLock(event.getModifierState('CapsLock'))
+                }
+                onBlur={() => setCapsLock(false)}
               />
+              {capsLock && (
+                <p className="auth-form-hint" role="status">
+                  {localeData.capsLockWarning}
+                </p>
+              )}
+              {formError && (
+                <p className="auth-form-error" role="alert">
+                  {formError}
+                </p>
+              )}
               <Button
                 theme="solid"
                 className={styles.button}
@@ -105,6 +157,7 @@ export const LoginComponent = ({ setIsLogin }: { setIsLogin: any }) => {
                 {localeData.login}
               </Button>
             </Form>
+            <GoogleLoginComponent />
             <Button
               theme="outline"
               className={styles.button}

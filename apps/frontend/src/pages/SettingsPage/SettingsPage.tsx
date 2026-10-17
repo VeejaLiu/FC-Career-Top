@@ -1,180 +1,138 @@
-import * as React from 'react';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { LocaleConsumer, Notification, Switch } from '@douyinfe/semi-ui';
-import { UserApis } from '../../service/UserApis.ts';
-import ApiSecretKeyComponent from './ApiSecretKeyComponent.tsx';
-import AccountSettingComponent from './AccountSettingComponent.tsx';
+import { UserApis } from '../../service/UserApis';
+import ApiSecretKeyComponent from './ApiSecretKeyComponent';
+import AccountSettingComponent from './AccountSettingComponent';
 import './SettingsPage.css';
 
-function SettingsPage(): React.ReactElement {
-  const [userSetting, setUserSetting] =
-    React.useState<Awaited<ReturnType<typeof UserApis.getUserSetting>>>(null);
-  const [isUserSettingLoading, setIsUserSettingLoading] =
-    React.useState<boolean>(true);
-
-  async function fetchUserSetting() {
-    const userSetting = await UserApis.getUserSetting();
-    setUserSetting(userSetting);
-    setIsUserSettingLoading(false);
-  }
-  async function updateUserSetting({
-    category,
-    subItem,
-    value,
-  }: {
-    category: string;
-    subItem?: string;
-    value: boolean;
-  }) {
-    setIsUserSettingLoading(true);
-    await UserApis.updateUserSetting({
+function SettingsContent({ copy }: { copy: any }) {
+  const [settings, setSettings] =
+    useState<Awaited<ReturnType<typeof UserApis.getUserSetting>>>(null);
+  const [loading, setLoading] = useState(true);
+  const [loggingOut, setLoggingOut] = useState(false);
+  const saving = useRef(false);
+  const load = useCallback(async () => {
+    setLoading(true);
+    setSettings(await UserApis.getUserSetting());
+    setLoading(false);
+  }, []);
+  useEffect(() => {
+    void load();
+  }, [load]);
+  async function update(category: string, value: boolean, subItem?: string) {
+    if (saving.current) return;
+    saving.current = true;
+    setLoading(true);
+    const result = await UserApis.updateUserSetting({
       category,
-      subItem: subItem,
+      subItem,
       value,
     });
-    await fetchUserSetting();
+    if (!result.success)
+      Notification.error({ title: copy.SaveFailed, duration: 3 });
+    await load();
+    saving.current = false;
   }
-
-  useEffect(() => {
-    fetchUserSetting().then();
-  }, []);
-
+  async function logout() {
+    if (loggingOut) return;
+    setLoggingOut(true);
+    if (await UserApis.doLogout()) window.location.assign('/');
+    else {
+      Notification.error({ title: copy.LogoutFailed, duration: 3 });
+      setLoggingOut(false);
+    }
+  }
+  const notificationItems = [
+    {
+      label: copy.PlayerOverallPotentialUpdate,
+      setting: 'PlayerUpdate_Overall' as const,
+      subItem: 'PlayerUpdate.Overall',
+    },
+    {
+      label: copy.PlayerSkillMoveUpdate,
+      setting: 'PlayerUpdate_SkillMove' as const,
+      subItem: 'PlayerUpdate.SkillMove',
+    },
+    {
+      label: copy.PlayerWeakFootUpdate,
+      setting: 'PlayerUpdate_WeakFoot' as const,
+      subItem: 'PlayerUpdate.WeakFoot',
+    },
+  ];
   return (
-    <LocaleConsumer componentName={'SettingsPage'}>
-      {(localeData: any, localeCode: string, dateFnsLocale: any) => (
-        <div className="page-container settings-page">
-          {/* Title */}
-          <div className="font-bold text-xl">{localeData?.Settings}</div>
-
-          <ApiSecretKeyComponent localeData={localeData} />
-
-          <div className="w-full p-4 border border-gray-200 rounded-md">
-            <div className="font-bold mb-2">{localeData?.Notifications}</div>
-
-            {/* Enable Notifications */}
-            <div className="settings-switch-row">
-              <div className="settings-field-label">
-                {localeData?.EnableNotifications}
-              </div>
-              <Switch
-                checked={userSetting?.enableNotification}
-                loading={isUserSettingLoading}
-                onChange={(v, e) => {
-                  updateUserSetting({
-                    category: 'enable_notification',
-                    value: v,
-                  }).then();
-                }}
-                aria-label="a switch for enable notification"
-              ></Switch>
-            </div>
-
-            {/* Notification Itemss */}
-
-            {/* Overall Rating and Potential */}
-            <div className="settings-switch-row">
-              <div className="settings-field-label">
-                {localeData?.PlayerOverallPotentialUpdate}
-              </div>
-              <Switch
-                checked={
-                  userSetting?.enableNotification &&
-                  userSetting?.notificationItems?.PlayerUpdate_Overall
-                }
-                loading={isUserSettingLoading}
-                onChange={(v, e) => {
-                  updateUserSetting({
-                    category: 'notification_items',
-                    subItem: 'PlayerUpdate.Overall',
-                    value: v,
-                  }).then();
-                }}
-                aria-label="a switch for enable notification of player overall rating and potential"
-              ></Switch>
-            </div>
-
-            {/* Skill Move */}
-            <div className="settings-switch-row">
-              <div className="settings-field-label">
-                {localeData?.PlayerSkillMoveUpdate}
-              </div>
-              <Switch
-                checked={
-                  userSetting?.enableNotification &&
-                  userSetting?.notificationItems?.PlayerUpdate_SkillMove
-                }
-                loading={isUserSettingLoading}
-                onChange={(v, e) => {
-                  updateUserSetting({
-                    category: 'notification_items',
-                    subItem: 'PlayerUpdate.SkillMove',
-                    value: v,
-                  }).then();
-                }}
-                aria-label="a switch for enable notification of player skill move"
-              ></Switch>
-            </div>
-
-            {/* Weak Foot */}
-            <div className="settings-switch-row">
-              <div className="settings-field-label">
-                {localeData?.PlayerWeakFootUpdate}
-              </div>
-              <Switch
-                checked={
-                  userSetting?.enableNotification &&
-                  userSetting?.notificationItems?.PlayerUpdate_WeakFoot
-                }
-                loading={isUserSettingLoading}
-                onChange={(v, e) => {
-                  updateUserSetting({
-                    category: 'notification_items',
-                    subItem: 'PlayerUpdate.WeakFoot',
-                    value: v,
-                  }).then();
-                }}
-                aria-label="a switch for enable notification of player weak foot"
-              ></Switch>
-            </div>
-          </div>
-
-          {/* Account Setting ---- START */}
-          <AccountSettingComponent localeData={localeData} />
-          {/* Account Setting ---- END */}
-
-          {/* Do logout ---- START */}
-          <div className={'font-bold text-xl mt-6 mb-2'}>
-            {localeData?.Logout}
-          </div>
-          <button
-            className="flex whitespace-nowrap border border-[#d1d9e0] mt-1 rounded-md px-4 py-1 bg-[#f6f8fa] hover:bg-[#f0f2f5]"
-            onClick={() => {
-              UserApis.doLogout().then((result) => {
-                if (result) {
-                  Notification.success({
-                    title: 'Success',
-                    content: 'Logged out successfully',
-                    duration: 3,
-                  });
-                  window.location.href = '/';
-                } else {
-                  Notification.error({
-                    title: 'Error',
-                    content: 'Failed to logout, please try again',
-                    duration: 3,
-                  });
-                  return;
-                }
-              });
-            }}
-          >
-            {localeData?.ClickToLogout}
-          </button>
-          {/* Do logout ---- END */}
+    <div className="page-container settings-page">
+      <header className="settings-page-heading">
+        <h1>{copy.Settings}</h1>
+        <p>{copy.SettingsDescription}</p>
+      </header>
+      <AccountSettingComponent localeData={copy} />
+      <section
+        className="settings-section"
+        aria-labelledby="notifications-heading"
+      >
+        <div className="settings-section-heading">
+          <h2 id="notifications-heading">{copy.Notifications}</h2>
+          <p>{copy.NotificationsDescription}</p>
         </div>
-      )}
+        {!loading && !settings && (
+          <div className="settings-load-error" role="alert">
+            {copy.LoadFailed}
+            <button className="settings-button" onClick={() => void load()}>
+              {copy.Retry}
+            </button>
+          </div>
+        )}
+        <div className="settings-switch-row settings-switch-master">
+          <div className="settings-field-label">
+            <strong>{copy.EnableNotifications}</strong>
+          </div>
+          <Switch
+            aria-label={copy.EnableNotifications}
+            checked={Boolean(settings?.enableNotification)}
+            loading={loading}
+            disabled={loading || !settings}
+            onChange={(value) => void update('enable_notification', value)}
+          />
+        </div>
+        {notificationItems.map((item) => (
+          <div className="settings-switch-row" key={item.setting}>
+            <div className="settings-field-label">{item.label}</div>
+            <Switch
+              aria-label={item.label}
+              checked={Boolean(
+                settings?.enableNotification &&
+                  settings.notificationItems?.[item.setting],
+              )}
+              loading={loading}
+              disabled={loading || !settings?.enableNotification}
+              onChange={(value) =>
+                void update('notification_items', value, item.subItem)
+              }
+            />
+          </div>
+        ))}
+      </section>
+      <ApiSecretKeyComponent localeData={copy} />
+      <section className="settings-session">
+        <div>
+          <h2>{copy.Logout}</h2>
+          <p>{copy.LogoutDescription}</p>
+        </div>
+        <button
+          className="settings-button settings-button-danger"
+          disabled={loggingOut}
+          onClick={() => void logout()}
+        >
+          {copy.ClickToLogout}
+        </button>
+      </section>
+    </div>
+  );
+}
+export default function SettingsPage() {
+  return (
+    <LocaleConsumer componentName="SettingsPage">
+      {(copy: any) => <SettingsContent copy={copy} />}
     </LocaleConsumer>
   );
 }
-
-export default SettingsPage;

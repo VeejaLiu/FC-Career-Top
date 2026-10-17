@@ -265,7 +265,7 @@ export function AppHeader() {
                 key={item.path}
                 to={item.path}
                 className={({ isActive }) =>
-                  `app-navigation-link ${isActive || (item.path === '/players' && pathname === '/') ? 'active' : ''}`
+                  `app-navigation-link ${isActive || (item.path === '/career' && pathname === '/') ? 'active' : ''}`
                 }
               >
                 {item.icon}

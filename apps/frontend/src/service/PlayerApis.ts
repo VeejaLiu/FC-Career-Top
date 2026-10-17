@@ -1,3 +1,4 @@
+import { careerQuery } from './CareerApis';
 import axios from 'axios';
 import { BACKEND_URL } from '../constant';
 import { reportApiError } from './api-error';
@@ -147,7 +148,7 @@ export class PlayerApis {
       const gameVersion = await getDefaultGameVersion();
       // console.log(`[getPlayerList] token: ${token}`);
       const response = await axios.get(
-        `${BACKEND_URL}/api/v1/player/?gameVersion=${gameVersion}`,
+        `${BACKEND_URL}/api/v1/player/?gameVersion=${gameVersion}${careerQuery(gameVersion)}`,
         {
           headers: {
             Accept: '*/*',
@@ -177,7 +178,7 @@ export class PlayerApis {
       const token = getToken();
       const gameVersion = await getDefaultGameVersion();
       const response = await axios.get(
-        `${BACKEND_URL}/api/v1/player/detail/${playerID || 0}?gameVersion=${gameVersion}`,
+        `${BACKEND_URL}/api/v1/player/detail/${playerID || 0}?gameVersion=${gameVersion}${careerQuery(gameVersion)}`,
         {
           headers: {
             Accept: '*/*',
@@ -203,7 +204,7 @@ export class PlayerApis {
       const token = getToken();
       const gameVersion = await getDefaultGameVersion();
       const response = await axios.get(
-        `${BACKEND_URL}/api/v1/player/count?gameVersion=${gameVersion}`,
+        `${BACKEND_URL}/api/v1/player/count?gameVersion=${gameVersion}${careerQuery(gameVersion)}`,
         {
           headers: { Accept: '*/*', token: token },
         },
@@ -226,7 +227,7 @@ export class PlayerApis {
       const token = getToken();
       const gameVersion = await getDefaultGameVersion();
       const response = await axios.get(
-        `${BACKEND_URL}/api/v1/player/trends?gameVersion=${gameVersion}`,
+        `${BACKEND_URL}/api/v1/player/trends?gameVersion=${gameVersion}${careerQuery(gameVersion)}`,
         { headers: { Accept: '*/*', token: token } },
       );
       if (response.status === 200) {

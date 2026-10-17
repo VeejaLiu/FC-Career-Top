@@ -1,77 +1,95 @@
-import * as React from 'react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { UserApis } from '../../service/UserApis.ts';
+import { GoogleLoginComponent } from '../LoginPage/GoogleLoginComponent';
+import { UserApis } from '../../service/UserApis';
 
-export interface ApiSecretKeyComponentProps {
+export default function AccountSettingComponent({
+  localeData: copy,
+}: {
   localeData: any;
-}
-
-function AccountSettingComponent({
-  localeData,
-}: ApiSecretKeyComponentProps): React.ReactElement {
-  const [accountInfo, setAccountInfo] = React.useState<{
-    userID?: string;
-    username?: string;
-    email?: string;
-    isEmailVerified?: boolean;
-    lastSendEmailTime?: number;
-  }>({});
-
-  async function fetchAccountInfo() {
-    const res = await UserApis.getUserInfo();
-    if (!res) {
-      return;
-    }
-    setAccountInfo(res);
+}) {
+  const [account, setAccount] =
+    useState<Awaited<ReturnType<typeof UserApis.getUserInfo>>>(null);
+  const [loading, setLoading] = useState(true);
+  async function load() {
+    setLoading(true);
+    setAccount(await UserApis.getUserInfo());
+    setLoading(false);
   }
-
   useEffect(() => {
-    fetchAccountInfo().then();
+    void load();
   }, []);
-
   return (
-    <>
-      <div className={'font-bold text-xl mt-6 mb-2'}>
-        {localeData?.AccountInfo}
+    <section className="settings-section" aria-labelledby="account-heading">
+      <div className="settings-section-heading">
+        <h2 id="account-heading">{copy.AccountInfo}</h2>
+        <p>{copy.AccountDescription}</p>
       </div>
-
-      <div className="w-full p-4 border border-gray-200 rounded-md">
-        {/* Account Info - Username */}
-        <div className="settings-row">
-          <div className="settings-field-label">
-            <h5>{localeData?.AccountUsername}</h5>
-          </div>
-          <span style={{ color: 'gray', fontWeight: 500 }}>
-            {accountInfo?.username}
-          </span>
+      {loading ? (
+        <p className="settings-loading" role="status">
+          {copy.Loading}
+        </p>
+      ) : !account ? (
+        <div className="settings-load-error" role="alert">
+          {copy.LoadFailed}
+          <button className="settings-button" onClick={() => void load()}>
+            {copy.Retry}
+          </button>
         </div>
-
-        <div className="settings-row mt-2">
-          <div className="settings-field-label">
-            <h5>{localeData?.AccountEmail}</h5>
-          </div>
-          <span style={{ color: 'gray', fontWeight: 500 }}>
-            {accountInfo?.email}
-          </span>
-        </div>
-        {/* Account Info - Change Password ---- START*/}
-        <div className="mt-2">
-          <div className="settings-row">
-            <div className="settings-field-label">
-              <h5>{localeData?.AccountChangePassword}</h5>
+      ) : (
+        <>
+          <dl className="settings-details">
+            <div className="settings-detail-row">
+              <dt>{copy.AccountUsername}</dt>
+              <dd>{account.username}</dd>
             </div>
-            <span>
-              <Link className="settings-password-link" to="/settings/password">
-                {localeData.AccountClickToChange}
-              </Link>
+            <div className="settings-detail-row">
+              <dt>{copy.AccountEmail}</dt>
+              <dd>{account.email}</dd>
+            </div>
+          </dl>
+          <div className="settings-method-row">
+            <div className="settings-method-name">
+              <strong>Google</strong>
+              <p>
+                {account.googleLoginEnabled
+                  ? copy.GoogleConnectedDescription
+                  : copy.GoogleConnectDescription}
+              </p>
+            </div>
+            <span
+              className={`settings-status${account.googleLoginEnabled ? ' settings-status-active' : ''}`}
+            >
+              <span aria-hidden="true" />
+              {account.googleLoginEnabled
+                ? copy.GoogleConnected
+                : copy.GoogleNotConnected}
             </span>
           </div>
-        </div>
-        {/* Account Info - Change Password ---- END*/}
-      </div>
-    </>
+          {!account.googleLoginEnabled && (
+            <div className="settings-google-connect">
+              <GoogleLoginComponent linkAccount />
+            </div>
+          )}
+          <div className="settings-method-row">
+            <div className="settings-method-name">
+              <strong>{copy.PasswordLogin}</strong>
+              <p>
+                {account.emailLoginEnabled
+                  ? copy.PasswordDescription
+                  : copy.GoogleOnlyDescription}
+              </p>
+            </div>
+            {account.emailLoginEnabled ? (
+              <Link className="settings-button" to="/settings/password">
+                {copy.AccountChangePassword}
+              </Link>
+            ) : (
+              <span className="settings-status">{copy.NotEnabled}</span>
+            )}
+          </div>
+        </>
+      )}
+    </section>
   );
 }
-
-export default AccountSettingComponent;

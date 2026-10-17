@@ -1,0 +1,32 @@
+{
+  "name": "@fc-career-top/admin",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": ">=24.21.0 <25",
+    "pnpm": ">=10.5.0 <11"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "pnpm typecheck && vite build",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.worker.json",
+    "preview": "vite preview --port 3003"
+  },
+  "dependencies": {
+    "@douyinfe/semi-icons": "^2.63.1",
+    "@douyinfe/semi-ui": "^2.63.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.26.0",
+    "recharts": "2.12.7"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.0.3",
+    "typescript": "~5.7.3",
+    "vite": "5.4.6",
+    "@cloudflare/workers-types": "5.20261009.1"
+  }
+}

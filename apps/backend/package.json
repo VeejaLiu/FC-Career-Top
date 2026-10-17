@@ -25,7 +25,12 @@
     "db:info:mysql": "node scripts/flyway.cjs info",
     "db:migrate:remote": "wrangler d1 migrations apply fc-career-top --remote",
     "deploy": "wrangler deploy",
-    "test:integration": "node tests/worker.integration.mjs"
+    "test:integration": "node tests/worker.integration.mjs",
+    "test:admin": "node tests/admin.integration.mjs",
+    "admin:create": "node scripts/admin-create.mjs",
+    "test:google": "ts-node --project tsconfig.worker.json --compiler-options '{\"module\":\"CommonJS\",\"moduleResolution\":\"Node\"}' tests/google-auth.test.ts",
+    "test:careers": "node tests/careers.integration.mjs",
+    "test:career-migration": "python3 tests/careers-migration.py"
   },
   "repository": {
     "type": "git",
@@ -49,6 +54,7 @@
     "express-session": "^1.18.1",
     "express-status-monitor": "^1.3.4",
     "express-validator": "^7.2.1",
+    "jose": "^6",
     "jsonwebtoken": "^9.0.2",
     "moment-timezone": "^0.5.47",
     "mysql": "^2.18.1",

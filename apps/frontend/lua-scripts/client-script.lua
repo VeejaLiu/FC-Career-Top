@@ -1,23 +1,191 @@
 -- FC Career Top: complete squad snapshots for FC 24, 25, 26 and 27.
 -- Copy the personalized script from Get Started; keep its API key private.
+-- Runtime errors are automatically reported for maintenance (no squad/save payload).
+local GAME_VERSION = {{game-version}}
+local SECRET_KEY = {{user-secret-key-lua}}
+local API_URL = {{post-player-url-lua}}
+local CAREER_ID = {{career-id}}
+local SCRIPT_VERSION = '2026.10.17.1'
+local UPLOAD_URL = API_URL .. '/api/v1/player/bulk?gameVersion=' .. GAME_VERSION .. '&scriptVersion=' .. SCRIPT_VERSION
+    .. (CAREER_ID and ('&careerId=' .. CAREER_ID) or '')
+local ERROR_URL = API_URL .. '/api/v1/lua/errors'
+local EVENT_NAME = 'post__CareerModeEvent'
+local STATE_KEY = 'FC_CAREER_TOP_TRACKER'
+local HTTP_TIMEOUT_MS = 10000
+local ERROR_TIMEOUT_MS = 2000
+
+local function safeText(value, limit)
+    local text = tostring(value)
+    local pattern = SECRET_KEY:gsub('([^%w])', '%%%1')
+    text = text:gsub(pattern, '[redacted]')
+    text = text:gsub('fc[td]%-[%da-fA-F]+', '[redacted]')
+    text = text:gsub('[Tt][Oo][Kk][Ee][Nn]["\']?%s*[=:]%s*["\']?[^%s,;"\']+', 'token=[redacted]')
+    text = text:gsub('[Pp][Aa][Ss][Ss][Ww][Oo][Rr][Dd]["\']?%s*[=:]%s*["\']?[^%s,;"\']+', 'password=[redacted]')
+    text = text:gsub('[Aa][Uu][Tt][Hh][Oo][Rr][Ii][Zz][Aa][Tt][Ii][Oo][Nn]%s*:%s*[^\r\n]+', 'authorization: [redacted]')
+    text = text:gsub('[%w._+%-]+@[%w.%-]+', '[email]')
+    text = text:gsub('([A-Za-z]:[/\\]Users[/\\])[^/\\\r\n]+', '%1[user]')
+    text = text:gsub('(/Users/)[^/\r\n]+', '%1[user]'):gsub('(/home/)[^/\r\n]+', '%1[user]')
+    -- Never transmit URL credentials, query parameters or fragments.
+    text = text:gsub('https?://[^%s<>"\']+', function(url)
+        return (url:gsub('^(https?://)[^/]*@', '%1'):gsub('[?#].*$', ''))
+    end)
+    if #text > limit then
+        text = text:sub(1, limit):gsub('[\194-\244][\128-\191]*$', '')
+    end
+    return text
+end
+
+local function log(message)
+    -- Never print credentials, request headers, or the personalized script.
+    pcall(print, '[FC Career Top] ' .. safeText(message, 2000))
+end
+
+local function captureError(message)
+    local text = safeText(message, 1000)
+    local trace = text
+    if debug and type(debug.traceback) == 'function' then
+        trace = safeText(debug.traceback(text, 2), 4000)
+    end
+    return { message = text, traceback = trace }
+end
+
+local function hasNativeHTTP()
+    return REQUEST ~= nil and type(REQUEST.new) == 'function'
+        and HTTP ~= nil and type(HTTP.send) == 'function'
+        and HTTP_POST_REQUEST ~= nil
+end
+
+local function postNative(url, body, timeout)
+    local req = REQUEST:new()
+    req:SetMethod(HTTP_POST_REQUEST)
+    req:SetUrl(url)
+    req:SetHeaders({ ['Content-Type'] = 'application/json', ['secret-key'] = SECRET_KEY })
+    req:SetBody(body)
+    req:SetTimeout(timeout)
+    local response = HTTP:send(req)
+    if not response or (response.error and response.error ~= '') then
+        error('Network request failed: ' .. tostring(response and response.error or 'no response'))
+    end
+    return tonumber(response.status_code) or 0, response.text
+end
+
+local function postCurl(url, body, timeout)
+    local directory = os.getenv('TEMP') or os.getenv('TMP') or '.'
+    if directory:find('[%%!"\r\n]') then error('Temporary directory cannot be used safely by curl') end
+    local base = directory .. '/fc_career_top_' .. GAME_VERSION .. '_' .. os.time() .. '_' .. math.random(100000, 999999)
+    local dataPath, configPath, responsePath = base .. '.json', base .. '.cfg', base .. '.response'
+    local function cleanup()
+        os.remove(dataPath); os.remove(configPath); os.remove(responsePath)
+    end
+    local function writeFile(path, value)
+        local file, message = io.open(path, 'wb')
+        if not file then error('Cannot create upload file: ' .. tostring(message)) end
+        local written, failure = file:write(value)
+        local closed, closeFailure = file:close()
+        if not written or not closed then error('Cannot write upload file: ' .. tostring(failure or closeFailure)) end
+    end
+    local function curlValue(value)
+        return '"' .. value:gsub('\\', '\\\\'):gsub('"', '\\"'):gsub('\r', '\\r'):gsub('\n', '\\n') .. '"'
+    end
+    local ok, status, response = pcall(function()
+        writeFile(dataPath, body)
+        writeFile(configPath, table.concat({
+            'request = "POST"', 'url = ' .. curlValue(url),
+            'header = "Content-Type: application/json"',
+            'header = ' .. curlValue('secret-key: ' .. SECRET_KEY),
+            'data-binary = ' .. curlValue('@' .. dataPath),
+            'output = ' .. curlValue(responsePath), 'write-out = "%{http_code}"',
+            'connect-timeout = ' .. math.min(5, timeout / 1000), 'max-time = ' .. (timeout / 1000), 'silent',
+        }, '\n'))
+        -- Credentials live in the temporary config, never the command/log output.
+        local pipe = io.popen('curl --config "' .. configPath .. '" 2>NUL', 'r')
+        if not pipe then error('Cannot start Windows curl') end
+        local status = tonumber(pipe:read('*a')) or 0
+        pipe:close()
+        local file = io.open(responsePath, 'rb')
+        local response = file and file:read('*a') or ''
+        if file then file:close() end
+        return status, response
+    end)
+    cleanup()
+    if not ok then error(status) end
+    return status, response
+end
+
+local function post(url, body, timeout)
+    if hasNativeHTTP() then return postNative(url, body, timeout) end
+    return postCurl(url, body, timeout)
+end
+
+-- Independent of Live Editor's JSON module: import failures can be reported too.
+local function diagnosticJSON(fields)
+    local function quote(value)
+        return '"' .. value:gsub('[%z\1-\31\\"]', function(char)
+            if char == '\\' or char == '"' then return '\\' .. char end
+            return string.format('\\u%04x', char:byte())
+        end) .. '"'
+    end
+    local parts = {}
+    for key, value in pairs(fields) do
+        parts[#parts + 1] = quote(key) .. ':' .. (type(value) == 'number' and tostring(value) or quote(value))
+    end
+    return '{' .. table.concat(parts, ',') .. '}'
+end
+
+local reportState = rawget(_G, 'FC_CAREER_TOP_DIAGNOSTICS')
+if type(reportState) ~= 'table' then
+    reportState = { count = 0, seen = {}, window = 0, cooldown = 0 }
+    rawset(_G, 'FC_CAREER_TOP_DIAGNOSTICS', reportState)
+end
+local currentStage = 'initialization.imports'
+local trackerState
+local function reportError(stage, failure, context)
+    -- Reporting has its own guard and never calls the tracker or itself on failure.
+    local ok = pcall(function()
+        if reportState.reporting then return end
+        local now = os.time()
+        if now - reportState.window >= 3600 then
+            reportState.count, reportState.seen, reportState.window = 0, {}, now
+        end
+        local info = type(failure) == 'table' and failure or captureError(failure)
+        local message = safeText(info.message, 1000)
+        local signature = stage .. ':' .. message
+        if reportState.count >= 20 or now < reportState.cooldown
+            or (reportState.seen[signature] and now - reportState.seen[signature] < 300) then return end
+        reportState.seen[signature] = now
+        reportState.count = reportState.count + 1
+        local fields = {
+            gameVersion = GAME_VERSION, careerId = CAREER_ID, scriptVersion = SCRIPT_VERSION,
+            editorVersion = safeText(LE_VERSION or 'unknown', 80), stage = stage,
+            message = message, traceback = safeText(info.traceback or message, 4000),
+        }
+        for _, name in ipairs({ 'eventId', 'httpStatus' }) do
+            local value = context and context[name]
+            if type(value) == 'number' and value >= 0 and value % 1 == 0 then fields[name] = value end
+        end
+        if trackerState and trackerState.currentDate then
+            local date = trackerState.currentDate
+            fields.careerDate = string.format('%04d-%02d-%02d', date.year, date.month, date.day)
+        end
+        reportState.reporting = true
+        local sent, status = pcall(post, ERROR_URL, diagnosticJSON(fields), ERROR_TIMEOUT_MS)
+        reportState.reporting = false
+        if not sent or not status or status < 200 or status >= 300 then
+            -- A server/network failure suppresses all further reporting for 5 minutes.
+            reportState.cooldown = now + 300
+            log('Error report could not be sent; the original error remains in the local log.')
+        end
+    end)
+    reportState.reporting = false
+    if not ok then log('Error report unavailable; the original error remains in the local log.') end
+end
+
+local function startTracker()
 require 'imports/career_mode/helpers'
 require 'imports/other/helpers'
 local json = require 'imports/external/json'
 pcall(require, 'imports/other/playstyles_enum')
-
-local GAME_VERSION = {{game-version}}
-local SECRET_KEY = {{user-secret-key-lua}}
-local UPLOAD_URL = {{post-player-url-lua}} .. '/api/v1/player/bulk?gameVersion=' .. GAME_VERSION
-local EVENT_NAME = 'post__CareerModeEvent'
-local STATE_KEY = 'FC_CAREER_TOP_TRACKER'
-local HTTP_TIMEOUT_MS = 10000
-
-local function log(message)
-    -- Never print credentials, request headers, or the personalized script.
-    local pattern = SECRET_KEY:gsub('([^%w])', '%%%1')
-    message = tostring(message):gsub(pattern, '[redacted]')
-    print('[FC Career Top] ' .. message)
-end
+currentStage = 'initialization.setup'
 
 local editorYear = tonumber(tostring(LE_VERSION):match('^v?(%d+)%.'))
 if editorYear and editorYear >= 24 and editorYear <= 27 and editorYear ~= GAME_VERSION then
@@ -40,6 +208,7 @@ if type(previous) == 'table' then
 end
 
 local state = { active = true, handlerIDs = {}, uploading = false }
+trackerState = state
 rawset(_G, STATE_KEY, state)
 
 local attributes = {
@@ -458,106 +627,50 @@ local function collectPlayers()
 end
 
 local function responseSucceeded(status, body)
-    if status < 200 or status >= 300 then
-        log('Upload failed (HTTP ' .. status .. '). Check your API key, server and career date.')
-        return false
-    end
     local ok, data = pcall(json.decode, body or '')
+    local detail = ok and type(data) == 'table' and type(data.message) == 'string'
+        and (': ' .. safeText(data.message, 700)) or ''
+    if status < 200 or status >= 300 then
+        error('Upload failed (HTTP ' .. status .. ')' .. detail)
+    end
     if not ok or type(data) ~= 'table' or data.success ~= true then
-        log('Server did not confirm that the snapshot was saved.')
-        return false
+        error('Server did not confirm that the snapshot was saved' .. detail)
     end
     return true
-end
-
-local function hasNativeHTTP()
-    return REQUEST ~= nil and type(REQUEST.new) == 'function'
-        and HTTP ~= nil and type(HTTP.send) == 'function'
-        and HTTP_POST_REQUEST ~= nil
-end
-
-local function uploadNative(body)
-    local req = REQUEST:new()
-    req:SetMethod(HTTP_POST_REQUEST)
-    req:SetUrl(UPLOAD_URL)
-    req:SetHeaders({ ['Content-Type'] = 'application/json', ['secret-key'] = SECRET_KEY })
-    req:SetBody(body)
-    req:SetTimeout(HTTP_TIMEOUT_MS)
-    local response = HTTP:send(req)
-    if not response or (response.error and response.error ~= '') then
-        log('Network request failed. Check the upload URL and connection.')
-        return false
-    end
-    return responseSucceeded(tonumber(response.status_code) or 0, response.text)
-end
-
-local function uploadCurl(body)
-    local directory = os.getenv('TEMP') or os.getenv('TMP') or '.'
-    if directory:find('[%%!"\r\n]') then error('Temporary directory cannot be used safely by curl') end
-    local base = directory .. '/fc_career_top_' .. GAME_VERSION .. '_' .. os.time() .. '_' .. math.random(100000, 999999)
-    local dataPath, configPath, responsePath = base .. '.json', base .. '.cfg', base .. '.response'
-    local function cleanup()
-        os.remove(dataPath); os.remove(configPath); os.remove(responsePath)
-    end
-    local function writeFile(path, value)
-        local file, message = io.open(path, 'wb')
-        if not file then error('Cannot create upload file: ' .. tostring(message)) end
-        local written, failure = file:write(value)
-        local closed, closeFailure = file:close()
-        if not written or not closed then error('Cannot write upload file: ' .. tostring(failure or closeFailure)) end
-    end
-    local function curlValue(value)
-        return '"' .. value:gsub('\\', '\\\\'):gsub('"', '\\"'):gsub('\r', '\\r'):gsub('\n', '\\n') .. '"'
-    end
-    local ok, success = pcall(function()
-        writeFile(dataPath, body)
-        writeFile(configPath, table.concat({
-            'request = "POST"', 'url = ' .. curlValue(UPLOAD_URL),
-            'header = "Content-Type: application/json"',
-            'header = ' .. curlValue('secret-key: ' .. SECRET_KEY),
-            'data-binary = ' .. curlValue('@' .. dataPath),
-            'output = ' .. curlValue(responsePath), 'write-out = "%{http_code}"',
-            'connect-timeout = 5', 'max-time = 10', 'silent',
-        }, '\n'))
-        -- Credentials live in the temporary config, never the command/log output.
-        local pipe = io.popen('curl --config "' .. configPath .. '" 2>NUL', 'r')
-        if not pipe then error('Cannot start Windows curl') end
-        local status = tonumber(pipe:read('*a')) or 0
-        pipe:close()
-        local file = io.open(responsePath, 'rb')
-        local response = file and file:read('*a') or ''
-        if file then file:close() end
-        return responseSucceeded(status, response)
-    end)
-    cleanup()
-    if not ok then error(success) end
-    return success
 end
 
 local function sendSnapshot()
     if not state.active or rawget(_G, STATE_KEY) ~= state or state.uploading then return end
     state.uploading = true
-    local ok, message = pcall(function()
+    local stage, context = 'snapshot.collect', {}
+    local ok, failure = xpcall(function()
         local players = collectPlayers()
         if not players then return end
+        stage = 'snapshot.encode'
         local body = json.encode(players)
         if #body > 1024 * 1024 then error('Complete snapshot exceeds the 1 MB upload limit') end
         if state.lastBody == body then return end
-        local success
-        if hasNativeHTTP() then success = uploadNative(body)
-        else success = uploadCurl(body) end
-        if success then
+        stage = 'snapshot.upload'
+        local editor = tostring(LE_VERSION or 'unknown'):sub(1,80):gsub('[^%w._-]', '')
+        local status, response = post(UPLOAD_URL .. '&editorVersion=' .. editor, body, HTTP_TIMEOUT_MS)
+        context.httpStatus = status
+        stage = 'snapshot.response'
+        if responseSucceeded(status, response) then
             state.lastBody = body
             log(string.format('Saved %d players for FC %d on %s.', #players, GAME_VERSION, players[1].currentDate))
         end
-    end)
+    end, captureError)
     state.uploading = false
-    if not ok then log('Snapshot skipped: ' .. tostring(message)) end
+    if not ok then
+        log('Snapshot skipped: ' .. failure.message)
+        reportError(stage, failure, context)
+    end
 end
 
 local function onEvent(eventsManager, eventID, event)
-    if not state.active or rawget(_G, STATE_KEY) ~= state or not IsInCM() then return end
-    local ok, message = pcall(function()
+    if not state.active or rawget(_G, STATE_KEY) ~= state then return end
+    local ok, failure = xpcall(function()
+        if not IsInCM() then return end
         if eventID == ENUM_CM_EVENT_MSG_POST_LOAD_PREPARE then
             state.currentDate = nil
             state.rawDateKey = nil
@@ -573,10 +686,14 @@ local function onEvent(eventsManager, eventID, event)
         elseif eventID == ENUM_CM_EVENT_MSG_WEEK_PASSED then
             sendSnapshot()
         end
-    end)
-    if not ok then log('Career event skipped: ' .. tostring(message)) end
+    end, captureError)
+    if not ok then
+        log('Career event skipped: ' .. failure.message)
+        reportError('career.event', failure, { eventId = eventID })
+    end
 end
 
+currentStage = 'initialization.register'
 -- AddEventHandler returns no ID. Compare the handler lists to remember our own.
 local before = {}
 for _, handler in ipairs(GetEventHandlers(EVENT_NAME)) do before[handler.id] = true end
@@ -584,8 +701,22 @@ AddEventHandler(EVENT_NAME, onEvent)
 for _, handler in ipairs(GetEventHandlers(EVENT_NAME)) do
     if not before[handler.id] then state.handlerIDs[#state.handlerIDs + 1] = handler.id end
 end
-local ok, message = pcall(resetDate)
-if not ok then log(message) end
+local ok, failure = xpcall(resetDate, captureError)
+if not ok then
+    log(failure.message)
+    reportError('initialization.date', failure)
+end
 log('FC ' .. GAME_VERSION .. ' tracker ready; Live Editor ' .. tostring(LE_VERSION)
     .. (hasNativeHTTP() and '; native HTTP.' or '; Windows curl fallback.'))
 sendSnapshot()
+end
+
+local ok, failure = xpcall(startTracker, captureError)
+if not ok then
+    if trackerState then
+        trackerState.active = false
+        for _, id in ipairs(trackerState.handlerIDs) do pcall(RemoveEventHandler, EVENT_NAME, id) end
+    end
+    log('Tracker initialization failed: ' .. failure.message)
+    reportError(currentStage, failure)
+end

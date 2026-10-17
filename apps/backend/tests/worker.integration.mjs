@@ -5,11 +5,13 @@ const base = process.env.TEST_API_URL || 'http://localhost:8888';
 const suffix = Date.now().toString(36);
 const username = `test_${suffix}`;
 const password = 'WorkerTest!123';
+const localTestIp = `192.0.2.${Date.now() % 250 + 1}`;
 
 async function call(path, { token, key, body, status = 200, headers = {} } = {}) {
     const response = await fetch(`${base}${path}`, {
         method: body === undefined ? 'GET' : 'POST',
         headers: {
+            ...(new URL(base).hostname === 'localhost' ? { 'CF-Connecting-IP': localTestIp } : {}),
             ...headers,
             ...(token ? { token } : {}),
             ...(key ? { 'secret-key': key } : {}),
@@ -65,13 +67,18 @@ const token = login.data.token;
 assert.equal((await call('/api/v1/user/info', { token })).data.authMode, 'email_password');
 await call('/api/v1/user/email/verify', { token, body: {}, status: 410 });
 const secret = (await call('/api/v1/user/secret', { token })).data.secretKey;
+assert.match(secret, /^fct-[a-f0-9]{64}$/);
+const legacySecret = secret.replace(/^fct-/, 'fcd-');
 assert.equal((await call('/api/v1/user/setting', { token })).data.defaultGameVersion, 25);
 
 const socket = new WebSocket(base.replace(/^http/, 'ws') + '/ws', token);
 const packets = [];
+const savedPackets = [];
 socket.addEventListener('message', (event) => {
     if (event.data === 'Session changed') socket.close(1000, 'Session changed');
-    if (event.data.startsWith('{')) packets.push(JSON.parse(event.data));
+    if (event.data.startsWith('{')) { const packet=JSON.parse(event.data);
+      (packet.type==='Snapshot.Saved'?savedPackets:packets).push(packet);
+    }
 });
 await new Promise((resolve, reject) => {
     const timeout = setTimeout(() => reject(new Error('WebSocket open timeout')), 10000);
@@ -96,14 +103,17 @@ const snapshot = Array.from({ length: 200 }, (_, n) => ({
     skillmoves: 2,
     weakfootabilitytypecode: 3,
 }));
-await call('/api/v1/player/bulk?gameVersion=25', { key: secret, body: snapshot });
+await call('/api/v1/player/bulk?gameVersion=25', { key: legacySecret, body: snapshot });
 assert.equal(await call('/api/v1/player/count?gameVersion=25', { token }), 200);
-assert.equal((await call('/api/v1/player/?gameVersion=25', { token }))[0].playerName, "O'Connor");
+const firstPlayer = (await call('/api/v1/player/?gameVersion=25', { token }))[0];
+assert.equal(firstPlayer.playerName, "O'Connor");
+assert.equal(firstPlayer.position4, undefined, 'Missing secondary positions must not become GK');
 assert.equal((await call('/api/v1/player/trends?gameVersion=25', { token }))[0].trends.length, 1);
 snapshot[0].currentDate = '2026-1-9';
 snapshot[0].overallrating = 71;
 await call('/api/v1/player/bulk?gameVersion=25', { key: secret, body: [snapshot[0]] });
 await new Promise((resolve) => setTimeout(resolve, 100));
+assert.ok(savedPackets.length>=2, 'Every successful snapshot emits a confirmation');
 assert.equal(packets[0]?.type, 'PlayerUpdate.Overall');
 assert.equal(packets[0].payload.gameVersion, 25);
 assert.equal(await call('/api/v1/player/count?gameVersion=25', { token }), 1);
@@ -131,6 +141,8 @@ assert.equal((await call('/api/v1/notification/unread-count?gameVersion=25', { t
 await call('/api/v1/user/info', { token, headers: { Origin: 'https://untrusted.example' }, status: 403 });
 const newSecret = (await call('/api/v1/user/secret/refresh', { token, body: {} })).data.secretKey;
 assert.notEqual(newSecret, secret);
+assert.match(newSecret, /^fct-[a-f0-9]{64}$/);
+await call('/api/v1/player/bulk?gameVersion=25', { key: legacySecret, body: [snapshot[0]], status: 401 });
 await call('/api/v1/player/bulk?gameVersion=25', { key: secret, body: [snapshot[0]], status: 401 });
 await call('/api/v1/player/bulk?gameVersion=24', { key: newSecret, body: [snapshot[0]] });
 assert.equal(await call('/api/v1/player/count?gameVersion=24', { token }), 1);

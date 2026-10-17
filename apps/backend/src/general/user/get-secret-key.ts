@@ -1,3 +1,4 @@
+import { canonicalUploadKey } from '../../utils/UploadKey';
 import { Logger } from '../../lib/logger';
 import { refreshSecretKey } from './refresh-secret-key';
 import { UserSecretKeyModel } from '../../models/schema/UserSecretKeyDB';
@@ -21,7 +22,7 @@ export async function getSecretKey({ userId }: { userId: string }): Promise<{
         return {
             success: true,
             message: 'success',
-            data: { secretKey: userSecretKey.secret_key },
+            data: { secretKey: canonicalUploadKey(userSecretKey.secret_key) },
         };
     } catch (e) {
         logger.error(`[getSecretKey] ${e.message}`);

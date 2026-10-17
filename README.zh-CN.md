@@ -61,6 +61,7 @@ pnpm dev
 
 - 球员管理界面：http://localhost:3000
 - 项目官网：http://localhost:3002
+- 管理后台：http://localhost:3003（[管理员设置](apps/admin/README.md)）
 - 后端健康检查：http://localhost:8888/api/health_check
 
 打开球员管理界面，注册填写邮箱和密码，登录使用邮箱和密码；暂不进行邮箱验证。
@@ -78,10 +79,10 @@ pnpm dev
 | [开发指南](docs/DEVELOPMENT.md) | 环境配置、统一命令、架构与开发检查 |
 | [数据库迁移](docs/DATABASE.md) | D1 初始化与后续版本 SQL |
 | [部署说明](docs/DEPLOYMENT.md) | 首次部署的构建产物和配置 |
-| [全部文档](docs/README.md) | 三个应用的说明和历史资料 |
+| [全部文档](docs/README.md) | 四个应用的说明和历史资料 |
 
-代码分别位于 `apps/frontend`、`apps/website` 和 `apps/backend`。
-三者统一使用根目录的 pnpm workspace 与锁定文件。
+代码分别位于 `apps/frontend`、`apps/website`、`apps/admin` 和 `apps/backend`。
+四者统一使用根目录的 pnpm workspace 与锁定文件。
 
 问题和建议请提交到 [GitHub Issues](https://github.com/VeejaLiu/FC-Career-Top/issues)。
-后端原有许可证保留在 [apps/backend/LICENSE](apps/backend/LICENSE)；当前未新增覆盖其他应用的统一许可证。
+FC Career Top 完全免费并开放源码，项目采用 [MIT 许可证](LICENSE)，已有独立许可证的组件和第三方资源除外。后端原有许可证保留在 [apps/backend/LICENSE](apps/backend/LICENSE)。

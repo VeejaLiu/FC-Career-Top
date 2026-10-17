@@ -16,7 +16,8 @@
     "preview": "vite preview",
     "preview-expose": "vite preview --host --port 3001",
     "prettier-format": "prettier --write .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:lua": "node tests/lua-diagnostics.mjs"
   },
   "dependencies": {
     "@douyinfe/semi-icons": "^2.63.1",

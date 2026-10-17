@@ -5,14 +5,15 @@
 }
 .auth-page > .semi-space-item {
   width: 100%;
-  max-width: 550px;
+  max-width: 400px;
 }
 .auth-page > .semi-space-item:first-child {
   text-align: center;
 }
 .auth-tutorial {
   width: 100%;
-  margin-top: 32px;
+  max-width: 400px;
+  margin: 24px auto 0;
 }
 .auth-tutorial iframe {
   display: block;
@@ -37,4 +38,51 @@
 }
 .auth-contact-row > div > span {
   flex-shrink: 0;
+}
+
+.auth-contact {
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  margin: 24px auto 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--semi-color-border);
+  font-size: 13px;
+}
+.auth-contact-row {
+  grid-template-columns: 58px minmax(0, 1fr);
+}
+.auth-contact-row > span {
+  color: var(--semi-color-text-2);
+  font-weight: 500;
+}
+.auth-contact-row a {
+  color: var(--semi-color-text-1);
+}
+.auth-contact-row a:hover {
+  color: var(--semi-color-primary);
+}
+.auth-tutorial h1 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.auth-tutorial iframe {
+  border-radius: 8px;
+}
+
+.auth-form-error,
+.auth-form-hint {
+  width: 100%;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.auth-form-error {
+  color: var(--semi-color-danger);
+}
+.auth-form-hint {
+  color: var(--semi-color-warning);
 }

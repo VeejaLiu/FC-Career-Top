@@ -1,7 +1,330 @@
-.title {
-    font-family: 'Poppins', sans-serif;
+.marketing-page {
+  color: #202b26;
+}
+.marketing-eyebrow {
+  color: #20824d;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  margin: 0 0 16px;
+}
+.marketing-hero {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  align-items: center;
+  gap: 40px;
+  padding: 28px 0 40px;
+}
+.marketing-hero h1 {
+  font-size: clamp(32px, 4vw, 50px);
+  font-weight: 650;
+  line-height: 1.12;
+  letter-spacing: -1.7px;
+  margin: 0;
+}
+.marketing-hero h1 span {
+  color: #20824d;
+}
+.marketing-lead {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #526159;
+  margin: 24px 0;
+}
+.marketing-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.marketing-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 18px;
+  min-height: 44px;
+  font-size: 13px;
+  font-weight: 600;
+  background: #fff;
+  border: 1px solid #dbe5df;
+  border-radius: 7px;
+  color: #24362b;
+  text-decoration: none;
+}
+.marketing-button:hover {
+  background: #f2f7f4;
+}
+.marketing-primary {
+  background: #20824d;
+  border-color: #20824d;
+  color: #fff;
+}
+.marketing-primary:hover {
+  background: #196a3e;
+  color: #fff;
+}
+.marketing-requirement {
+  color: #6b776f;
+  font-size: 12px;
+  line-height: 1.7;
+  margin-top: 18px;
+}
+.marketing-page figure {
+  margin: 0;
+  min-width: 0;
+}
+.marketing-page figure img {
+  width: 100%;
+  height: auto;
+  border: 1px solid #e0e7e2;
+  border-radius: 10px;
+}
+.marketing-page figcaption {
+  font-size: 11px;
+  color: #7c8880;
+  margin: 10px 0 0;
+  line-height: 1.6;
+}
+.marketing-highlights {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid #e0e7e2;
+  border-bottom: 1px solid #e0e7e2;
+  padding: 24px 0;
+  gap: 24px;
+}
+.marketing-highlights strong,
+.marketing-highlights span {
+  display: block;
+}
+.marketing-highlights strong {
+  font-size: 15px;
+  margin-bottom: 5px;
+}
+.marketing-highlights span {
+  font-size: 12px;
+  color: #708077;
+}
+.marketing-section-title {
+  margin: 56px 0 30px;
+}
+.marketing-page h2 {
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.7px;
+}
+.marketing-feature {
+  display: grid;
+  grid-template-columns: 1fr 1.65fr;
+  gap: 40px;
+  align-items: center;
+  margin: 0 0 42px;
+}
+.marketing-feature h3 {
+  font-size: 23px;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.45px;
+  margin: 0 0 14px;
+}
+.marketing-feature p,
+.marketing-access p,
+.marketing-setup > p,
+.marketing-faq p {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #637369;
+}
+.marketing-feature-reverse {
+  grid-template-columns: 1.65fr 1fr;
+}
+.marketing-feature-reverse > div {
+  order: 2;
+}
+.marketing-feature-reverse > figure {
+  order: 1;
+}
+.marketing-setup {
+  background: #f2f7f4;
+  padding: 32px;
+  border-radius: 12px;
+  margin: 56px 0;
+}
+.marketing-setup > p {
+  max-width: 680px;
+}
+.marketing-setup ol {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin: 28px 0;
+}
+.marketing-setup li span {
+  display: block;
+  color: #20824d;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+.marketing-setup li strong {
+  font-size: 14px;
+  font-weight: 600;
+}
+.marketing-setup li p {
+  font-size: 12px;
+  line-height: 1.8;
+  color: #637369;
+  margin-top: 8px;
+}
+.marketing-access {
+  display: grid;
+  grid-template-columns: 1.6fr 0.65fr;
+  gap: 60px;
+  align-items: start;
+  padding: 0 24px;
+}
+.marketing-access > div > img {
+  width: 100%;
+  height: auto;
+  margin-top: 24px;
+  border: 1px solid #e0e7e2;
+  border-radius: 10px;
+}
+.marketing-mobile {
+  max-width: 260px;
+  justify-self: end;
+}
+.marketing-mobile img {
+  box-shadow: 0 12px 28px #1535220d;
+}
+.marketing-access p {
+  margin-top: 18px;
+}
+.marketing-faq {
+  margin: 56px auto;
+  max-width: 820px;
+}
+.marketing-faq h2 {
+  margin-bottom: 24px;
+}
+.marketing-faq details {
+  border-bottom: 1px solid #e0e7e2;
+  padding: 18px 0;
+}
+.marketing-faq summary {
+  font-size: 14px;
+  font-weight: 550;
+  cursor: pointer;
+}
+.marketing-faq p {
+  margin-top: 12px;
+}
+.marketing-final {
+  text-align: center;
+  border-top: 1px solid #e0e7e2;
+  padding: 40px 0 28px;
+}
+.marketing-final p {
+  color: #637369;
+  font-size: 14px;
+  margin: 14px 0 24px;
+}
+.marketing-final .marketing-actions {
+  justify-content: center;
+}
+.marketing-disclaimer {
+  text-align: center;
+  color: #839087;
+  font-size: 11px;
+  line-height: 1.8;
+}
+@media (max-width: 767px) {
+  .marketing-hero,
+  .marketing-feature,
+  .marketing-feature-reverse,
+  .marketing-access {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .marketing-hero {
+    padding: 12px 0 28px;
+  }
+  .marketing-hero h1 {
+    letter-spacing: -1px;
+  }
+  .marketing-feature-reverse > div,
+  .marketing-feature-reverse > figure {
+    order: initial;
+  }
+  .marketing-highlights {
+    gap: 12px;
+  }
+  .marketing-highlights strong {
+    font-size: 12px;
+  }
+  .marketing-highlights span {
+    font-size: 11px;
+  }
+  .marketing-setup {
+    padding: 24px;
+  }
+  .marketing-setup ol {
+    grid-template-columns: 1fr;
+  }
+  .marketing-access {
+    padding: 0;
+  }
+  .marketing-mobile {
+    justify-self: center;
+    max-width: 240px;
+  }
+  .marketing-page h2 {
+    font-size: 24px;
+  }
 }
 
-.text {
-    font-family: 'Poppins', sans-serif;
+@media (prefers-color-scheme: dark) {
+  .marketing-page {
+    color: #e7eee9;
+  }
+  .marketing-eyebrow,
+  .marketing-hero h1 span {
+    color: #64c58b;
+  }
+  .marketing-lead,
+  .marketing-feature p,
+  .marketing-access p,
+  .marketing-setup > p,
+  .marketing-faq p,
+  .marketing-final p,
+  .marketing-highlights span,
+  .marketing-requirement {
+    color: #adbeb2;
+  }
+  .marketing-setup {
+    background: #10241a;
+  }
+  .marketing-setup li p {
+    color: #adbeb2;
+  }
+  .marketing-button {
+    background: #13271b;
+    border-color: #33453a;
+    color: #e7eee9;
+  }
+  .marketing-primary {
+    background: #20824d;
+    border-color: #20824d;
+    color: #fff;
+  }
+  .marketing-highlights,
+  .marketing-faq details,
+  .marketing-final,
+  .marketing-page figure img,
+  .marketing-access > div > img {
+    border-color: #33453a;
+  }
+  .marketing-page figcaption,
+  .marketing-disclaimer {
+    color: #96a89c;
+  }
 }

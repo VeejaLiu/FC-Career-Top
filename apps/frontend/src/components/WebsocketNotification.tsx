@@ -1,3 +1,4 @@
+import { selectedCareer } from '../service/CareerApis';
 import { useEffect } from 'react';
 import {
   getToken,
@@ -213,6 +214,15 @@ export const WebsocketNotification = () => {
             Number(payload.gameVersion) !== version
           )
             return;
+          if (
+            version &&
+            payload.careerId &&
+            selectedCareer(version) &&
+            String(payload.careerId) !== selectedCareer(version)
+          )
+            return;
+          if (type === 'Snapshot.Saved')
+            window.dispatchEvent(new Event('fct-snapshot-saved'));
           if (type === 'PlayerUpdate.Overall')
             overratingChangeNotification(payload);
           else if (type === 'PlayerUpdate.SkillMove')

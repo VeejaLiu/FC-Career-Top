@@ -1,12 +1,12 @@
 .loginOrRegister {
   width: 100%;
   min-width: 0;
-  max-width: 550px;
+  max-width: 400px;
 
   .header {
     display: flex;
     align-items: center;
-    margin-top: 20px;
+    margin: 16px 0 22px;
 
     .titles {
       margin-left: 20px;
@@ -31,7 +31,7 @@
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
-    row-gap: 28px;
+    row-gap: 18px;
     align-self: stretch;
 
     .inputs {
@@ -39,7 +39,7 @@
       display: flex;
       flex-direction: column;
       flex-shrink: 0;
-      row-gap: 24px;
+      row-gap: 18px;
       align-self: stretch;
     }
 

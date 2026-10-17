@@ -1,5 +1,15 @@
 export default {
   LoginComponent: {
+    uploadKeyAsPassword:
+      'これはアップロードキーのようです。アカウントのパスワードまたは Google でログインしてください。',
+    capsLockWarning: 'Caps Lock が有効です',
+    invalidEmail: '有効なメールアドレスを入力してください。',
+    passwordRequired: 'パスワードを入力してください。',
+    invalidCredentials: 'メールアドレスまたはパスワードが正しくありません。',
+    loginFailed: 'ログインできませんでした。再試行してください。',
+    loginSuccessTitle: 'ログインしました',
+    loggedInMessage: 'おかえりなさい、{username}！',
+
     VideoTutorial: 'このアプリの使い方は？ビデオでもっと学びましょう！',
     welcome: 'おかえりなさい',
     usernameEmail: 'メール',
@@ -45,6 +55,7 @@ export default {
     current: '現在',
   },
   Navbar: {
+    CareerHub: 'キャリア',
     Language: '言語',
     MyAccount: 'マイアカウント',
     PlayersList: '選手',
@@ -236,6 +247,35 @@ export default {
   },
 
   SettingsPage: {
+    ShowKey: 'キーを表示',
+    HideKey: 'キーを非表示',
+    SettingsDescription: 'アカウント、ログイン方法、通知を管理します。',
+    AccountDescription: '個人情報とログイン方法。',
+    GoogleConnected: '連携済み',
+    GoogleNotConnected: '未連携',
+    GoogleConnectedDescription:
+      'Google と連携済みです。Google でログインできます。',
+    GoogleConnectDescription: 'Google と連携すると簡単にログインできます。',
+    PasswordLogin: 'パスワードでログイン',
+    PasswordDescription: 'メールアドレスとパスワードでログインします。',
+    GoogleOnlyDescription: 'Google でログインするため、パスワードは不要です。',
+    NotEnabled: '無効',
+    NotificationsDescription: '通知を受け取る選手の変化を選択します。',
+    KeyDescription: 'Live Editor と接続して選手データをアップロードします。',
+    RegenerateKey: '再生成',
+    KeyPrivateNote:
+      'キーを共有せず、ご自身のゲームスクリプトだけで使用してください。',
+    KeyRegenerateNotice:
+      '古いキーは無効になります。再生成後はセットアップから新しいスクリプトをコピーしてください。',
+    KeyRefreshSuccess: 'キーを再生成しました',
+    LogoutDescription: 'このデバイスのセッションからログアウトします。',
+    LogoutFailed: 'ログアウトできませんでした。再試行してください。',
+    Loading: '読み込み中…',
+    LoadFailed: '読み込めませんでした。再試行してください。',
+    Retry: '再試行',
+    SaveFailed: '保存できませんでした。再試行してください。',
+    Cancel: 'キャンセル',
+
     Settings: '設定',
 
     APISecretKey: 'APIシークレットキー',
@@ -341,6 +381,7 @@ export default {
   },
 
   GetStartedPage: {
+    DIAGNOSTICS_NOTICE: '実行時エラーとバージョン情報は、保守のため自動送信されます。アップロードキーは伏せられ、直近30日間のエラーログを保持します。',
     NEED_HELP: 'お困りですか？',
     JOIN_DISCORD: 'Discordコミュニティに参加',
     SCRIPT_LOADING: 'スクリプトを準備しています…',
@@ -392,7 +433,7 @@ export default {
 - 最初に全選手のデータを送信し、その後はゲーム内で毎週送信します。選手の取得が不完全な場合は送信をスキップします。理由は Live Editor のログをご確認ください。
 - 対応するエディターは直接送信します。FC 24 や古いエディターでは Windows curl と一時ファイルを使用するため、コマンドウィンドウが表示される場合があります。ゲームフォルダーへの書き込み権限は不要です。
 - FC 24 は日付補正を維持します。キャリアを読み込んだ後に実行し、記録の日付を確認してください。
-- アカウントとゲームバージョンごとに一つのキャリアを使用してください。異なるセーブデータは分離されません。
+- セーブごとにキャリアを作成し、専用スクリプトを使ってください。旧スクリプトは既定のキャリアに送信します。
 - 再実行時はこのスクリプトのリスナーだけを置き換えます。他のキャリアスクリプトには影響しません。
 `,
     VIDEO_TUTORIAL_TITLE: `ビデオチュートリアル`,

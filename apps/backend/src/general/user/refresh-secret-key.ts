@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { generateUploadKey } from '../../utils/UploadKey';
 import { Logger } from '../../lib/logger';
 import { UserSecretKeyModel } from '../../models/schema/UserSecretKeyDB';
 
@@ -10,8 +10,7 @@ export async function refreshSecretKey({ userId }: { userId: number | string }):
     data?: any;
 }> {
     try {
-        const newSecretKeyId = uuidv4();
-        const newSecretKey = `fcd-${newSecretKeyId}`;
+        const newSecretKey = generateUploadKey();
 
         // query first
         const existingUSK = await UserSecretKeyModel.findOne({
@@ -24,10 +23,10 @@ export async function refreshSecretKey({ userId }: { userId: number | string }):
                 user_id: userId,
                 secret_key: newSecretKey,
             });
-            logger.info(`[refreshSecretKey] Insert secret key success: ${newSecretKey}`);
+            logger.info(`[refreshSecretKey] Insert secret key success`);
         } else {
             await UserSecretKeyModel.update({ secret_key: newSecretKey }, { where: { user_id: userId } });
-            logger.info(`[refreshSecretKey] Update secret key success: ${newSecretKey}`);
+            logger.info(`[refreshSecretKey] Update secret key success`);
         }
 
         return {

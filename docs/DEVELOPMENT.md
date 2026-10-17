@@ -4,7 +4,7 @@
 
 ## Setup
 
-Use Node.js **24.21.0 LTS** and pnpm **10.5.0**. The four package manifests,
+Use Node.js **24.21.0 LTS** and pnpm **10.5.0**. The five package manifests,
 `.nvmrc` files, and `.npmrc` enforce the supported Node and pnpm versions.
 No MySQL, Docker, Cloudflare login, or email service is needed for local development.
 
@@ -22,12 +22,15 @@ pnpm dev
 | --- | --- |
 | Dashboard | http://localhost:3000 |
 | Website | http://localhost:3002 |
+| Admin | http://localhost:3003 |
 | API health check | http://localhost:8888/api/health_check |
 | WebSocket | ws://localhost:8888/ws |
 
 Wrangler stores local D1 and Durable Object state in `apps/backend/.wrangler`.
 It is separate from the deployed database. Register with an email and password. Sign in with email and password;
 email verification is disabled.
+
+See the [Admin guide](../apps/admin/README.md) to create an independent administrator account.
 
 ## Environment configuration
 
@@ -36,7 +39,8 @@ The backend reads ignored `apps/backend/.dev.vars` locally:
 | Setting | Purpose |
 | --- | --- |
 | `SECRET_JWT` | Token signing secret, at least 32 characters; use a random value in production |
-| `ALLOWED_ORIGINS` | Comma-separated dashboard and website origins |
+| `ALLOWED_ORIGINS` | Allowed browser origins |
+| `ADMIN_ALLOWED_ORIGINS` | Exact Admin browser origins allowed to mutate management data |
 
 D1 and Durable Object bindings are in `apps/backend/wrangler.jsonc`. Production
 secrets are set through Wrangler, not a committed file. The legacy `.env.example`
@@ -49,6 +53,7 @@ in `.env.development.local` or `.env.production.local` for another host:
 | --- | --- |
 | Dashboard | `VITE_APP_BACKEND_URL`, `VITE_POST_PLAYER_URL`, `VITE_WS_URL` |
 | Website | `NEXT_PUBLIC_BACKEND_URL` |
+| Admin | Same-origin API proxy; `ADMIN_DEV_API_URL` overrides its local API target |
 
 API and upload URLs omit `/api`; WebSocket URLs include `/ws`. These variables
 are public browser settings and must never contain database credentials or secrets.
@@ -57,11 +62,11 @@ are public browser settings and must never contain database credentials or secre
 
 | Command | Result |
 | --- | --- |
-| `pnpm dev` | Runs all three applications |
-| `pnpm dev:frontend` / `pnpm dev:website` / `pnpm dev:backend` | Runs one application |
+| `pnpm dev` | Runs all four applications |
+| `pnpm dev:frontend` / `pnpm dev:website` / `pnpm dev:admin` / `pnpm dev:backend` | Runs one application |
 | `pnpm db:migrate` | Applies pending local D1 migrations |
 | `pnpm db:info` | Lists pending local D1 migrations |
-| `pnpm build` | Builds both static sites and bundles the API without deploying |
+| `pnpm build` | Builds all three static sites and bundles the API without deploying |
 | `pnpm start:website` | Previews the built static website on port 3002 |
 | `pnpm start:backend` | Runs the local Worker on port 8888 |
 | `pnpm --filter @fc-career-top/backend test:integration` | Tests the running local API and WebSocket |
@@ -100,3 +105,5 @@ Use the root pnpm lockfile, add a new [D1 migration](DATABASE.md) for schema cha
 and run checks relevant to the affected app. Keep credentials out of commits.
 The API build is a Wrangler dry run; frontend and website builds include TypeScript
 checks. Report reproducible steps and the app/game version, with personal keys removed.
+
+Career release checks: `pnpm --filter @fc-career-top/backend test:career-migration` verifies a nonempty legacy migration and an in-flight old upload. Run `TEST_API_URL=http://localhost:8891 pnpm --filter @fc-career-top/backend test:careers` against a disposable migrated local API for career boundaries, date protection, history, watchlists and notifications. `test:admin` provisions its own isolated database and checks conversion statistics through real authentication and service bindings. Frontend `test:lua` accepts `LUA_BIN` for Lua 5.3/5.4 simulation. Browser verification for this release used the Codex side browser.

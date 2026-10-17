@@ -278,6 +278,9 @@ export class UserApis {
     username: string;
     email: string;
     isEmailVerified: boolean;
+    emailLoginEnabled: boolean;
+    googleLoginEnabled: boolean;
+    authMode: string;
     lastSendEmailTime: number;
   } | null> {
     try {

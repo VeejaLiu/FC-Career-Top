@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+import { careerCopy } from '../CareerPage/copy';
 import { useCallback } from 'react';
 import { LocaleConsumer, Progress } from '@douyinfe/semi-ui';
 import { useSearchParams } from 'react-router-dom';
@@ -184,6 +186,9 @@ export default function PlayerDetailPage() {
                 locale={locale.Profile}
               />
               <div className="player-detail-chart">
+                <Link to={`/career?playerId=${playerID}#career-history`}>
+                  {careerCopy().history} →
+                </Link>
                 <PlayerTrendChart
                   key={playerID}
                   data={detail.trends}

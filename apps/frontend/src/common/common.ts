@@ -10,6 +10,7 @@ export function setToken(token: string) {
 
 export function removeToken() {
   localStorage.removeItem('fcd-token');
+  for(const version of [24,25,26,27]) localStorage.removeItem(`fct-career-${version}`);
 }
 
 export function getDefaultGameVersionFromLocalStorage() {

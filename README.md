@@ -76,6 +76,7 @@ pnpm dev
 | --- | --- |
 | Player dashboard | http://localhost:3000 |
 | Public website | http://localhost:3002 |
+| Admin console | http://localhost:3003 ([setup](apps/admin/README.md)) |
 | Backend health check | http://localhost:8888/api/health_check |
 
 Open the dashboard and register with an email and password. Sign in with email and
@@ -92,7 +93,7 @@ walks through these steps.
 | [Development](docs/DEVELOPMENT.md) | Install, environment variables, commands, and project architecture |
 | [Database migrations](docs/DATABASE.md) | D1 setup and adding versioned SQL migrations |
 | [Deployment](docs/DEPLOYMENT.md) | Build outputs and configuration for a first deployment |
-| [Application guides](docs/README.md#application-guides) | Frontend, website, and backend responsibilities |
+| [Application guides](docs/README.md#application-guides) | Frontend, website, admin, and backend responsibilities |
 
 ## Repository structure
 
@@ -100,12 +101,13 @@ walks through these steps.
 apps/
   frontend/     React 18 player dashboard
   website/      Next.js 15 / React 19 public website
+  admin/        React 18 / Semi Design administrator console
   backend/      Cloudflare Worker API, D1 migrations, and Durable Objects
 docs/           Shared guides, screenshots, and historical material
 scripts/        Workspace helpers
 ```
 
-The three applications share one pnpm workspace and lockfile. Their original
+The four applications share one pnpm workspace and lockfile. Their original
 default-branch histories are preserved; see the [consolidation record](docs/archive/MONOREPO.md).
 
 ## Contributing and support
@@ -115,5 +117,7 @@ For development work, follow the setup and checks in the [development guide](doc
 
 ## License
 
-The backend's existing license is at [apps/backend/LICENSE](apps/backend/LICENSE).
-No repository-wide license has been added for the other applications.
+FC Career Top is free and open source. The project is licensed under the
+[MIT License](LICENSE), except where a component or third-party asset has its
+own license. The backend's existing license is preserved at
+[apps/backend/LICENSE](apps/backend/LICENSE).

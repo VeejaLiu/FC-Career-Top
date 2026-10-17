@@ -20,6 +20,7 @@ to run your own instance. Follow the player guide to connect the game.
 | Application | Guide | Source |
 | --- | --- | --- |
 | Player dashboard | [Frontend](components/frontend.md) | [apps/frontend](../apps/frontend) |
+| Admin console | [Admin](../apps/admin/README.md) | [apps/admin](../apps/admin) |
 | Public website | [Website](components/website.md) | [apps/website](../apps/website) |
 | API and notifications | [Backend](components/backend.md) | [apps/backend](../apps/backend) |
 

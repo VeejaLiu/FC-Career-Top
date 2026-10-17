@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import App from '../App.tsx';
 import { UserApis } from '../service/UserApis.ts';
 import { LocaleProvider, Spin } from '@douyinfe/semi-ui';
@@ -41,6 +41,8 @@ const SUPPORTED_LANGUAGES: any = {
   ja: { ...ja_JP, ...custom_ja_JP },
   ja_JP: { ...ja_JP, ...custom_ja_JP },
 };
+
+const CareerPage = lazy(() => import('../pages/CareerPage/CareerPage'));
 
 export const Auth = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -86,12 +88,17 @@ export const Auth = () => {
       setLocale(SUPPORTED_LANGUAGES[browserLanguage]);
     }
 
-    getLoginStatus().then();
+    if (window.location.pathname === '/demo') setIsLoading(false);
+    else getLoginStatus().then();
   }, []);
 
   return (
     <LocaleProvider locale={locale}>
-      {isLoading ? (
+      {window.location.pathname === '/demo' ? (
+        <Suspense fallback={<Spin size="large" />}>
+          <CareerPage demo />
+        </Suspense>
+      ) : isLoading ? (
         <div
           style={{
             display: 'flex',

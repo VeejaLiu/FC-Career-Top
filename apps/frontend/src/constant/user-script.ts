@@ -15,6 +15,7 @@ export function createLuaScript(
   version: number,
   secretKey: string,
   uploadURL: string,
+  careerId?: number,
 ): string {
   if (!isGameVersion(version) || !secretKey) {
     throw new Error('Script configuration unavailable');
@@ -30,6 +31,7 @@ export function createLuaScript(
     throw new Error('Invalid upload URL');
   }
   const values: Record<string, string> = {
+    '{{career-id}}': careerId ? String(careerId) : 'nil',
     '{{game-version}}': String(version),
     '{{user-secret-key-lua}}': luaString(secretKey),
     '{{post-player-url-lua}}': luaString(uploadURL.replace(/\/+$/, '')),
@@ -41,7 +43,7 @@ export function createLuaScript(
       .join('\n')}\n}`,
   };
   return luaTemplate.replace(
-    /\{\{(?:game-version|user-secret-key-lua|post-player-url-lua|playstyle-catalog-lua)\}\}/g,
+    /\{\{(?:career-id|game-version|user-secret-key-lua|post-player-url-lua|playstyle-catalog-lua)\}\}/g,
     (placeholder) => values[placeholder],
   );
 }

@@ -1,3 +1,5 @@
+import {careerCopy} from '../CareerPage/copy';
+import { AuthPolicyLinks } from './GoogleLoginComponent';
 import { LocaleConsumer, Select, Space } from '@douyinfe/semi-ui';
 import { useState } from 'react';
 import { LoginComponent } from './LoginComponent.tsx';
@@ -45,6 +47,8 @@ const LoginOrRegisterPage = () => {
           ) : (
             <RegisterComponent setIsLogin={setIsLogin} />
           )}
+          <a href="/demo" className="underline">{careerCopy().demo} →</a>
+          <AuthPolicyLinks />
           <ContactUsComponent />
           <div className="auth-tutorial">
             <h1 className="text-xl font-bold mb-1">

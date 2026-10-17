@@ -1,3 +1,6 @@
+import { careerCopy } from '../CareerPage/copy';
+import { activeCareer } from '../../service/CareerApis';
+import { SyncStatus } from '../CareerPage/SyncStatus';
 import { useEffect, useState } from 'react';
 import {
   Banner,
@@ -35,15 +38,16 @@ export default function GetStartedPage() {
 
     async function loadScript() {
       try {
-        const [key, version] = await Promise.all([
+        const [key, version, career] = await Promise.all([
           UserApis.getSecretKey(),
           getDefaultGameVersion(),
+          activeCareer(),
         ]);
         if (!key || !isGameVersion(version)) {
           throw new Error('Script configuration unavailable');
         }
         if (cancelled) return;
-        setCode(createLuaScript(version, key, postPlayerURL));
+        setCode(createLuaScript(version, key, postPlayerURL, career.id));
         setGameVersion(version);
         setStatus('ready');
       } catch {
@@ -83,6 +87,7 @@ export default function GetStartedPage() {
       {(locale: any) => (
         <div className="get-started-page">
           <h1>{locale.Title}</h1>
+          <SyncStatus />
           <div className="get-started-layout">
             <section className="get-started-instructions">
               <Steps direction="vertical" type="basic" current={-1}>
@@ -91,7 +96,9 @@ export default function GetStartedPage() {
                   description={
                     <div className="get-started-downloads">
                       <span>{locale.STEP_1.DownloadLink}</span>
-                      {GAME_VERSIONS.map((version) => (
+                      {GAME_VERSIONS.filter(
+                        (version) => !gameVersion || version === gameVersion,
+                      ).map((version) => (
                         <a
                           key={version}
                           href={`https://github.com/xAranaktu/FC-${version}-Live-Editor`}
@@ -117,6 +124,7 @@ export default function GetStartedPage() {
                   description={
                     <div className="get-started-script">
                       <p>{locale.STEP_4.Description}</p>
+                      <p>{locale.DIAGNOSTICS_NOTICE}</p>
                       <Banner
                         type="warning"
                         closeIcon={null}
@@ -146,12 +154,15 @@ export default function GetStartedPage() {
                         aria-busy={status === 'loading'}
                       >
                         {status === 'ready' ? (
-                          <CodeHighlight
-                            code={code}
-                            language="lua"
-                            defaultTheme
-                            lineNumber={false}
-                          />
+                          <details>
+                            <summary>{careerCopy().viewScript}</summary>
+                            <CodeHighlight
+                              code={code}
+                              language="lua"
+                              defaultTheme
+                              lineNumber={false}
+                            />
+                          </details>
                         ) : (
                           <div className="get-started-code-state" role="status">
                             {status === 'loading' ? (

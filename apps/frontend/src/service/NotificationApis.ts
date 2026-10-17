@@ -1,3 +1,4 @@
+import { careerQuery, selectedCareer } from './CareerApis';
 import { getDefaultGameVersion, getToken } from '../common/common.ts';
 import axios from 'axios';
 import { BACKEND_URL } from '../constant';
@@ -41,7 +42,7 @@ export class NotificationApis {
       const gameVersion = await getDefaultGameVersion();
 
       const response = await axios.get(
-        `${BACKEND_URL}/api/v1/notification/unread-count?gameVersion=${gameVersion}`,
+        `${BACKEND_URL}/api/v1/notification/unread-count?gameVersion=${gameVersion}${careerQuery(gameVersion)}`,
         {
           headers: {
             Accept: '*/*',
@@ -90,7 +91,7 @@ export class NotificationApis {
       });
 
       const response = await axios.get(
-        `${BACKEND_URL}/api/v1/notification/?${params.toString()}`,
+        `${BACKEND_URL}/api/v1/notification/?${params.toString()}${careerQuery(gameVersion)}`,
         {
           headers: {
             Accept: '*/*',
@@ -122,7 +123,7 @@ export class NotificationApis {
 
       const response = await axios.post(
         `${BACKEND_URL}/api/v1/notification/mark-read`,
-        { id, gameVersion },
+        { id, gameVersion, careerId: selectedCareer(gameVersion) },
         { headers: { token } },
       );
       if (response.status === 200) {
@@ -144,7 +145,7 @@ export class NotificationApis {
 
       const response = await axios.post(
         `${BACKEND_URL}/api/v1/notification/mark-all-read`,
-        { gameVersion },
+        { gameVersion, careerId: selectedCareer(gameVersion) },
         { headers: { token } },
       );
       if (response.status === 200) {

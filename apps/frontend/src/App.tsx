@@ -1,9 +1,12 @@
+import { CareerBar } from './pages/CareerPage/CareerBar';
 import { lazy, Suspense } from 'react';
 import { Link, Outlet, Route, Routes } from 'react-router-dom';
 import { AppHeader } from './components/layout/AppHeader';
 import { LoadingComponent } from './components/Other';
 import { WebsocketNotification } from './components/WebsocketNotification';
 import './App.css';
+
+const CareerPage = lazy(() => import('./pages/CareerPage/CareerPage'));
 
 const PlayerListPage = lazy(
   () => import('./pages/PlayerListPage/PlayerListPage'),
@@ -32,6 +35,7 @@ export default function App() {
           element={
             <div className="app-shell">
               <AppHeader />
+              <CareerBar />
               <main id="main-content" className="app-content" tabIndex={-1}>
                 <Suspense fallback={<LoadingComponent />}>
                   <Outlet />
@@ -40,7 +44,8 @@ export default function App() {
             </div>
           }
         >
-          <Route index element={<PlayerListPage />} />
+          <Route index element={<CareerPage />} />
+          <Route path="career" element={<CareerPage />} />
           <Route path="players" element={<PlayerListPage />} />
           <Route path="players-trends" element={<PlayerTrendsPage />} />
           <Route path="players-detail" element={<PlayerDetailPage />} />

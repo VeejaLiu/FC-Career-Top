@@ -1,5 +1,15 @@
 export default {
   LoginComponent: {
+    uploadKeyAsPassword:
+      'This looks like an upload key. Use your account password or sign in with Google.',
+    capsLockWarning: 'Caps Lock is on',
+    invalidEmail: 'Enter a valid email address.',
+    passwordRequired: 'Enter your password.',
+    invalidCredentials: 'Email or password is incorrect. Please try again.',
+    loginFailed: 'Unable to sign in. Please try again.',
+    loginSuccessTitle: 'Signed in',
+    loggedInMessage: 'Welcome back, {username}!',
+
     VideoTutorial: 'How to use this app? Learn more through the video!',
     welcome: 'Welcome to back',
     usernameEmail: 'Email',
@@ -46,6 +56,7 @@ export default {
     current: 'Current',
   },
   Navbar: {
+    CareerHub: 'Career hub',
     Language: 'Language',
     MyAccount: 'My account',
     PlayersList: 'Players',
@@ -238,6 +249,37 @@ export default {
   },
 
   SettingsPage: {
+    ShowKey: 'Show key',
+    HideKey: 'Hide key',
+    SettingsDescription:
+      'Manage your account, sign-in methods and notifications.',
+    AccountDescription: 'Your personal details and sign-in methods.',
+    GoogleConnected: 'Connected',
+    GoogleNotConnected: 'Not connected',
+    GoogleConnectedDescription:
+      'Google is connected. You can use it to sign in.',
+    GoogleConnectDescription: 'Connect Google for a simpler sign-in.',
+    PasswordLogin: 'Password sign-in',
+    PasswordDescription: 'Use your email and password to sign in.',
+    GoogleOnlyDescription: 'This account uses Google. No password is needed.',
+    NotEnabled: 'Not enabled',
+    NotificationsDescription:
+      'Choose which player changes you want to hear about.',
+    KeyDescription: 'Connect Live Editor to upload your player data.',
+    RegenerateKey: 'Regenerate',
+    KeyPrivateNote:
+      'Keep this key private and use it only in your game script.',
+    KeyRegenerateNotice:
+      'Your old key will stop working. Copy a new script from Get Started after regenerating.',
+    KeyRefreshSuccess: 'Key regenerated',
+    LogoutDescription: 'Sign out of your session on this device.',
+    LogoutFailed: 'Unable to sign out. Please try again.',
+    Loading: 'Loading…',
+    LoadFailed: 'Unable to load. Please try again.',
+    Retry: 'Retry',
+    SaveFailed: 'Unable to save. Please try again.',
+    Cancel: 'Cancel',
+
     Settings: 'Settings',
 
     APISecretKey: 'API Secret Key',
@@ -345,6 +387,7 @@ export default {
   },
 
   GetStartedPage: {
+    DIAGNOSTICS_NOTICE: 'Runtime errors and version details are reported automatically to help maintain the script. Upload keys are redacted; diagnostics cover the latest 30 days.',
     NEED_HELP: 'Need a hand?',
     JOIN_DISCORD: 'Join the Discord community',
     SCRIPT_LOADING: 'Preparing your script…',
@@ -396,7 +439,7 @@ Use the matching [FC 24](https://github.com/xAranaktu/FC-24-Live-Editor), [FC 25
 - An initial squad snapshot is uploaded immediately, followed by snapshots each in-game week. Incomplete squads are skipped; check the Live Editor log if an upload is missing.
 - Supported editors upload directly. FC 24 and older editors use Windows curl and temporary files; a command window may appear. The game folder does not need write permission.
 - FC 24 retains its date workaround. Run the script after loading your career, and check the displayed dates.
-- Use one career per account and game version. Different saves are not separated.
+- Create a separate career for each game save and use that career’s script. Existing scripts keep uploading to the default career.
 - Running this script again replaces only its own listener. Other career-mode scripts keep their listeners.
 `,
     VIDEO_TUTORIAL_TITLE: `Video Tutorial`,

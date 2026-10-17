@@ -1,5 +1,16 @@
 export default {
   LoginComponent: {
+    uploadKeyAsPassword:
+      'Dies scheint ein Upload-Schlüssel zu sein. Verwende dein Passwort oder Google.',
+    capsLockWarning: 'Feststelltaste ist aktiv',
+    invalidEmail: 'Gib eine gültige E-Mail-Adresse ein.',
+    passwordRequired: 'Gib dein Passwort ein.',
+    invalidCredentials:
+      'E-Mail oder Passwort ist falsch. Bitte erneut versuchen.',
+    loginFailed: 'Anmeldung fehlgeschlagen. Bitte erneut versuchen.',
+    loginSuccessTitle: 'Angemeldet',
+    loggedInMessage: 'Willkommen zurück, {username}!',
+
     VideoTutorial: 'Wie nutzt man diese App? Erfahre mehr durch das Video!',
     welcome: 'Willkommen zurück',
     usernameEmail: 'E-Mail',
@@ -46,6 +57,7 @@ export default {
     current: 'Aktuell',
   },
   Navbar: {
+    CareerHub: 'Karriere',
     Language: 'Sprache',
     MyAccount: 'Mein Konto',
     PlayersList: 'Spieler',
@@ -240,6 +252,38 @@ export default {
   },
 
   SettingsPage: {
+    ShowKey: 'Schlüssel anzeigen',
+    HideKey: 'Schlüssel verbergen',
+    SettingsDescription:
+      'Verwalte dein Konto, deine Anmeldung und Benachrichtigungen.',
+    AccountDescription: 'Deine persönlichen Daten und Anmeldemethoden.',
+    GoogleConnected: 'Verbunden',
+    GoogleNotConnected: 'Nicht verbunden',
+    GoogleConnectedDescription:
+      'Google ist verbunden. Du kannst dich damit anmelden.',
+    GoogleConnectDescription: 'Verbinde Google für eine einfache Anmeldung.',
+    PasswordLogin: 'Passwort-Anmeldung',
+    PasswordDescription: 'Melde dich mit E-Mail und Passwort an.',
+    GoogleOnlyDescription:
+      'Dieses Konto verwendet Google. Kein Passwort erforderlich.',
+    NotEnabled: 'Nicht aktiviert',
+    NotificationsDescription:
+      'Wähle, über welche Spieleränderungen du informiert wirst.',
+    KeyDescription: 'Verbinde Live Editor, um deine Spielerdaten hochzuladen.',
+    RegenerateKey: 'Neu erstellen',
+    KeyPrivateNote:
+      'Halte diesen Schlüssel privat und verwende ihn nur im Spielskript.',
+    KeyRegenerateNotice:
+      'Der alte Schlüssel wird ungültig. Kopiere danach ein neues Skript unter Erste Schritte.',
+    KeyRefreshSuccess: 'Schlüssel neu erstellt',
+    LogoutDescription: 'Beende deine Sitzung auf diesem Gerät.',
+    LogoutFailed: 'Abmelden fehlgeschlagen. Bitte erneut versuchen.',
+    Loading: 'Wird geladen…',
+    LoadFailed: 'Laden fehlgeschlagen. Bitte erneut versuchen.',
+    Retry: 'Erneut versuchen',
+    SaveFailed: 'Speichern fehlgeschlagen. Bitte erneut versuchen.',
+    Cancel: 'Abbrechen',
+
     Settings: 'Einstellungen',
 
     APISecretKey: 'API-Geheimschlüssel',
@@ -348,6 +392,7 @@ export default {
   },
 
   GetStartedPage: {
+    DIAGNOSTICS_NOTICE: 'Laufzeitfehler und Versionsangaben werden zur Wartung automatisch gemeldet. Upload-Schlüssel werden verborgen; Fehlerberichte umfassen die letzten 30 Tage.',
     NEED_HELP: 'Brauchst du Hilfe?',
     JOIN_DISCORD: 'Der Discord-Community beitreten',
     SCRIPT_LOADING: 'Dein Skript wird vorbereitet…',
@@ -399,7 +444,7 @@ Verwende den passenden Live Editor für [FC 24](https://github.com/xAranaktu/FC-
 - Der gesamte Kader wird sofort und danach jede Spielwoche hochgeladen. Unvollständige Kader werden übersprungen; Einzelheiten stehen im Live-Editor-Protokoll.
 - Unterstützte Editoren laden direkt hoch. FC 24 und ältere Editoren verwenden Windows curl und temporäre Dateien; dabei kann ein Befehlsfenster erscheinen. Schreibrechte im Spielordner sind nicht nötig.
 - FC 24 behält die Datumskorrektur. Führe das Skript nach dem Laden aus und prüfe die angezeigten Daten.
-- Verwende pro Konto und Spielversion nur eine Karriere. Verschiedene Spielstände werden nicht getrennt.
+- Erstelle für jeden Spielstand eine eigene Karriere mit eigenem Skript. Alte Skripte nutzen die Standardkarriere.
 - Erneutes Ausführen ersetzt nur den eigenen Ereignis-Listener. Andere Karriereskripte behalten ihre Listener.
 `,
     VIDEO_TUTORIAL_TITLE: `Video-Tutorial`,

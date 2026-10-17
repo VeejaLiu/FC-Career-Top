@@ -1,5 +1,15 @@
 export default {
   LoginComponent: {
+    uploadKeyAsPassword:
+      '这看起来是上传密钥。请使用账号密码，或选择 Google 登录。',
+    capsLockWarning: '大写锁定已开启',
+    invalidEmail: '请输入有效的邮箱地址。',
+    passwordRequired: '请输入密码。',
+    invalidCredentials: '邮箱或密码不正确，请重试。',
+    loginFailed: '暂时无法登录，请重试。',
+    loginSuccessTitle: '登录成功',
+    loggedInMessage: '欢迎回来，{username}！',
+
     VideoTutorial: '如何使用这个应用?通过视频了解更多！',
     welcome: '欢迎回来',
     usernameEmail: '邮箱',
@@ -43,6 +53,7 @@ export default {
     current: '当前版本',
   },
   Navbar: {
+    CareerHub: '生涯中心',
     Language: '语言',
     MyAccount: '我的',
     PlayersList: '球员',
@@ -218,9 +229,36 @@ export default {
     },
   },
   SettingsPage: {
+    ShowKey: '显示密钥',
+    HideKey: '隐藏密钥',
+    SettingsDescription: '管理账号、登录方式与通知偏好。',
+    AccountDescription: '您的个人资料和登录方式。',
+    GoogleConnected: '已绑定',
+    GoogleNotConnected: '未绑定',
+    GoogleConnectedDescription: '已连接，可使用 Google 登录此账号。',
+    GoogleConnectDescription: '连接 Google，之后即可直接登录。',
+    PasswordLogin: '密码登录',
+    PasswordDescription: '使用邮箱和密码登录此账号。',
+    GoogleOnlyDescription: '此账号通过 Google 登录，无需密码。',
+    NotEnabled: '未启用',
+    NotificationsDescription: '选择您希望接收的球员变化通知。',
+    KeyDescription: '用于连接 Live Editor 并上传您的球员数据。',
+    RegenerateKey: '重新生成',
+    KeyPrivateNote: '请妥善保管密钥，仅在您的游戏脚本中使用。',
+    KeyRegenerateNotice:
+      '重新生成后旧密钥立即失效，请重新复制快速开始中的脚本。',
+    KeyRefreshSuccess: '密钥已重新生成',
+    LogoutDescription: '退出当前设备上的登录会话。',
+    LogoutFailed: '退出失败，请重试。',
+    Loading: '加载中…',
+    LoadFailed: '加载失败，请重试。',
+    Retry: '重试',
+    SaveFailed: '保存失败，请重试。',
+    Cancel: '取消',
+
     Settings: '设置',
 
-    APISecretKey: 'API 秘钥',
+    APISecretKey: '上传密钥',
     ClickToCopy: '点击复制你的API秘钥',
     Copy: '复制',
     ClickToRefresh: '点击刷新你的API秘钥，这将会使你的旧秘钥失效',
@@ -316,6 +354,7 @@ export default {
     },
   },
   GetStartedPage: {
+    DIAGNOSTICS_NOTICE: '脚本发生运行错误时，会自动上报错误信息和版本供维护排查；上传密钥会隐藏，错误日志保留最近 30 天。',
     NEED_HELP: '遇到问题？',
     JOIN_DISCORD: '加入 Discord 社区',
     SCRIPT_LOADING: '正在准备你的脚本…',
@@ -365,7 +404,7 @@ export default {
 - 脚本立即上传一次完整阵容，此后每个游戏周上传一次。阵容采集不完整时会跳过上传，请查看 Live Editor 日志中的原因。
 - 支持内置上传的编辑器会直接发送数据；FC 24 和旧版编辑器会使用 Windows curl 和临时文件，可能出现命令窗口，无需向游戏目录写入文件。
 - FC 24 保留日期补偿逻辑，请在读档后运行脚本，并留意记录中的日期。
-- 每个账号的每个游戏版本请只跟踪一个生涯存档，不同存档的数据尚未分开。
+- 每个游戏存档请新建独立生涯并使用专属脚本；旧脚本仍上传至默认生涯。
 - 重复执行只替换本脚本自己的监听器，其他职业模式脚本的监听器会保留。
 `,
     VIDEO_TUTORIAL_TITLE: `视频教程`,

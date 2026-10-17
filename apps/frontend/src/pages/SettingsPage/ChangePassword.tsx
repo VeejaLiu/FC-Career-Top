@@ -28,6 +28,16 @@ export default function ChangePasswordComponent({
   const [sessionExpired, setSessionExpired] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [accountEmail, setAccountEmail] = useState('');
+  useEffect(() => {
+    let active = true;
+    void UserApis.getUserInfo().then((account) => {
+      if (active && account) setAccountEmail(account.email);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
   const pending = useRef(false);
   const form = useRef<HTMLFormElement>(null);
   const [focusRequest, setFocusRequest] = useState<{ field: Field } | null>(
@@ -152,6 +162,7 @@ export default function ChangePasswordComponent({
 
   return (
     <form
+      id="change-password-form"
       ref={form}
       className="password-card"
       onSubmit={submit}
@@ -159,6 +170,16 @@ export default function ChangePasswordComponent({
       aria-busy={submitting}
     >
       <h1>{localeData.AccountChangePassword}</h1>
+      {accountEmail && (
+        <input
+          type="text"
+          name="email"
+          autoComplete="username"
+          value={accountEmail}
+          readOnly
+          hidden
+        />
+      )}
       {fields.map((field) => (
         <div className="password-field" key={field}>
           <label htmlFor={field}>{labels[field]}</label>

@@ -1,5 +1,5 @@
 import { IconGithubLogo, IconMailStroked1 } from '@douyinfe/semi-icons';
-import { IconDiscord, IconTecentQQ } from '../../common/icons.tsx';
+import { IconDiscord } from '../../common/icons.tsx';
 
 const contactLinks = [
   {
@@ -20,17 +20,11 @@ const contactLinks = [
     text: 'support@fccareer.top',
     icon: <IconMailStroked1 />,
   },
-  {
-    label: 'QQ',
-    href: null,
-    text: '974553280',
-    icon: <IconTecentQQ />,
-  },
 ];
 
 export function ContactUsComponent() {
   return (
-    <div className="mt-12 flex flex-col gap-3">
+    <div className="auth-contact">
       {contactLinks.map((link, index) => (
         <div key={index} className="auth-contact-row">
           <span className="font-bold">{link.label}</span>

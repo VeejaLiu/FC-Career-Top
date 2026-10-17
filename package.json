@@ -27,7 +27,11 @@
     "deploy:frontend": "pnpm --filter @fc-career-top/backend exec wrangler deploy --config ../frontend/wrangler.jsonc",
     "deploy:website": "pnpm --filter @fc-career-top/backend exec wrangler deploy --config ../website/wrangler.jsonc",
     "deploy:website:redirects": "pnpm --filter @fc-career-top/backend exec wrangler deploy --config ../website/wrangler.redirects.jsonc",
-    "db:migrate:remote": "pnpm --filter @fc-career-top/backend db:migrate:remote"
+    "db:migrate:remote": "pnpm --filter @fc-career-top/backend db:migrate:remote",
+    "dev:admin": "pnpm --filter @fc-career-top/admin dev",
+    "build:admin": "pnpm --filter @fc-career-top/admin build",
+    "deploy:admin": "pnpm --filter @fc-career-top/backend exec wrangler deploy --config ../admin/wrangler.jsonc",
+    "admin:create": "pnpm --filter @fc-career-top/backend admin:create"
   },
   "repository": {
     "type": "git",

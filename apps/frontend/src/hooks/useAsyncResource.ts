@@ -2,7 +2,11 @@ import { useCallback, useEffect, useState } from 'react';
 
 // Supply a stable loader (an API method or useCallback). Results from old
 // requests are ignored after navigation, a retry, or a dependency change.
-export function useAsyncResource<T>(loader: () => Promise<T>, enabled = true) {
+export function useAsyncResource<T>(
+  loader: () => Promise<T>,
+  enabled = true,
+  keepPrevious = false,
+) {
   const [data, setData] = useState<T>();
   const [loading, setLoading] = useState(enabled);
   const [error, setError] = useState(false);
@@ -11,7 +15,7 @@ export function useAsyncResource<T>(loader: () => Promise<T>, enabled = true) {
 
   useEffect(() => {
     let active = true;
-    setData(undefined);
+    if (!keepPrevious) setData(undefined);
     setError(false);
     setLoading(enabled);
     if (!enabled) return;
@@ -28,7 +32,12 @@ export function useAsyncResource<T>(loader: () => Promise<T>, enabled = true) {
     return () => {
       active = false;
     };
-  }, [loader, enabled, attempt]);
+  }, [loader, enabled, attempt, keepPrevious]);
+
+  useEffect(() => {
+    window.addEventListener('fct-snapshot-saved', reload);
+    return () => window.removeEventListener('fct-snapshot-saved', reload);
+  }, [reload]);
 
   return { data, loading, error, reload };
 }
