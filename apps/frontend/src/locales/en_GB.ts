@@ -11,7 +11,7 @@ export default {
     loggedInMessage: 'Welcome back, {username}!',
 
     VideoTutorial: 'How to use this app? Learn more through the video!',
-    welcome: 'Welcome to back',
+    welcome: 'Welcome back',
     usernameEmail: 'Email',
     usernameEmailPlaceholder: 'Your email',
     password: 'Password',

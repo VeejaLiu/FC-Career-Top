@@ -3,7 +3,7 @@
 }
 .marketing-eyebrow {
   color: #20824d;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 1.5px;
   margin: 0 0 16px;
@@ -79,8 +79,8 @@
   border-radius: 10px;
 }
 .marketing-page figcaption {
-  font-size: 11px;
-  color: #7c8880;
+  font-size: 12px;
+  color: #62736a;
   margin: 10px 0 0;
   line-height: 1.6;
 }
@@ -233,8 +233,8 @@
 }
 .marketing-disclaimer {
   text-align: center;
-  color: #839087;
-  font-size: 11px;
+  color: #62736a;
+  font-size: 12px;
   line-height: 1.8;
 }
 @media (max-width: 767px) {
@@ -262,7 +262,7 @@
     font-size: 12px;
   }
   .marketing-highlights span {
-    font-size: 11px;
+    font-size: 12px;
   }
   .marketing-setup {
     padding: 24px;
@@ -327,4 +327,9 @@
   .marketing-disclaimer {
     color: #96a89c;
   }
+}
+.marketing-mobile img {
+  height: 520px;
+  object-fit: cover;
+  object-position: top;
 }

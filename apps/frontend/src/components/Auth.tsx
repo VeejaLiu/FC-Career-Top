@@ -87,9 +87,18 @@ export const Auth = () => {
     if (browserLanguage in SUPPORTED_LANGUAGES) {
       setLocale(SUPPORTED_LANGUAGES[browserLanguage]);
     }
+    document.documentElement.lang = browserLanguage.replace('_', '-');
+    const syncLanguage = (event: StorageEvent) => {
+      if (event.key !== LANGUAGE_LOCAL_STORAGE_KEY) return;
+      const next = normalizeLanguage(event.newValue || navigator.language);
+      setLocale(SUPPORTED_LANGUAGES[next] || SUPPORTED_LANGUAGES.en);
+      document.documentElement.lang = next.replace('_', '-');
+    };
+    window.addEventListener('storage', syncLanguage);
 
     if (window.location.pathname === '/demo') setIsLoading(false);
     else getLoginStatus().then();
+    return () => window.removeEventListener('storage', syncLanguage);
   }, []);
 
   return (

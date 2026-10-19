@@ -3,6 +3,7 @@ import { Button } from '@douyinfe/semi-ui';
 import axios from 'axios';
 import { BACKEND_URL } from '../../constant';
 import { getToken, setToken } from '../../common/common';
+import { loginDestination } from '../../common/login-destination';
 import { googleCopy } from './google-copy';
 import './GoogleLogin.css';
 
@@ -94,7 +95,7 @@ export function GoogleLoginComponent({
         if (!data.success || !data.data?.token) throw new Error(copy.failure);
         setToken(data.data.token);
         if (linkAccount) window.location.reload();
-        else window.location.assign('/players');
+        else window.location.assign(loginDestination());
       } catch (error) {
         setError(
           axios.isAxiosError(error) &&

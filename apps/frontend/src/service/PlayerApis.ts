@@ -1,3 +1,4 @@
+import type { HistoryPoint } from './CareerApis';
 import { careerQuery } from './CareerApis';
 import axios from 'axios';
 import { BACKEND_URL } from '../constant';
@@ -136,6 +137,7 @@ export interface PlayerDetail {
     playerProfile?: PlayerProfile | null;
   };
   trends: PlayerTrend[];
+  history?: HistoryPoint[];
 }
 
 export class PlayerApis {

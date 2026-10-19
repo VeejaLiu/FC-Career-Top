@@ -81,12 +81,12 @@ footer {
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 30px;
+  border-radius: 8px;
   height: 32px;
   width: 140px;
   margin: 0 auto;
-  color: #000;
-  background-color: #94f17a;
+  color: #fff;
+  background-color: #20824d;
   cursor: pointer;
   transition:
     transform 0.3s ease,
@@ -96,11 +96,11 @@ footer {
 }
 
 .go-to-app-button:hover {
-  background-color: #7bcd64;
+  background-color: #196a3e;
 }
 
 .go-to-app-button:active {
-  background-color: #94f17a;
+  background-color: #20824d;
 }
 
 @media (max-width: 400px) {

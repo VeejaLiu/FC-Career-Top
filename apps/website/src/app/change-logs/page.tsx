@@ -26,15 +26,56 @@ const ChangeLogsPage = () => {
         </Link>
         .
       </p>
-      <article id="change-20261017" className="mb-10 rounded-lg border border-gray-300 p-5">
+      <article
+        id="change-20261019"
+        className="mb-10 rounded-lg border border-gray-300 p-5"
+      >
+        <time dateTime="2026-10-19">October 19, 2026</time>
+        <h2 className="text-2xl font-semibold mt-2">
+          A clearer view of your career
+        </h2>
+        <ul className="mt-4 list-disc pl-6 space-y-2">
+          <li>
+            Compact sync status and before-and-after ratings bring player growth
+            into focus.
+          </li>
+          <li>
+            Distinct chart legends, accurate date spacing and clearer
+            comparisons on phones.
+          </li>
+          <li>
+            Simpler navigation, a three-step connection guide and refreshed demo
+            screenshots.
+          </li>
+        </ul>
+      </article>
+      <article
+        id="change-20261017"
+        className="mb-10 rounded-lg border border-gray-300 p-5"
+      >
         <time dateTime="2026-10-17">October 17, 2026</time>
         <h2 className="text-2xl font-semibold mt-2">A home for every career</h2>
         <ul className="mt-4 list-disc pl-6 space-y-2">
-          <li>Create, rename, switch and archive separate careers, each with its own upload script.</li>
-          <li>Confirm the first upload and see the last received game date, squad size and script version.</li>
-          <li>Explore monthly and season growth leaders, watch players and compare up to three at a time.</li>
-          <li>Review recorded attributes across dates and keep departed players in your career history. Detailed history starts with this update.</li>
-          <li>Download a growth card or explore the fictional interactive demo without signing in.</li>
+          <li>
+            Create, rename, switch and archive separate careers, each with its
+            own upload script.
+          </li>
+          <li>
+            Confirm the first upload and see the last received game date, squad
+            size and script version.
+          </li>
+          <li>
+            Explore monthly and season growth leaders, watch players and compare
+            up to three at a time.
+          </li>
+          <li>
+            Review recorded attributes across dates and keep departed players in
+            your career history. Detailed history starts with this update.
+          </li>
+          <li>
+            Download a growth card or explore the fictional interactive demo
+            without signing in.
+          </li>
         </ul>
       </article>
       <article

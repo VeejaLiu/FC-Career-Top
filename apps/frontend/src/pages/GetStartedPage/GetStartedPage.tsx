@@ -1,15 +1,15 @@
+import { careerUiCopy } from '../CareerPage/ui-copy';
+import type { Career } from '../../service/CareerApis';
 import { careerCopy } from '../CareerPage/copy';
 import { activeCareer } from '../../service/CareerApis';
 import { SyncStatus } from '../CareerPage/SyncStatus';
 import { useEffect, useState } from 'react';
 import {
-  Banner,
   Button,
   CodeHighlight,
   LocaleConsumer,
   Notification,
   Spin,
-  Steps,
 } from '@douyinfe/semi-ui';
 import { IconCopy, IconRefresh, IconExternalOpen } from '@douyinfe/semi-icons';
 import { UserApis } from '../../service/UserApis.ts';
@@ -22,6 +22,9 @@ const postPlayerURL =
   import.meta.env.VITE_POST_PLAYER_URL || 'http://localhost:8888';
 
 export default function GetStartedPage() {
+  const ui = careerUiCopy(),
+    t = careerCopy();
+  const [liveCareer, setLiveCareer] = useState<Career>();
   const [code, setCode] = useState('');
   const [gameVersion, setGameVersion] = useState<number | null>(null);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>(
@@ -49,6 +52,7 @@ export default function GetStartedPage() {
         if (cancelled) return;
         setCode(createLuaScript(version, key, postPlayerURL, career.id));
         setGameVersion(version);
+        setLiveCareer(career);
         setStatus('ready');
       } catch {
         if (!cancelled) setStatus('error');
@@ -86,120 +90,116 @@ export default function GetStartedPage() {
     <LocaleConsumer componentName="GetStartedPage">
       {(locale: any) => (
         <div className="get-started-page">
-          <h1>{locale.Title}</h1>
-          <SyncStatus />
+          <header className="get-started-heading">
+            <h1>{t.setup}</h1>
+            <p>{ui.pc}</p>
+          </header>
           <div className="get-started-layout">
-            <section className="get-started-instructions">
-              <Steps direction="vertical" type="basic" current={-1}>
-                <Steps.Step
-                  title={locale.STEP_1.Title.replace(/^\d+\.\s*/, '')}
-                  description={
-                    <div className="get-started-downloads">
-                      <span>{locale.STEP_1.DownloadLink}</span>
-                      {GAME_VERSIONS.filter(
-                        (version) => !gameVersion || version === gameVersion,
-                      ).map((version) => (
-                        <a
-                          key={version}
-                          href={`https://github.com/xAranaktu/FC-${version}-Live-Editor`}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          FC {version} Live Editor
-                        </a>
-                      ))}
-                    </div>
-                  }
-                />
-                <Steps.Step
-                  title={locale.STEP_2.Title.replace(/^\d+\.\s*/, '')}
-                  description={locale.STEP_2.Description}
-                />
-                <Steps.Step
-                  title={locale.STEP_3.Title.replace(/^\d+\.\s*/, '')}
-                  description={locale.STEP_3.Description}
-                />
-                <Steps.Step
-                  title={locale.STEP_4.Title.replace(/^\d+\.\s*/, '')}
-                  description={
-                    <div className="get-started-script">
-                      <p>{locale.STEP_4.Description}</p>
-                      <p>{locale.DIAGNOSTICS_NOTICE}</p>
-                      <Banner
-                        type="warning"
-                        closeIcon={null}
-                        description={locale.CODE_NOT_SHARE_WARNING}
-                      />
-                      <div className="get-started-code-toolbar">
-                        <span>
-                          {status === 'ready'
-                            ? `FC ${gameVersion} · Lua`
-                            : 'Lua'}
-                        </span>
-                        <Button
-                          icon={<IconCopy />}
-                          theme="solid"
-                          disabled={status !== 'ready'}
-                          onClick={() => {
-                            void copyScript(locale);
-                          }}
-                        >
-                          {copied
-                            ? locale.SUCCESS_MESSAGE
-                            : locale.COPY_TO_CLIPBOARD}
-                        </Button>
-                      </div>
-                      <div
-                        className="get-started-code"
-                        aria-busy={status === 'loading'}
+            <ol className="get-started-instructions">
+              <li className="setup-step">
+                <span className="setup-number" aria-hidden="true">
+                  1
+                </span>
+                <div className="setup-step-body">
+                  <h2>{ui.open}</h2>
+                  <p>{ui.openHint}</p>
+                  <div className="get-started-downloads">
+                    {GAME_VERSIONS.filter(
+                      (version) => !gameVersion || version === gameVersion,
+                    ).map((version) => (
+                      <a
+                        key={version}
+                        href={`https://github.com/xAranaktu/FC-${version}-Live-Editor`}
+                        target="_blank"
+                        rel="noreferrer"
                       >
-                        {status === 'ready' ? (
-                          <details>
-                            <summary>{careerCopy().viewScript}</summary>
-                            <CodeHighlight
-                              code={code}
-                              language="lua"
-                              defaultTheme
-                              lineNumber={false}
-                            />
-                          </details>
+                        FC {version} Live Editor{' '}
+                        <IconExternalOpen size="small" />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </li>
+              <li className={`setup-step ${copied ? 'is-complete' : ''}`}>
+                <span className="setup-number" aria-hidden="true">
+                  {copied ? '✓' : '2'}
+                </span>
+                <div className="setup-step-body">
+                  <h2>{ui.run}</h2>
+                  <p>{ui.runHint}</p>
+                  <div className="get-started-code-toolbar">
+                    <span>
+                      {gameVersion ? `FC ${gameVersion}` : 'FC'} ·{' '}
+                      {liveCareer?.name || 'Lua'}
+                    </span>
+                    <Button
+                      icon={<IconCopy />}
+                      theme="solid"
+                      disabled={status !== 'ready'}
+                      onClick={() => void copyScript(locale)}
+                    >
+                      {copied
+                        ? locale.SUCCESS_MESSAGE
+                        : locale.COPY_TO_CLIPBOARD}
+                    </Button>
+                  </div>
+                  <div
+                    className="get-started-code"
+                    aria-busy={status === 'loading'}
+                  >
+                    {status === 'ready' ? (
+                      <details>
+                        <summary>{t.viewScript}</summary>
+                        <CodeHighlight
+                          code={code}
+                          language="lua"
+                          defaultTheme
+                          lineNumber={false}
+                        />
+                      </details>
+                    ) : (
+                      <div className="get-started-code-state" role="status">
+                        {status === 'loading' ? (
+                          <>
+                            <Spin size="small" />
+                            {locale.SCRIPT_LOADING}
+                          </>
                         ) : (
-                          <div className="get-started-code-state" role="status">
-                            {status === 'loading' ? (
-                              <>
-                                <Spin size="small" />
-                                {locale.SCRIPT_LOADING}
-                              </>
-                            ) : (
-                              <>
-                                <span>{locale.SCRIPT_ERROR_HELP}</span>
-                                <Button
-                                  theme="borderless"
-                                  icon={<IconRefresh />}
-                                  onClick={() =>
-                                    setRetryCount((count) => count + 1)
-                                  }
-                                >
-                                  {locale.RETRY}
-                                </Button>
-                              </>
-                            )}
-                          </div>
+                          <>
+                            {locale.SCRIPT_ERROR_HELP}
+                            <Button
+                              theme="borderless"
+                              icon={<IconRefresh />}
+                              onClick={() =>
+                                setRetryCount((count) => count + 1)
+                              }
+                            >
+                              {locale.RETRY}
+                            </Button>
+                          </>
                         )}
                       </div>
-                    </div>
-                  }
-                />
-              </Steps>
-            </section>
-            <aside className="get-started-sidebar">
-              <section
-                className="get-started-tutorial"
-                aria-labelledby="get-started-video-title"
+                    )}
+                  </div>
+                  <small className="setup-private">{ui.private}</small>
+                </div>
+              </li>
+              <li
+                className={`setup-step ${liveCareer?.last_upload ? 'is-complete' : ''}`}
               >
-                <h2 id="get-started-video-title">
-                  {locale.VIDEO_TUTORIAL_TITLE}
-                </h2>
+                <span className="setup-number" aria-hidden="true">
+                  {liveCareer?.last_upload ? '✓' : '3'}
+                </span>
+                <div className="setup-step-body">
+                  <h2>{ui.received}</h2>
+                  <p>{ui.receivedHint}</p>
+                  <SyncStatus onUpdate={setLiveCareer} />
+                </div>
+              </li>
+            </ol>
+            <aside className="get-started-sidebar">
+              <details className="get-started-tutorial">
+                <summary>{locale.VIDEO_TUTORIAL_TITLE}</summary>
                 <div className="get-started-video">
                   <iframe
                     src="https://www.youtube.com/embed/MELZu08Gzfw?start=402"
@@ -210,7 +210,13 @@ export default function GetStartedPage() {
                     allowFullScreen
                   />
                 </div>
-              </section>
+              </details>
+              <p className="setup-reconnect">{ui.reconnect}</p>
+              <details className="get-started-details">
+                <summary>{ui.details}</summary>
+                <p>{t.setupHelp}</p>
+                <p>{locale.DIAGNOSTICS_NOTICE}</p>
+              </details>
               <div className="get-started-help">
                 <span>{locale.NEED_HELP}</span>
                 <a

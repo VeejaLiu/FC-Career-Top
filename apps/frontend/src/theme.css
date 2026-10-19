@@ -1,0 +1,49 @@
+/* Shared product palette, including Semi controls and the public demo. */
+body {
+  --semi-color-primary: #20824d;
+  --semi-color-primary-hover: #196a3e;
+  --semi-color-primary-active: #145733;
+  --semi-color-primary-disabled: #a8cbb7;
+  --semi-color-primary-light-default: #edf6f0;
+  --semi-color-primary-light-hover: #e2f0e7;
+  --semi-color-primary-light-active: #d4e9dc;
+  --semi-color-text-0: #202d26;
+  --semi-color-text-1: #43564a;
+  --semi-color-text-2: #62736a;
+  --semi-color-border: #e1e8e3;
+  --semi-color-fill-0: #f2f6f3;
+  --semi-color-success: #20824d;
+  --semi-color-success-light-active: #cce4d5;
+  --app-accent: #20824d;
+  background: #f7f9f7;
+  color: #202d26;
+}
+button,
+input,
+select,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+button,
+input,
+select {
+  font: inherit;
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+summary:focus-visible {
+  outline: 2px solid #20824d;
+  outline-offset: 3px;
+}
+.app-header {
+  box-shadow: none;
+  border-bottom: 1px solid var(--semi-color-border);
+}
+.app-brand-title {
+  color: var(--semi-color-text-0);
+}
+.auth-page {
+  background: #fff;
+}

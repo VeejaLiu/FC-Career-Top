@@ -1,8 +1,7 @@
 import { LocaleConsumer } from '@douyinfe/semi-ui';
 import {
-  Area,
-  AreaChart,
-  Brush,
+  Line,
+  LineChart,
   CartesianGrid,
   ResponsiveContainer,
   Tooltip,
@@ -10,122 +9,147 @@ import {
   YAxis,
 } from 'recharts';
 import type { PlayerTrend } from '../service/PlayerApis';
-import { getColorByOverallRating } from '../common/player-helper';
+import { trendPoints } from './trend-data';
+import './PlayerTrendChart.css';
+import { careerCopy } from '../pages/CareerPage/copy';
 
 interface ChartProps {
   data: PlayerTrend[];
   height?: number;
   detailed?: boolean;
 }
-
 export function PlayerTrendChart({
   data,
   height = 190,
   detailed = false,
 }: ChartProps) {
+  const labels = careerCopy();
+  const points = trendPoints(data);
+  const last = points[points.length - 1];
+  const first = points[0];
+  const values = points
+    .flatMap((p) => [p.overallRating, p.potential])
+    .filter(Number.isFinite);
+  const floor = values.length
+    ? Math.max(0, Math.floor((Math.min(...values) - 5) / 5) * 5)
+    : 40;
   return (
     <LocaleConsumer componentName="PlayerListTable">
-      {(locale: any, localeCode: string) => {
-        const dateFormatter = new Intl.DateTimeFormat(
-          localeCode.replace('_', '-'),
-          { month: 'short', day: 'numeric' },
-        );
-        const formatDate = (date: string) => {
-          const [year, month, day] = date.split('-').map(Number);
-          return year && month && day
-            ? dateFormatter.format(new Date(year, month - 1, day))
-            : date;
-        };
+      {(_locale: any, localeCode: string) => {
+        const dates = new Intl.DateTimeFormat(localeCode.replace('_', '-'), {
+          month: 'short',
+          day: 'numeric',
+          timeZone: 'UTC',
+        });
         return (
           <div
             className="player-trend-chart"
-            style={{ width: '100%', minWidth: 0, height }}
             role="img"
-            aria-label={`${locale.overall} / ${locale.potential}`}
+            aria-label={`${labels.overall} / ${labels.pot}`}
           >
-            <ResponsiveContainer width="100%" height="100%" minWidth={0}>
-              <AreaChart
-                data={data}
-                margin={{ left: -20, right: 12, top: 8 }}
-                accessibilityLayer
-              >
-                {detailed && <CartesianGrid vertical={false} />}
-                <XAxis
-                  dataKey="inGameDate"
-                  tickLine={false}
-                  axisLine={false}
-                  tickMargin={8}
-                  tickFormatter={formatDate}
-                  minTickGap={28}
-                  style={{ fontSize: 12 }}
-                />
-                <YAxis
-                  domain={[detailed ? 40 : 50, 100]}
-                  tickLine={false}
-                  axisLine={false}
-                  style={{ fontSize: 12 }}
-                />
-                <Tooltip
-                  content={({ active, payload }) => {
-                    if (!active || !payload?.length) return null;
-                    const point = payload[0].payload as PlayerTrend;
-                    return (
-                      <div
-                        style={{
-                          background: 'white',
-                          border: '1px solid #ddd',
-                          borderRadius: 6,
-                          padding: 8,
-                          fontSize: 12,
-                        }}
-                      >
-                        <strong>{point.inGameDate}</strong>
-                        <p
-                          style={{
-                            color: getColorByOverallRating(point.overallRating),
-                          }}
-                        >
-                          {locale.overall}: {point.overallRating}
-                        </p>
-                        <p
-                          style={{
-                            color: getColorByOverallRating(point.potential),
-                          }}
-                        >
-                          {locale.potential}: {point.potential}
-                        </p>
-                      </div>
-                    );
-                  }}
-                />
-                <Area
-                  type="linear"
-                  dataKey="potential"
-                  fill="#125427"
-                  stroke="#125427"
-                  fillOpacity={0.4}
-                  isAnimationActive={false}
-                />
-                <Area
-                  type="linear"
-                  dataKey="overallRating"
-                  fill="#5d7e2f"
-                  stroke="none"
-                  fillOpacity={0.8}
-                  isAnimationActive={false}
-                />
-                {data.length > 1 && (
-                  <Brush
-                    dataKey="inGameDate"
-                    height={28}
-                    stroke="#82ca9d"
-                    tickFormatter={formatDate}
-                    startIndex={Math.max(data.length - 52, 0)}
-                    endIndex={data.length - 1}
+            <div
+              className={`trend-legend ${detailed ? 'trend-legend-detailed' : ''}`}
+            >
+              {(
+                [
+                  ['overallRating', labels.overall, 'overall'],
+                  ['potential', labels.pot, 'potential'],
+                ] as const
+              ).map(([key, label, color]) => {
+                const change = last && first ? last[key] - first[key] : null;
+                return (
+                  <span className={`trend-series trend-${color}`} key={key}>
+                    <i aria-hidden="true" /> <span>{label}</span>
+                    <strong>{last?.[key] ?? '—'}</strong>
+                    {detailed &&
+                      change != null &&
+                      change !== 0 &&
+                      points.length > 1 && (
+                        <small>
+                          {change >= 0 ? '+' : ''}
+                          {change}
+                        </small>
+                      )}
+                  </span>
+                );
+              })}
+            </div>
+            <div style={{ width: '100%', minWidth: 0, height }}>
+              <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                <LineChart
+                  data={points}
+                  margin={{ left: -22, right: 14, top: 14, bottom: 4 }}
+                  accessibilityLayer
+                >
+                  <CartesianGrid vertical={false} stroke="#e7ede9" />
+                  <XAxis
+                    dataKey="time"
+                    type="number"
+                    scale="time"
+                    domain={['dataMin', 'dataMax']}
+                    tickLine={false}
+                    axisLine={false}
+                    tickMargin={10}
+                    tickFormatter={(time) => dates.format(new Date(time))}
+                    minTickGap={36}
+                    style={{ fontSize: 12 }}
                   />
-                )}
-              </AreaChart>
-            </ResponsiveContainer>
+                  <YAxis
+                    domain={[floor, 100]}
+                    tickLine={false}
+                    axisLine={false}
+                    tickCount={4}
+                    style={{ fontSize: 12 }}
+                  />
+                  <Tooltip
+                    content={({ active, payload }) => {
+                      if (!active || !payload?.length) return null;
+                      const point = payload[0].payload as PlayerTrend;
+                      return (
+                        <div className="trend-tooltip">
+                          <strong>{point.inGameDate}</strong>
+                          <p className="trend-overall">
+                            {labels.overall}
+                            <b>{point.overallRating}</b>
+                          </p>
+                          <p className="trend-potential">
+                            {labels.pot}
+                            <b>{point.potential}</b>
+                          </p>
+                        </div>
+                      );
+                    }}
+                  />
+                  <Line
+                    type="linear"
+                    dataKey="potential"
+                    stroke="#8264b5"
+                    strokeWidth={2}
+                    strokeDasharray="5 4"
+                    dot={
+                      points.length < 12
+                        ? { r: 3, strokeWidth: 0, fill: '#8264b5' }
+                        : false
+                    }
+                    activeDot={{ r: 5 }}
+                    isAnimationActive={false}
+                  />
+                  <Line
+                    type="linear"
+                    dataKey="overallRating"
+                    stroke="#20824d"
+                    strokeWidth={2.5}
+                    dot={
+                      points.length < 12
+                        ? { r: 3, strokeWidth: 0, fill: '#20824d' }
+                        : false
+                    }
+                    activeDot={{ r: 5 }}
+                    isAnimationActive={false}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         );
       }}

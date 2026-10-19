@@ -1,3 +1,4 @@
+import { SquadNavigation } from '../../components/layout/SquadNavigation';
 import * as React from 'react';
 import {
   Input,
@@ -305,6 +306,7 @@ function PlayerListPage(): React.ReactElement {
     <LocaleConsumer componentName="PlayerListTable">
       {(locale: any) => (
         <section className="page-container player-list-page">
+          <SquadNavigation />
           <div className="player-list-toolbar">
             <Input
               aria-label={locale.name}

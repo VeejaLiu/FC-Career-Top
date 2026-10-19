@@ -1,0 +1,63 @@
+.player-trend-chart {
+  width: 100%;
+  min-width: 0;
+}
+.trend-legend {
+  display: flex;
+  gap: 12px 22px;
+  flex-wrap: wrap;
+  padding: 8px 12px 0;
+  font-size: 12px;
+}
+.trend-legend-detailed {
+  padding: 14px 0 8px;
+  font-size: 14px;
+}
+.trend-series {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.trend-series i {
+  width: 14px;
+  height: 3px;
+  background: currentColor;
+  border-radius: 2px;
+}
+.trend-potential {
+  color: #7753a7;
+}
+.trend-overall {
+  color: #20824d;
+}
+.trend-potential i {
+  background: none;
+  border-top: 3px dashed currentColor;
+}
+.trend-series strong {
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+}
+.trend-series small {
+  font-size: 12px;
+  background: #f2f6f3;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+.trend-tooltip {
+  background: #fff;
+  border: 1px solid #e1e8e3;
+  box-shadow: 0 6px 24px #203b2612;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 12px;
+}
+.trend-tooltip p {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 6px 0 0;
+}
+.recharts-cartesian-axis-tick-value {
+  fill: #62736a;
+}

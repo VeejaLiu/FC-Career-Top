@@ -8,6 +8,7 @@ import {
 } from '@douyinfe/semi-ui';
 import { UserApis } from '../../service/UserApis.ts';
 import { setToken } from '../../common/common.ts';
+import { loginDestination } from '../../common/login-destination';
 import styles from './LoginOrRegisterPage.module.scss';
 import { useState } from 'react';
 import logo from '../../assets/image/logo.svg';
@@ -68,8 +69,7 @@ export const LoginComponent = ({ setIsLogin }: { setIsLogin: any }) => {
         duration: 3,
       });
 
-      // Navigate({ to: '/players' });
-      window.location.href = '/players';
+      window.location.assign(loginDestination());
     } else {
       setFormError(
         message === 'Email or password not matched'

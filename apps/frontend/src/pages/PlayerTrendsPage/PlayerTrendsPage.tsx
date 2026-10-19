@@ -1,3 +1,4 @@
+import { SquadNavigation } from '../../components/layout/SquadNavigation';
 import { Link } from 'react-router-dom';
 import { LocaleConsumer } from '@douyinfe/semi-ui';
 import { PlayerApis } from '../../service/PlayerApis';
@@ -28,6 +29,7 @@ export default function PlayerTrendsPage() {
     <LocaleConsumer componentName="PlayerTrendsPage">
       {(locale: any) => (
         <div className="page-container trends-page">
+          <SquadNavigation />
           {positionTypes.map((position) => {
             const players = data.filter(
               (player) => player.positionType === position,

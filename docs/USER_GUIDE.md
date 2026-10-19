@@ -5,7 +5,7 @@
 FC Career Top records the squad in your EA FC 24–27 Manager Career Mode and
 lets you follow each player's overall rating and potential across seasons.
 Use the [hosted dashboard](https://app.fccareer.top), or run your own instance.
-Registration requires email and password; your username is generated automatically.
+Sign in with Google or register with email and password; your username is generated automatically.
 
 ## Requirements
 
@@ -49,8 +49,8 @@ reachable from the Windows game PC. See [network configuration](DEVELOPMENT.md#g
 | Page | What to look for |
 | --- | --- |
 | Players | Squad overview, search, sorting, overall/potential, and position-ranking badges |
-| Players Trends | Overall and potential curves grouped by playing position |
-| Player Detail | Current attributes, available PlayStyles, and an individual growth chart |
+| Players → Trends | Overall and potential curves grouped by playing position |
+| A player → Current abilities / Growth history | Latest abilities, PlayStyles, charts and recorded attribute changes |
 | Notifications | Rating, potential, skill-move, and weak-foot changes |
 | Settings | Username, email, password, API key, and notification preferences |
 
@@ -87,6 +87,6 @@ Create, rename, switch, archive or restore careers for each game version. Archiv
 
 The sync card shows the last received upload and any latest script error, not a live connection heartbeat. Successful uploads clear earlier errors. Keep Get Started open while connecting for automatic confirmation.
 
-Growth leaders compare the first and last observed values inside the selected period: the last 30 in-game days, the season starting July 1, or all history. Each row shows the actual baseline and end dates. Sparse records only cover the observed part of the period; one date is insufficient to measure growth. Watchlists are private to each career. Compare up to three current players, then use Player history to inspect attributes on two recorded dates. Departed players remain available there.
+Growth leaders compare the first and last observed values inside the selected period: the last 30 in-game days, the season starting July 1, or all history. Each row shows the recorded rating before and after; hover the rating pair for its observation dates. Charts use actual calendar spacing and distinct overall/potential legends. Sparse records only cover the observed part of the period; one date is insufficient to measure growth. Watchlists are private to each career. Select up to three current players in Compare, then choose View comparison (three selections show results automatically). Change players reopens the picker. Highlighted cells mark the highest available value, and dashes mean not recorded. Open a player’s Growth history to inspect attributes on two recorded dates. Departed players remain available there.
 
 Preview and download a PNG growth card. The card contains the career name and displayed player growth, with no email, account identifiers or upload keys. Downloading does not publish it. [Try the fictional demo](https://app.fccareer.top/demo) without signing in; demo watch preferences stay in the browser tab session.

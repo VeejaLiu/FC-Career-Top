@@ -18,28 +18,25 @@ export const metadata = pageMetadata(
 );
 const features = [
   {
-    image: 'squad',
-    title: 'Your whole squad, at a glance',
-    text: 'See age, position, overall rating and potential together. Sort your players to spot promising prospects, compare options for a position and plan your next season.',
-    alt: 'Example FC Career Top squad showing player ages, positions, ratings and potential',
+    image: 'career-overview',
+    height: 875,
+    title: 'See who is improving',
+    text: 'Ratings before and after, clear growth leaders and separate timelines for every career save.',
+    alt: 'Fictional career showing rating changes and growth leaders',
   },
   {
-    image: 'growth',
-    title: 'See progress across the season',
-    text: 'A player’s current rating tells only part of the story. Follow overall and potential over career dates to see who is improving and how your squad develops over time.',
-    alt: 'Growth charts for four fictional players across an example career season',
+    image: 'career-compare',
+    height: 1236,
+    title: 'Find the right player',
+    text: 'Compare up to three players. See their positions, current ratings and strongest attributes together.',
+    alt: 'Three fictional players with their best attributes highlighted',
   },
   {
-    image: 'player-detail',
-    title: 'Get to know each player',
-    text: 'Open a player to explore their latest abilities, skill moves, weak foot and available PlayStyles. Their growth chart is there too, so you can connect today’s player with the journey so far.',
-    alt: 'Player details and current attributes for fictional striker Alex Reed',
-  },
-  {
-    image: 'notifications',
-    title: 'Catch the changes you might miss',
-    text: 'Get updates when a player’s overall rating, potential, skill moves or weak foot changes. Choose the notifications you care about and jump back into the players behind them.',
-    alt: 'Notifications showing changes in an example career squad',
+    image: 'career-history',
+    height: 1399,
+    title: 'Follow the whole journey',
+    text: 'Distinct rating and potential lines, plus recorded attribute changes between the dates you choose.',
+    alt: 'Fictional player history showing overall, potential and recorded attribute changes',
   },
 ];
 const faq = [
@@ -97,7 +94,7 @@ export default function HomePage() {
           softwareRequirements:
             'EA FC 24–27 and a compatible Live Editor on Windows',
           offers: { '@type': 'Offer', price: 0, priceCurrency: 'USD' },
-          screenshot: absoluteUrl('/screenshots/growth.jpg'),
+          screenshot: absoluteUrl('/screenshots/career-overview.jpg'),
           featureList: features.map((f) => f.title),
           sameAs: GITHUB_URL,
         }}
@@ -111,9 +108,8 @@ export default function HomePage() {
             <span>See how it grows.</span>
           </h1>
           <p className="marketing-lead">
-            Keep track of player ratings, potential and the small changes that
-            shape a season. FC Career Top turns your career squad into a clear,
-            easy-to-read dashboard.
+            Track player growth, compare your squad and keep each career save in
+            its own timeline. Free, automatic and easy to check.
           </p>
           <div className="marketing-actions">
             <a className="marketing-button marketing-primary" href={APP_URL}>
@@ -130,15 +126,13 @@ export default function HomePage() {
         </div>
         <figure className="marketing-hero-image">
           <Image
-            src="/screenshots/growth.jpg"
-            width={1280}
-            height={800}
-            alt="Example player growth charts in the latest FC Career Top dashboard"
+            src="/screenshots/career-overview.jpg"
+            width={1265}
+            height={875}
+            alt="Current Career hub with fictional player growth leaders"
             priority
           />
-          <figcaption>
-            Latest dashboard · Illustrative squad and career data
-          </figcaption>
+          <figcaption>Interactive demo · Fictional squad</figcaption>
         </figure>
       </section>
       <div className="marketing-highlights">
@@ -175,12 +169,12 @@ export default function HomePage() {
             <figure>
               <Image
                 src={`/screenshots/${feature.image}.jpg`}
-                width={1280}
-                height={800}
+                width={1265}
+                height={feature.height}
                 alt={feature.alt}
                 sizes="(max-width: 767px) 100vw, 700px"
               />
-              <figcaption>Example squad · Updated interface</figcaption>
+              <figcaption>Fictional demo · Current interface</figcaption>
             </figure>
           </article>
         ))}
@@ -231,22 +225,19 @@ export default function HomePage() {
             history follows your account.
           </p>
           <p>
-            Google sign-in makes it easy to come back. Settings keeps your login
-            methods, notifications and upload key in one place.
+            Sign in with Google or email. Keep your careers, watched players and
+            notifications together.
           </p>
-          <Image
-            src="/screenshots/settings.jpg"
-            width={1280}
-            height={800}
-            alt="Updated settings with Google connection status, notification preferences and a concealed upload key"
-          />
+          <a className="marketing-button" href={`${APP_URL}/demo`}>
+            Explore the demo →
+          </a>
         </div>
         <figure className="marketing-mobile">
           <Image
-            src="/screenshots/mobile.jpg"
+            src="/screenshots/career-mobile.jpg"
             width={390}
-            height={844}
-            alt="Example squad in the responsive mobile dashboard"
+            height={1322}
+            alt="Current Career hub on a narrow phone screen"
           />
           <figcaption>Illustrative mobile view</figcaption>
         </figure>

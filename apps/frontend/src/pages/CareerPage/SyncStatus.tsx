@@ -10,9 +10,11 @@ import './career.css';
 export function SyncStatus({
   career,
   demo = false,
+  onUpdate,
 }: {
   career?: Career;
   demo?: boolean;
+  onUpdate?: (career: Career) => void;
 }) {
   const t = careerCopy(),
     navigate = useNavigate(),
@@ -49,6 +51,9 @@ export function SyncStatus({
       window.removeEventListener('fct-snapshot-saved', load);
     };
   }, [career, navigate]);
+  useEffect(() => {
+    if (data) onUpdate?.(data);
+  }, [data, onUpdate]);
   const language = normalizeLanguage(
     localStorage.getItem(LANGUAGE_LOCAL_STORAGE_KEY) || navigator.language,
   );
@@ -64,25 +69,23 @@ export function SyncStatus({
     : null;
   return (
     <section
-      className={`career-sync ${problem ? 'has-error' : ''}`}
+      className={`career-sync ${problem || error ? 'has-error' : ''} ${data?.last_upload ? 'has-snapshot' : 'is-waiting'}`}
       aria-live="polite"
     >
-      <div className="career-section-heading">
-        <div className="career-sync-title">
-          <span className="career-status-dot" />
-          <h2>
-            {problem
-              ? t.error
-              : data?.is_archived
-                ? t.archive
-                : data?.last_upload
-                  ? t.connected
-                  : t.waiting}
-          </h2>
-        </div>
+      <div className="career-sync-identity">
+        <span className="career-status-dot" />
         <strong className="career-sync-name" title={data?.name}>
-          {data?.name}
+          {data?.name || t.waiting}
         </strong>
+        <h2>
+          {problem
+            ? t.error
+            : data?.is_archived
+              ? t.archive
+              : data?.last_upload
+                ? t.connected
+                : t.waiting}
+        </h2>
       </div>
       {error && <p role="alert">{t.failed}</p>}
       {data?.last_upload && (
@@ -113,7 +116,7 @@ export function SyncStatus({
       )}
       {!data?.last_upload && <p className="career-note">{t.pending}</p>}
       {problem && <p role="alert">{hint}</p>}
-      <div className="career-section-heading career-sync-footer">
+      <div className="career-sync-footer">
         <details className="career-help">
           <summary>{t.connectionHelp}</summary>
           <p>{t.stale}</p>
@@ -124,7 +127,7 @@ export function SyncStatus({
           {problem && <small>{problem}</small>}
         </details>
         {demo ? (
-          <a href="#career-compare">{t.current} →</a>
+          <a href="#career-compare">{t.compareNav} →</a>
         ) : data?.last_upload ? (
           <Link to="/players">{t.current} →</Link>
         ) : career ? (

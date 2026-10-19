@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { careerCopy } from '../CareerPage/copy';
+import { careerUiCopy } from '../CareerPage/ui-copy';
+import { History } from '../CareerPage/History';
 import { useCallback } from 'react';
 import { LocaleConsumer, Progress } from '@douyinfe/semi-ui';
 import { useSearchParams } from 'react-router-dom';
@@ -92,6 +93,8 @@ const attributeGroups = [
 
 export default function PlayerDetailPage() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const ui = careerUiCopy();
+  const historyView = searchParams.get('view') === 'history';
   const parsedID = Number(searchParams.get('id'));
   const playerID =
     Number.isSafeInteger(parsedID) && parsedID > 0 ? parsedID : 0;
@@ -128,74 +131,111 @@ export default function PlayerDetailPage() {
         <LocaleConsumer componentName="PlayerDetailPage">
           {(locale: any) => (
             <div className="page-container player-detail-content">
-              <div className="player-detail-layout">
-                <BasicInfoComponent
-                  playerInfo={detail.thisPlayer}
-                  localeData={locale}
-                />
-                <div className="player-attributes">
-                  {attributeGroups.map((group) => {
-                    const values = group.attributes
-                      .map(([, field]) => detail.thisPlayer[field])
-                      .filter(
-                        (value) =>
-                          typeof value === 'number' && Number.isFinite(value),
-                      );
-                    const average = values.length
-                      ? values.reduce((sum, value) => sum + value, 0) /
-                        values.length
-                      : null;
-                    return (
-                      <section className="attribute-section" key={group.title}>
-                        <h2>{locale.Attributes[group.title]}</h2>
-                        {average != null && (
-                          <>
-                            <div className="attribute-average">
-                              {locale.Profile.AverageAttribute}:{' '}
-                              {average.toFixed(1)}
-                            </div>
-                            <Progress percent={average} style={{ height: 8 }} />
-                          </>
-                        )}
-                        {group.attributes.map(([label, field]) => (
-                          <div className="player-stat" key={field}>
-                            <span>{locale.Attributes[label]}</span>
-                            <span
-                              className="attribute-value"
-                              style={{
-                                backgroundColor:
-                                  detail.thisPlayer[field] == null
-                                    ? '#777'
-                                    : getColorByOverallRating(
-                                        detail.thisPlayer[field],
-                                      ),
-                              }}
-                            >
-                              {detail.thisPlayer[field] ?? '—'}
-                            </span>
-                          </div>
-                        ))}
-                      </section>
-                    );
-                  })}
-                </div>
-              </div>
-              <PlayerProfileComponent
-                player={detail.thisPlayer}
-                profile={detail.thisPlayer.playerProfile}
-                locale={locale.Profile}
-              />
-              <div className="player-detail-chart">
-                <Link to={`/career?playerId=${playerID}#career-history`}>
-                  {careerCopy().history} →
+              <nav className="player-section-nav" aria-label={ui.player}>
+                <Link to="/players">← {ui.back}</Link>
+                <Link
+                  aria-current={!historyView ? 'page' : undefined}
+                  to={`/players-detail?id=${playerID}`}
+                >
+                  {ui.abilities}
                 </Link>
-                <PlayerTrendChart
-                  key={playerID}
-                  data={detail.trends}
-                  detailed
-                  height={300}
-                />
-              </div>
+                <Link
+                  aria-current={historyView ? 'page' : undefined}
+                  to={`/players-detail?id=${playerID}&view=history`}
+                >
+                  {ui.trend}
+                </Link>
+              </nav>
+              {historyView ? (
+                <div className="player-history-view career-page">
+                  <History
+                    key={playerID}
+                    playerID={playerID}
+                    playerHistory={
+                      detail.history ||
+                      detail.trends.map((point) => ({
+                        ...point,
+                        attributes: null,
+                      }))
+                    }
+                  />
+                </div>
+              ) : (
+                <>
+                  <div className="player-detail-layout">
+                    <BasicInfoComponent
+                      playerInfo={detail.thisPlayer}
+                      localeData={locale}
+                    />
+                    <div className="player-attributes">
+                      {attributeGroups.map((group) => {
+                        const values = group.attributes
+                          .map(([, field]) => detail.thisPlayer[field])
+                          .filter(
+                            (value) =>
+                              typeof value === 'number' &&
+                              Number.isFinite(value),
+                          );
+                        const average = values.length
+                          ? values.reduce((sum, value) => sum + value, 0) /
+                            values.length
+                          : null;
+                        return (
+                          <section
+                            className="attribute-section"
+                            key={group.title}
+                          >
+                            <h2>{locale.Attributes[group.title]}</h2>
+                            {average != null && (
+                              <>
+                                <div className="attribute-average">
+                                  {locale.Profile.AverageAttribute}:{' '}
+                                  {average.toFixed(1)}
+                                </div>
+                                <Progress
+                                  percent={average}
+                                  style={{ height: 8 }}
+                                />
+                              </>
+                            )}
+                            {group.attributes.map(([label, field]) => (
+                              <div className="player-stat" key={field}>
+                                <span>{locale.Attributes[label]}</span>
+                                <span
+                                  className="attribute-value"
+                                  style={{
+                                    backgroundColor:
+                                      detail.thisPlayer[field] == null
+                                        ? '#777'
+                                        : getColorByOverallRating(
+                                            detail.thisPlayer[field],
+                                          ),
+                                  }}
+                                >
+                                  {detail.thisPlayer[field] ?? '—'}
+                                </span>
+                              </div>
+                            ))}
+                          </section>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <PlayerProfileComponent
+                    player={detail.thisPlayer}
+                    profile={detail.thisPlayer.playerProfile}
+                    locale={locale.Profile}
+                  />
+                  <div className="player-detail-chart">
+                    <PlayerTrendChart
+                      key={playerID}
+                      data={detail.trends}
+                      detailed
+                      height={250}
+                    />
+                  </div>
+                </>
+              )}
             </div>
           )}
         </LocaleConsumer>
